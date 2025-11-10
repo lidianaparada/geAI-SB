@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Starbucks Voice Assistant ☕</title>
+<style>
+  :root{--bg:#0b0f14;--card:#10161d;--accent:#00d084;--text:#e8f1f5;--muted:#9bb0bf;--border:#1f2a33;--starbucks:#00704a}
+  *{box-sizing:border-box} 
+  body{margin:0;background:radial-gradient(1000px 600px at 80% -10%, #0b1f16 0%, var(--bg) 45%);font-family:ui-sans-serif,system-ui,Segoe UI,Roboto,Inter,Arial;color:var(--text);overflow-x:hidden}
+  
+  /* ===== MODAL DE CONFIRMACIÓN ===== */
+  .confirmation-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  .confirmation-modal.show {
+    display: flex;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .confirmation-card {
+    background: linear-gradient(135deg, #0f1a21, #14212b);
+    border: 2px solid var(--accent);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 208, 132, 0.3);
+    animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  @keyframes slideUp {
+    from {
+      transform: translateY(50px) scale(0.9);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .confirmation-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #00d084, #00c3b3, #00d084);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+  
+  @keyframes shimmer {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 200% 0%; }
+  }
+  
+  .success-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    background: linear-gradient(135deg, #00d084, #35e1a0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    animation: successPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 24px rgba(0, 208, 132, 0.4);
+  }
+  
+  @keyframes successPop {
+    0% {
+      transform: scale(0) rotate(-180deg);
+      opacity: 0;
+    }
+    60% {
+      transform: scale(1.1) rotate(10deg);
+    }
+    100% {
+      transform: scale(1) rotate(0);
+      opacity: 1;
+    }
+  }
+  
+  .confirmation-title {
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  
+  .order-number {
+    text-align: center;
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  
+  .order-number strong {
+    color: var(--accent);
+    font-size: 24px;
+    font-weight: 800;
+    display: block;
+    margin-top: 5px;
+    letter-spacing: 2px;
+  }
+  
+  .order-details {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  
+  .order-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  
+  .order-item:last-child {
+    border-bottom: none;
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--accent);
+    margin-top: 10px;
+    padding-top: 15px;
+  }
+  
+  .order-item span:first-child {
+    color: var(--muted);
+  }
+  
+  .order-item span:last-child {
+    color: var(--text);
+    font-weight: 600;
+  }
+  
+  .countdown-bar {
+    height: 4px;
+    background: rgba(0, 208, 132, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 20px 0 10px;
+  }
+  
+  .countdown-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d084, #35e1a0);
+    width: 100%;
+    animation: countdown 10s linear forwards;
+  }
+  
+  @keyframes countdown {
+    from { width: 100%; }
+    to { width: 0%; }
+  }
+  
+  .countdown-text {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  
+  .confirmation-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  .btn-new-order {
+    flex: 1;
+    background: linear-gradient(135deg, #00d084, #00c3b3);
+    color: #042a1f;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 15px;
+  }
+  
+  .btn-new-order:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 208, 132, 0.4);
+  }
+  
+  .btn-close {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 15px;
+  }
+  
+  .btn-close:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--accent);
+  }
+
+  /* Resto del CSS original... */
+  .loader-screen{position:fixed;inset:0;background:linear-gradient(135deg,#00704a 0%,#006241 50%,#004d33 100%);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;animation:fadeOut 1s ease-in-out 3.5s forwards}
+  @keyframes fadeOut{to{opacity:0;visibility:hidden}}
+  
+  .loader-logo{width:180px;height:180px;position:relative;animation:logoEntrance 1.2s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes logoEntrance{0%{transform:scale(0) rotate(-180deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
+  
+  .loader-logo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 10px 40px rgba(255,255,255,.3));animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
+  
+  .coffee-particles{position:absolute;inset:0;pointer-events:none}
+  .coffee-emoji{position:absolute;font-size:32px;animation:float-up 3s ease-in-out infinite;opacity:0}
+  .coffee-emoji:nth-child(1){left:10%;animation-delay:0s;animation-duration:2.5s}
+  .coffee-emoji:nth-child(2){left:30%;animation-delay:.5s;animation-duration:3s}
+  .coffee-emoji:nth-child(3){left:50%;animation-delay:1s;animation-duration:2.8s}
+  .coffee-emoji:nth-child(4){left:70%;animation-delay:1.5s;animation-duration:3.2s}
+  .coffee-emoji:nth-child(5){left:90%;animation-delay:2s;animation-duration:2.6s}
+  
+  @keyframes float-up{0%{transform:translateY(100vh) rotate(0deg);opacity:0}20%{opacity:1}80%{opacity:1}100%{transform:translateY(-100vh) rotate(360deg);opacity:0}}
+  
+  .loader-text{margin-top:30px;font-size:28px;font-weight:800;color:white;text-align:center;letter-spacing:1px;animation:fadeInUp 1s ease-out .5s both}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  
+  .loader-subtext{margin-top:10px;font-size:14px;color:#d4f1e6;opacity:.9;animation:fadeInUp 1s ease-out .8s both}
+  
+  .splash{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(160deg,#07120d,#0a1510 60%,#0b0f14);z-index:999;overflow:hidden;opacity:0;animation:splashFadeIn .8s ease-out 4s forwards}
+  @keyframes splashFadeIn{to{opacity:1}}
+  
+  .splash .waves{position:absolute;inset:0;opacity:.25;background:
+    radial-gradient(90vmax 60vmax at -10% -10%, #00d08422 10%, transparent 60%),
+    radial-gradient(90vmax 60vmax at 120% 110%, #00e0ff15 10%, transparent 60%);
+    mix-blend-mode:screen;animation:float 10s ease-in-out infinite alternate}
+  @keyframes float{to{transform:translateY(-12px)}}
+  
+  .splash-card{width:min(800px,92vw);border:1px solid var(--border);background:linear-gradient(180deg,#0f151bcc,#0b1015cc);backdrop-filter:blur(12px);border-radius:24px;padding:32px;box-shadow:0 20px 60px #0008;animation:cardSlideIn 1s cubic-bezier(.34,1.56,.64,1) 4.2s both}
+  @keyframes cardSlideIn{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+  
+  .brand{display:flex;align-items:center;gap:16px;margin-bottom:20px;position:relative}
+  .brand-logo{width:50px;height:50px;animation:spin 20s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .brand-logo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,208,132,.4))}
+  
+  .dot{width:14px;height:14px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px var(--accent);animation:dotPulse 2s ease-in-out infinite}
+  @keyframes dotPulse{0%,100%{box-shadow:0 0 18px var(--accent)}50%{box-shadow:0 0 28px var(--accent),0 0 40px var(--accent)}}
+  
+  h1{margin:0;font-weight:800;letter-spacing:.5px;font-size:28px;background:linear-gradient(90deg,#00d084,#35e1a0,#00d084);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;background-size:200% 100%;animation:gradientShift 3s ease infinite}
+  @keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  
+  .badge{margin-left:auto;font-size:13px;color:#0a1812;background:linear-gradient(90deg,#00d084,#35e1a0);padding:8px 14px;border-radius:999px;font-weight:800;box-shadow:0 4px 12px #00d08444;animation:badgeBounce 2s ease-in-out infinite}
+  @keyframes badgeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+  
+  .subtitle{color:var(--muted);margin:8px 0 24px;font-size:15px;line-height:1.6}
+  .pill{display:inline-block;border:1px dashed #254;color:#b9f7db;background:#0c1913;padding:8px 12px;border-radius:999px;font-size:13px;margin:4px 4px 4px 0;transition:all .3s}
+  .pill:hover{background:#0e1f16;border-color:#00d084;transform:translateY(-2px)}
+  
+  .powered-by{display:flex;align-items:center;gap:12px;margin:20px 0;padding:16px;background:linear-gradient(135deg,#111a13,#0d1410);border:1px solid #1a3329;border-radius:16px;animation:slideInLeft 1s ease-out 4.5s both}
+  @keyframes slideInLeft{from{transform:translateX(-50px);opacity:0}to{transform:translateX(0);opacity:1}}
+  
+  .powered-by img{height:32px;background:white;padding:2px;filter:brightness(1.1) drop-shadow(0 2px 8px rgba(118,185,0,.3))}
+  .powered-by-text{font-size:13px;color:#9bb0bf;line-height:1.4}
+  .powered-by-text strong{color:#76b900;font-weight:700}
+  
+  .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px;transition:all .4s;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(0,208,132,.1),transparent);transition:left .6s}
+  .card:hover::before{left:100%}
+  .card:hover{border-color:var(--accent);transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,208,132,.15)}
+  
+  .grid{display:grid;gap:16px;grid-template-columns:1fr 1fr;margin:20px 0}
+  .grid .card p{margin:10px 0 0;color:var(--muted);font-size:14px;line-height:1.6}
+  .grid .card strong{color:var(--accent);font-size:16px;display:flex;align-items:center;gap:8px}
+  
+  .cta{display:flex;gap:16px;margin-top:24px;align-items:center;flex-wrap:wrap}
+  .btn{background:linear-gradient(135deg,#00d084,#00c3b3,#00d084);background-size:200% 100%;color:#042a1f;font-weight:900;border:none;padding:16px 32px;border-radius:14px;cursor:pointer;box-shadow:0 8px 24px #00d0844d;letter-spacing:.3px;font-size:16px;transition:all .3s;position:relative;overflow:hidden}
+  .btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.3),transparent);transform:translateX(-100%);transition:transform .6s}
+  .btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 12px 32px #00d08466;background-position:100% 0}
+  .btn:hover::before{transform:translateX(100%)}
+  .btn:active{transform:translateY(-1px) scale(.98)}
+  
+  .wrap{max-width:1200px;margin:32px auto;padding:0 24px}
+  .topbar{display:flex;align-items:center;gap:20px;justify-content:space-between;margin:24px 0 20px;flex-wrap:wrap;padding:16px 20px;background:var(--card);border:1px solid var(--border);border-radius:16px}
+  .status{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:15px;font-weight:600}
+  
+  .live-dot{width:14px;height:14px;border-radius:50%;background:#ff4d4d;box-shadow:0 0 16px #ff4d4dAA;animation:livePulse 1.5s ease-in-out infinite}
+  .live-dot.idle{background:#3baf7a;box-shadow:0 0 16px #3baf7aAA;animation:none}
+  .live-dot.speaking{background:#ffa500;box-shadow:0 0 16px #ffa500AA;animation:speakPulse 1s ease-in-out infinite}
+  @keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.2)}}
+  @keyframes speakPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+  
+  .pane{display:grid;grid-template-columns:1.5fr .5fr;gap:24px}
+  @media(max-width:900px){.pane{grid-template-columns:1fr}}
+  
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;min-height:320px;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:all .3s}
+  .panel:hover{box-shadow:0 8px 32px rgba(0,208,132,.1)}
+  
+  .chat{display:flex;flex-direction:column;gap:14px;max-height:65vh;overflow-y:auto;overflow-x:hidden;padding-right:10px}
+  .chat::-webkit-scrollbar{width:8px}
+  .chat::-webkit-scrollbar-track{background:#0d1419;border-radius:4px}
+  .chat::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#1f2a33,#2a3f4d);border-radius:4px;transition:background .3s}
+  .chat::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#2a3f4d,#3d5a6f)}
+  
+  .msg-wrapper{display:flex;flex-direction:column;gap:6px;animation:slideIn .4s cubic-bezier(.34,1.56,.64,1)}
+  @keyframes slideIn{from{opacity:0;transform:translateY(20px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+  
+  .msg{max-width:85%;padding:14px 18px;border-radius:16px;border:1px solid var(--border);line-height:1.5;word-wrap:break-word;position:relative;transition:all .3s}
+  .user-wrapper{align-items:flex-start}
+  .user{background:linear-gradient(135deg,#0f1a21,#14212b);border-color:#1a2532;box-shadow:0 4px 12px rgba(15,26,33,.6)}
+  .user:hover{transform:translateX(4px);box-shadow:0 6px 16px rgba(0,208,132,.2)}
+  
+  .bot-wrapper{align-items:flex-end}
+  .bot{background:linear-gradient(135deg,#0c1913,#0e1f16);border-color:#1a3329;box-shadow:0 4px 12px rgba(12,25,19,.6)}
+  .bot:hover{transform:translateX(-4px);box-shadow:0 6px 16px rgba(0,208,132,.2)}
+  
+  .meta{font-size:12px;color:#7a8a97;opacity:.9;padding:0 4px;font-weight:500}
+  
+  .info-panel{display:flex;flex-direction:column;gap:16px}
+  .info-card{background:linear-gradient(135deg,#0d1419,#0f1820);border:1px solid var(--border);border-radius:14px;padding:16px;font-size:13px;line-height:1.6;transition:all .3s}
+  .info-card:hover{border-color:#00d08444;transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,208,132,.1)}
+  .info-card strong{color:var(--accent);display:block;margin-bottom:8px;font-size:15px}
+  .info-card code{background:#1a2028;padding:4px 8px;border-radius:6px;font-size:12px;color:#4db8ff;font-weight:600}
+  
+  .debug-text{color:#7a8a97;font-size:12px;margin-top:10px;padding:12px;background:linear-gradient(135deg,#0a0e12,#0c1015);border-radius:8px;font-family:monospace;border:1px solid #1a2028;line-height:1.5}
+  
+  @media(max-width:768px){
+    .grid{grid-template-columns:1fr}
+    .pane{grid-template-columns:1fr}
+    .topbar{flex-direction:column;align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="confirmation-modal" id="confirmationModal">
+  <div class="confirmation-card">
+    <div class="success-icon">✓</div>
+    <h2 class="confirmation-title">¡Pedido Confirmado!</h2>
+    <div class="order-number">
+      Número de orden
+      <strong id="orderNumberDisplay">---</strong>
+    </div>
+    
+    <div class="order-details" id="orderDetails">
+      <!-- Se llena dinámicamente -->
+    </div>
+    
+    <div class="countdown-bar">
+      <div class="countdown-fill"></div>
+    </div>
+    <div class="countdown-text" id="countdownText">
+      Volviendo al inicio en <span id="countdownSeconds">10</span> segundos...
+    </div>
+    
+    <div class="confirmation-buttons">
+      <button class="btn-new-order" onclick="newOrder()">
+        Hacer Otro Pedido
+      </button>
+      <button class="btn-close" onclick="closeConfirmation()">
+        Cerrar
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- PANTALLA DE CARGA ANIMADA -->
+<div class="loader-screen">
+  <div class="coffee-particles">
+    <div class="coffee-emoji">☕</div>
+    <div class="coffee-emoji">☕</div>
+    <div class="coffee-emoji">☕</div>
+    <div class="coffee-emoji">☕</div>
+    <div class="coffee-emoji">☕</div>
+  </div>
+  <div class="loader-logo">
+    <img src="https://upload.wikimedia.org/wikipedia/sco/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/446px-Starbucks_Corporation_Logo_2011.svg.png" alt="Starbucks Logo">
+  </div>
+  <div class="loader-text">Starbucks AI Assistant</div>
+  <div class="loader-subtext">Powered by NVIDIA & OpenAI • Cargando experiencia...</div>
+</div>
+
+<!-- SPLASH PRINCIPAL -->
+<div class="splash" id="splash">
+  <div class="waves"></div>
+  <div class="splash-card">
+    <div class="brand">
+      <div class="brand-logo">
+        <img src="https://upload.wikimedia.org/wikipedia/sco/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/446px-Starbucks_Corporation_Logo_2011.svg.png" alt="Starbucks">
+      </div>
+      <div class="dot"></div>
+      <h1>Starbucks Voice Assistant</h1>
+      <div class="badge">HYBRID AI</div>
+    </div>
+    <div class="subtitle">✨ Realiza tus pedidos por voz con inteligencia artificial de última generación • Micrófono siempre activo para una experiencia fluida</div>
+    
+    <div class="powered-by">
+      <img src="https://docs.netapp.com/es-es/netapp-solutions-ai/media/poweredbynvidia.png" alt="Powered by NVIDIA">
+      <div class="powered-by-text">
+        Impulsado por <strong>NVIDIA AI + OpenAI</strong><br>
+        Reconocimiento de voz del navegador + Síntesis de voz premium
+      </div>
+    </div>
+    
+    <div class="grid">
+      <div class="card">
+        <strong>🎤 Cómo usar</strong>
+        <p>Habla naturalmente como en un drive-thru de Starbucks:</p>
+        <p><span class="pill">"Quiero un frappuccino de caramelo grande"</span></p>
+        <p><span class="pill">"¿Qué me recomiendas para desayunar?"</span></p>
+        <p><b>El micrófono se reactiva automáticamente</b> después de cada respuesta para una conversación continua.</p>
+      </div>
+      <div class="card">
+        <strong>⚙️ Características</strong>
+        <p>  Delay inteligente de 2s para que termines de hablar</p>
+        <p>  Anti-eco: no te escucha mientras responde</p>
+        <p>  Reconocimiento continuo y natural (GRATIS)</p>
+        <p>  Reintenta automáticamente si hay errores</p>
+        <p>  Voz premium con OpenAI TTS</p>
+      </div>
+    </div>
+    
+    <div class="cta">
+      <button class="btn" id="startBtn">🚀 Iniciar Asistente de Voz</button>
+      <span style="color:#9ac1b3;font-size:14px;font-weight:500">🎙️ Se requiere permiso de micrófono una sola vez</span>
+    </div>
+  </div>
+</div>
+
+<!-- INTERFAZ PRINCIPAL -->
+<div class="wrap">
+  <div class="topbar">
+    <div class="status">
+      <div class="live-dot idle" id="liveDot"></div>
+      <div id="statusText">Sistema inactivo</div>
+    </div>
+    <div class="status">
+      <span id="micStatus">🎤 Micrófono: Esperando</span>
+    </div>
+  </div>
+
+  <div class="pane">
+    <div class="panel">
+      <h3 style="margin:0 0 16px;color:var(--accent);font-size:18px;font-weight:700">💬 Conversación en Tiempo Real</h3>
+      <div class="chat" id="chat"></div>
+    </div>
+    
+    <div class="panel info-panel">
+      <div class="info-card">
+        <strong>🔧 Configuración</strong>
+        Backend: <code id="apiUrl">localhost:3000</code>
+        <br>ASR: <code>Web Speech API (Gratis)</code>
+        <br>LLM: <code>NVIDIA Llama 3.3 70B</code>
+        <br>TTS: <code>OpenAI (Fallback: Navegador)</code>
+      </div>
+      
+      <div class="info-card">
+        <strong>💡 Consejos</strong>
+        • Habla claro y pausado<br>
+        • Espera a que termine de responder<br>
+        • El micro se reactiva solo<br>
+        • Si falla TTS, usa voz del navegador
+      </div>
+      
+      <div class="debug-text" id="debugLog">🟢 Sistema listo • Esperando inicio...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// =====================================
+// CONFIGURACIÓN DEL BACKEND ACTUALIZADO
+// =====================================
+const API_URL = "http://localhost:3000/chat";
+const SILENCE_DELAY = 1200;
+const RESTART_DELAY = 500;
+const AUTO_RESET_DELAY = 10000; // 10 segundos
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+let history = [];
+let recognition = null;
+let isListening = false;
+let isSpeaking = false;
+let isProcessing = false;
+let hasPermission = false;
+let silenceTimer = null;
+let currentTranscript = "";
+let restartTimeout = null;
+let autoResetTimer = null;
+let sessionId = "user_" + Math.random().toString(36).substr(2, 9);
+
+function log(msg, type = "info") {
+  console.log(`[${type.toUpperCase()}]`, msg);
+  const debugLog = document.getElementById("debugLog");
+  if (debugLog) {
+    const emoji = type === "error" ? "🔴" : type === "warn" ? "🟡" : "🟢";
+    debugLog.textContent = `${emoji} [${new Date().toLocaleTimeString()}] ${msg}`;
+  }
+}
+
+function updateStatus(status, micStatus = null) {
+  const statusText = document.getElementById("statusText");
+  const liveDot = document.getElementById("liveDot");
+  const micStatusEl = document.getElementById("micStatus");
+  
+  statusText.textContent = status;
+  
+  if (micStatus) {
+    micStatusEl.textContent = `🎤 ${micStatus}`;
+  }
+  
+  liveDot.className = "live-dot";
+  if (isSpeaking) {
+    liveDot.classList.add("speaking");
+  } else if (isListening) {
+    liveDot.classList.remove("idle", "speaking");
+  } else {
+    liveDot.classList.add("idle");
+  }
+}
+
+function addMessage(text, role = "user") {
+  const chat = document.getElementById("chat");
+  
+  const wrapper = document.createElement("div");
+  wrapper.className = `msg-wrapper ${role}-wrapper`;
+  
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `msg ${role}`;
+  msgDiv.textContent = text;
+  
+  const meta = document.createElement("div");
+  meta.className = "meta";
+  const time = new Date().toLocaleTimeString("es-MX", { hour: "2-digit", minute: "2-digit" });
+  meta.textContent = `${role === "user" ? "Tú" : "Caffi"} • ${time}`;
+  
+  wrapper.appendChild(msgDiv);
+  wrapper.appendChild(meta);
+  chat.appendChild(wrapper);
+  
+  chat.scrollTop = chat.scrollHeight;
+}
+
+// =========================
+// FUNCIONES DEL MODAL DE CONFIRMACIÓN
+// =========================
+
+function showOrderConfirmation(orderData) {
+  log("🎉 Mostrando confirmación de pedido");
+  
+  // Pausar micrófono
+  stopListening();
+  
+  const modal = document.getElementById("confirmationModal");
+  const orderNumberDisplay = document.getElementById("orderNumberDisplay");
+  const orderDetails = document.getElementById("orderDetails");
+  
+  // Mostrar número de orden
+  orderNumberDisplay.textContent = orderData.orderNumber;
+  
+  // Construir detalles del pedido - ESTRUCTURA CORRECTA
+  let detailsHTML = '';
+  
+  // Bebida
+  if (orderData.items.bebida) {
+    const tamano = orderData.items.tamano ? ` (${orderData.items.tamano})` : '';
+    detailsHTML += `
+      <div class="order-item">
+        <span>Bebida:</span>
+        <span>${orderData.items.bebida}${tamano}</span>
+      </div>
+    `;
+  }
+  
+  // Leche
+  if (orderData.items.leche) {
+    detailsHTML += `
+      <div class="order-item">
+        <span>Leche:</span>
+        <span>${orderData.items.leche}</span>
+      </div>
+    `;
+  }
+  
+  // Alimento
+  if (orderData.items.alimento && orderData.items.alimento !== 'ninguno') {
+    detailsHTML += `
+      <div class="order-item">
+        <span>Alimento:</span>
+        <span>${orderData.items.alimento}</span>
+      </div>
+    `;
+  }
+  
+  // Sucursal
+  if (orderData.items.sucursal) {
+    detailsHTML += `
+      <div class="order-item">
+        <span>Sucursal:</span>
+        <span>${orderData.items.sucursal}</span>
+      </div>
+    `;
+  }
+  
+  // Total y estrellas
+  detailsHTML += `
+    <div class="order-item">
+      <span>TOTAL:</span>
+      <span>$${orderData.total} MXN</span>
+    </div>
+    <div class="order-item" style="border-bottom: none; color: #35e1a0;">
+      <span>Estrellas ganadas:</span>
+      <span>⭐ ${orderData.estrellas}</span>
+    </div>
+  `;
+  
+  orderDetails.innerHTML = detailsHTML;
+  
+  // Mostrar modal
+  modal.classList.add('show');
+  
+  // Iniciar countdown
+  startCountdown();
+  
+  // Auto-reset después de 10 segundos
+  autoResetTimer = setTimeout(() => {
+    resetToNewOrder();
+  }, AUTO_RESET_DELAY);
+}
+
+function startCountdown() {
+  let seconds = 10;
+  const countdownText = document.getElementById("countdownSeconds");
+  
+  const interval = setInterval(() => {
+    seconds--;
+    if (countdownText) {
+      countdownText.textContent = seconds;
+    }
+    
+    if (seconds <= 0) {
+      clearInterval(interval);
+    }
+  }, 1000);
+}
+
+function closeConfirmation() {
+  const modal = document.getElementById("confirmationModal");
+  modal.classList.remove('show');
+  
+  if (autoResetTimer) {
+    clearTimeout(autoResetTimer);
+    autoResetTimer = null;
+  }
+  
+  log("Modal cerrado manualmente");
+}
+
+function newOrder() {
+  closeConfirmation();
+  resetToNewOrder();
+}
+
+function resetToNewOrder() {
+  log("🔄 Iniciando nuevo pedido");
+  
+  // Limpiar historial
+  history = [];
+  
+  // Generar nuevo sessionId
+  sessionId = "user_" + Math.random().toString(36).substr(2, 9);
+  
+  // Cerrar modal
+  closeConfirmation();
+  
+  // Limpiar chat
+  const chat = document.getElementById("chat");
+  chat.innerHTML = '';
+  
+  // Reactivar micrófono y saludar
+  if (hasPermission) {
+    setTimeout(() => {
+      initChat();
+    }, 500);
+  }
+}
+
+// =========================
+// RECONOCIMIENTO DE VOZ
+// =========================
+
+function initRecognition() {
+  if (!SR) {
+    log("SpeechRecognition no disponible en este navegador", "error");
+    return null;
+  }
+  
+  const rec = new SR();
+  rec.lang = "es-MX";
+  rec.continuous = true;
+  rec.interimResults = true;
+  rec.maxAlternatives = 1;
+  
+  rec.onstart = () => {
+    isListening = true;
+    log("🎤 Micrófono activado");
+    updateStatus("Escuchando...", "Activo");
+  };
+  
+  rec.onresult = (event) => {
+    if (isSpeaking || isProcessing) {
+      log("⚠️ Ignorando entrada (IA hablando o procesando)");
+      return;
+    }
+    
+    const lastResultIndex = event.results.length - 1;
+    const result = event.results[lastResultIndex];
+    const transcript = result[0].transcript.trim();
+    
+    if (!transcript) return;
+    
+    currentTranscript = transcript;
+    
+    if (silenceTimer) {
+      clearTimeout(silenceTimer);
+    }
+    
+    if (result.isFinal) {
+      log(`✓ Detectado (final): "${transcript}"`);
+      updateStatus(`Procesando: "${transcript.substring(0, 40)}..."`, "Procesando");
+      
+      silenceTimer = setTimeout(() => {
+        if (currentTranscript && !isSpeaking && !isProcessing) {
+          processUserInput(currentTranscript);
+          currentTranscript = "";
+        }
+      }, SILENCE_DELAY);
+    } else {
+      log(`↪ Escuchando: "${transcript.substring(0, 30)}..."`);
+      updateStatus(`Escuchando: "${transcript.substring(0, 40)}..."`, "Capturando");
+    }
+  };
+  
+  rec.onerror = (event) => {
+    log(`⚠️ Error de reconocimiento: ${event.error}`, "error");
+    
+    if (event.error === "not-allowed") {
+      hasPermission = false;
+      updateStatus("❌ Permiso de micrófono denegado", "Sin permiso");
+      addMessage("⚠️ Necesito permiso de micrófono. Recarga la página y concede permiso.", "bot");
+      return;
+    }
+    
+    if (event.error === "network" || event.error === "aborted") {
+      log("↻ Reintentando en 2 segundos...");
+      setTimeout(() => {
+        if (hasPermission && !isSpeaking) {
+          startListening();
+        }
+      }, 2000);
+    }
+  };
+  
+  rec.onend = () => {
+    isListening = false;
+    log("⏹️ Reconocimiento detenido");
+    
+    if (hasPermission && !isSpeaking && !isProcessing) {
+      if (restartTimeout) clearTimeout(restartTimeout);
+      restartTimeout = setTimeout(() => {
+        log("↻ Reactivando micrófono...");
+        startListening();
+      }, RESTART_DELAY);
+    }
+  };
+  
+  return rec;
+}
+
+function startListening() {
+  if (!hasPermission) {
+    log("⚠️ Sin permiso de micrófono", "warn");
+    return;
+  }
+  
+  if (isListening || isSpeaking) {
+    log("⚠️ Ya está escuchando o hablando", "warn");
+    return;
+  }
+  
+  try {
+    if (recognition) {
+      recognition.stop();
+    }
+    recognition = initRecognition();
+    if (recognition) {
+      recognition.start();
+    }
+  } catch (err) {
+    log(`❌ Error al iniciar: ${err.message}`, "error");
+  }
+}
+
+function stopListening() {
+  if (recognition && isListening) {
+    try {
+      recognition.stop();
+      isListening = false;
+      updateStatus("Sistema pausado", "Pausado");
+      log("⏸️ Micrófono pausado");
+    } catch (err) {
+      log(`⚠️ Error al detener: ${err.message}`, "warn");
+    }
+  }
+}
+
+async function processUserInput(text) {
+  if (isProcessing || !text.trim()) return;
+  
+  isProcessing = true;
+  stopListening();
+  
+  addMessage(text, "user");
+  log(`💬 Enviando al LLM: "${text}"`);
+  
+  try {
+    // Llamar al endpoint /chat del backend ACTUALIZADO
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        userInput: text, 
+        history: history,
+        sessionId: sessionId,
+        userName: "Lidy"
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    const reply = data?.reply?.trim() || "Lo siento, no obtuve respuesta.";
+    
+    history.push({ role: "user", content: text });
+    history.push({ role: "assistant", content: reply });
+    
+    log(`📩 Respuesta recibida: "${reply.substring(0, 50)}..."`);
+    addMessage(reply, "bot");
+    
+    // Verificar si el pedido está completo - NUEVO BACKEND RETORNA orderComplete
+    if (data.orderComplete && data.orderData) {
+      log("🎉 Pedido completado detectado");
+      
+      // Hablar primero
+      await speakText(reply);
+      
+      // Luego mostrar modal
+      setTimeout(() => {
+        showOrderConfirmation(data.orderData);
+      }, 500);
+      
+    } else {
+      // Flujo normal
+      await speakText(reply);
+    }
+    
+  } catch (error) {
+    log(`❌ Error en API: ${error.message}`, "error");
+    addMessage(`⚠️ Error: ${error.message}. Verifica que el servidor esté corriendo en http://localhost:3000`, "bot");
+    
+    isProcessing = false;
+    setTimeout(() => startListening(), RESTART_DELAY);
+  }
+}
+
+async function speakText(text) {
+  isSpeaking = true;
+  updateStatus("Asistente hablando...", "Hablando");
+  
+  try {
+    const fetchStart = performance.now();
+    
+    // Intentar OpenAI TTS primero
+    const ttsResponse = await fetch("http://localhost:3000/speak", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+
+    // Verificar estado de la respuesta
+    if (ttsResponse.ok) {
+      const fetchTime = performance.now() - fetchStart;
+      const isFallback = ttsResponse.headers.get("X-Fallback") === "true";
+      
+      if (isFallback) {
+        log(`⚠️ TTS fallback (${Math.round(fetchTime)}ms)`);
+      } else {
+        log(`🎙️ OpenAI TTS (${Math.round(fetchTime)}ms)`);
+      }
+      
+      const audioBlob = await ttsResponse.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      
+      audio.volume = 1.0;
+      audio.playbackRate = 1.0;
+      audio.preload = "auto";
+      
+      const playPromise = audio.play();
+      
+      if (playPromise !== undefined) {
+        playPromise.catch(e => {
+          log(`⚠️ Error reproduciendo: ${e.message}`, "warn");
+          // Continuar de todos modos
+          isSpeaking = false;
+          isProcessing = false;
+          setTimeout(() => {
+            if (hasPermission) {
+              startListening();
+            }
+          }, RESTART_DELAY);
+        });
+      }
+      
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        isSpeaking = false;
+        isProcessing = false;
+        log("✓ TTS finalizado, reactivando micrófono");
+        setTimeout(() => {
+          if (hasPermission) {
+            startListening();
+          }
+        }, RESTART_DELAY);
+      };
+      
+      audio.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        log(`⚠️ Error reproduciendo audio`, "warn");
+        isSpeaking = false;
+        isProcessing = false;
+        setTimeout(() => startListening(), RESTART_DELAY);
+      };
+      
+      return;
+    } else {
+      // Respuesta con error
+      const errorData = await ttsResponse.json();
+      log(`⚠️ TTS error ${ttsResponse.status}: ${errorData.error}`, "warn");
+      
+      // Si hay error, usar fallback del navegador
+      throw new Error(`TTS HTTP ${ttsResponse.status}`);
+    }
+  } catch (err) {
+    log(`⚠️ OpenAI TTS falló: ${err.message}. Usando navegador...`, "warn");
+  }
+  
+  // FALLBACK: TTS del navegador
+  try {
+    speechSynthesis.cancel();
+    
+    let voices = speechSynthesis.getVoices();
+    if (voices.length === 0) {
+      await new Promise(resolve => {
+        speechSynthesis.onvoiceschanged = () => {
+          voices = speechSynthesis.getVoices();
+          resolve();
+        };
+        setTimeout(resolve, 100);
+      });
+    }
+    
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    const spanishVoices = voices.filter(v => 
+      v.lang.startsWith('es') && v.localService
+    );
+    
+    if (spanishVoices.length > 0) {
+      const googleVoice = spanishVoices.find(v => v.name.includes('Google'));
+      const microsoftVoice = spanishVoices.find(v => v.name.includes('Microsoft'));
+      const premiumVoice = spanishVoices.find(v => 
+        v.name.includes('Premium') || v.name.includes('Enhanced')
+      );
+      
+      utterance.voice = googleVoice || microsoftVoice || premiumVoice || spanishVoices[0];
+      log(`🎙️ Voz fallback: ${utterance.voice.name}`);
+    } else {
+      log(`🎙️ Usando voz predeterminada del navegador`);
+    }
+    
+    utterance.lang = "es-MX";
+    utterance.rate = 1.15;
+    utterance.pitch = 1.0;
+    utterance.volume = 1.0;
+    
+    utterance.onend = () => {
+      isSpeaking = false;
+      isProcessing = false;
+      log("✓ Síntesis del navegador finalizada");
+      
+      setTimeout(() => {
+        if (hasPermission) {
+          startListening();
+        }
+      }, RESTART_DELAY);
+    };
+    
+    utterance.onerror = (err) => {
+      log(`❌ Error síntesis: ${err.error}`, "error");
+      isSpeaking = false;
+      isProcessing = false;
+      setTimeout(() => startListening(), RESTART_DELAY);
+    };
+    
+    speechSynthesis.speak(utterance);
+    
+  } catch (fallbackError) {
+    log(`❌ Error fallback del navegador: ${fallbackError.message}`, "error");
+    isSpeaking = false;
+    isProcessing = false;
+    
+    // Último recurso: continuar sin sonido
+    setTimeout(() => {
+      if (hasPermission) {
+        startListening();
+      }
+    }, RESTART_DELAY);
+  }
+}
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+  speechSynthesis.onvoiceschanged = () => {
+    const voices = speechSynthesis.getVoices();
+    const spanishCount = voices.filter(v => v.lang.startsWith('es')).length;
+    log(`🎙️ ${spanishCount} voces en español disponibles`);
+  };
+}
+
+speechSynthesis.getVoices();
+
+async function requestMicrophonePermission() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+      audio: {
+        echoCancellation: true,
+        noiseSuppression: true,
+        autoGainControl: true
+      }
+    });
+    
+    stream.getTracks().forEach(track => track.stop());
+    
+    hasPermission = true;
+    log("✓ Permiso de micrófono concedido");
+    return true;
+    
+  } catch (err) {
+    log(`❌ Permiso denegado: ${err.message}`, "error");
+    hasPermission = false;
+    return false;
+  }
+}
+
+document.getElementById("startBtn").onclick = async () => {
+  const granted = await requestMicrophonePermission();
+  
+  document.getElementById("splash").style.display = "none";
+  
+  if (granted) {
+    log("✓ Iniciando asistente...");
+    initChat();
+    
+  } else {
+    addMessage("⚠️ No puedo funcionar sin permiso de micrófono. Por favor, recarga la página y concede permiso.", "bot");
+    updateStatus("Sin permiso de micrófono", "Error");
+  }
+};
+
+window.addEventListener("beforeunload", () => {
+  if (recognition) {
+    recognition.stop();
+  }
+  speechSynthesis.cancel();
+  if (autoResetTimer) {
+    clearTimeout(autoResetTimer);
+  }
+});
+
+// ========================================
+// INICIALIZAR CHAT CON SALUDO DEL BACKEND
+// ========================================
+async function initChat() {
+  log(" Solicitando saludo del backend...");
+  
+  try {
+    // Llamada inicial al backend sin userInput
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        userInput: "", 
+        history: [],
+        sessionId: sessionId,
+        userName: "Lidy"
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    const welcomeMsg = data.reply;
+    
+    addMessage(welcomeMsg, "bot");
+    await speakText(welcomeMsg);
+    
+  } catch (error) {
+    log(`❌ Error al iniciar chat: ${error.message}`, "error");
+    const fallbackMsg = "¡Hola! Bienvenido a Starbucks. ¿Qué te gustaría ordenar hoy?";
+    addMessage(fallbackMsg, "bot");
+    await speakText(fallbackMsg);
+  }
+}
+</script>
+</body>
+</html>

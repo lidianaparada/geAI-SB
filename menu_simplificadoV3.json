@@ -1,0 +1,3530 @@
+{
+  "bebidas_calientes": [
+    {
+      "id": "10161",
+      "nombre": "Chocolate 100% Mexicano",
+      "descripcion": "Los sabores tradicionales del cacao, con toques a canela, se mezclan perfectamente con leche para consentirte.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Alternativas al Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20001",
+      "nombre": "Latte",
+      "descripcion": "Nuestro característico espresso, dulce y equilibrado, con leche al vapor con una ligera y aterciopelada capa de espuma. ",
+      "precio_base": 55,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso Tradicional",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20002",
+      "nombre": "Cappuccino",
+      "descripcion": "Intenso espresso bajo la capa gruesa y espumosa de leche cuidadosamente vaporizada.",
+      "precio_base": 55,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso Tradicional",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20003",
+      "nombre": "Caramel Macchiato",
+      "descripcion": "Leche al vapor manchada con espresso y un toque de vainilla, cubierta con un característico dibujo de caramelo. Dulce, intenso y único.",
+      "precio_base": 65,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso Tradicional",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20004",
+      "nombre": "Mocha",
+      "descripcion": "Combinamos nuestro espresso, lleno de cuerpo, con salsa de chocolate y leche al vapor; lo completamos con crema batida. La clásica bebida con café para satisfacer a los que les gusta un poco de dulce en su día.",
+      "precio_base": 65,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso Tradicional",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20005",
+      "nombre": "Mocha Blanco",
+      "descripcion": "Nuestro característico espresso se combina con salsa de chocolate blanco, leche al vapor y crema batida crean esta delicia suprema de chocolate blanco.",
+      "precio_base": 65,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso Tradicional",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20006",
+      "nombre": "Espresso Americano",
+      "descripcion": "Los shots de espresso cubiertos con agua caliente crean una ligera capa de crema que culmina en esta taza de maravillosa profundidad.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche ",
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso y Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20017",
+      "nombre": "Flat White",
+      "descripcion": "Los suaves shots de ristretto, de espresso, obtienen la cantidad perfecta de leche entera al vapor para crear un sabor no demasiado fuerte, no demasiado cremoso y perfecto.",
+      "precio_base": 60,
+      "tamanos": [
+        "Corto",
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso Tradicional",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20025",
+      "nombre": "Latte Macchiato",
+      "descripcion": "Leche perfectamente vaporizada, recibe los característicos shots de ristretto, de nuestro intenso espresso.",
+      "precio_base": 60,
+      "tamanos": [
+        "Corto",
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso Tradicional",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20045",
+      "nombre": "Matcha Green Tea Latte",
+      "descripcion": "Té Matcha endulzado y mezclado con leche vaporizada.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Caliente",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20046",
+      "nombre": "Helado Matcha Green Tea Latte",
+      "descripcion": "Té Matcha endulzado y mezclado con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20049",
+      "nombre": "Avellana Shaken Espresso Helado",
+      "descripcion": "Nuestro intenso Espresso Roast agitado con jarabe de avellana y mezclado con bebida de avena y hielos. ",
+      "precio_base": 62,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20157",
+      "nombre": "Brown Sugar Shaken Espresso Helado",
+      "descripcion": "Nuestro Espresso mezclado con jarabe Brown Sugar, cubierto de leche de avena, canela en polvo y hielos.",
+      "precio_base": 62,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20158",
+      "nombre": "Vainilla Toasted Shaken Espresso Helado ",
+      "descripcion": "Café Espresso mezclado con jarabe de vainilla tostada, cubierto con leche de avena, y hielos,",
+      "precio_base": 62,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "21001",
+      "nombre": "Espresso",
+      "descripcion": "Nuestro suave y característico Espresso Roast con un rico sabor y dulzor acaramelado, es el corazón de todo lo que hacemos.",
+      "precio_base": 41,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso y Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "21002",
+      "nombre": "Espresso Doppio (doble)",
+      "descripcion": "Una doble carga de nuestro suave y característico Espresso Roast con un rico sabor y dulzor acaramelado.",
+      "precio_base": 46,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso y Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "21003",
+      "nombre": "Espresso Macchiato",
+      "descripcion": "Nuestro suave y característico Espresso Roast con un ligero toque de leche.",
+      "precio_base": 41,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso y Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "21004",
+      "nombre": "Espresso Macchiato (doble)",
+      "descripcion": "Una doble carga de nuestro suave y característico Espresso Roast con un ligero toque de leche.",
+      "precio_base": 46,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso y Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "22006",
+      "nombre": "Café del día: Chiapas",
+      "descripcion": "Café recién hecho (cada hr.) ideal para cualquier momento del día con café de Chiapas.",
+      "precio_base": 30,
+      "tamanos": [
+        "Corto",
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso y Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "22022",
+      "nombre": "Café del día: Espresso Roast",
+      "descripcion": "Café recién hecho (cada hr.) ideal para cualquier momento del día con café Espresso Roast.",
+      "precio_base": 30,
+      "tamanos": [
+        "Corto",
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Espresso y Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23010",
+      "nombre": "Chai Latte",
+      "descripcion": "Característico e intenso concentrado de una combinación de tés y especias mezclado con la leche vaporizada.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Concentrado ",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23013",
+      "nombre": "Chocolate Blanco",
+      "descripcion": "Deliciosa combinación de salsa de chocolate blanco, con leche vaporizada y decorada con crema batida.",
+      "precio_base": 49,
+      "tamanos": [
+        "Corto",
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Alternativas al Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23015",
+      "nombre": "Chocolate Caliente",
+      "descripcion": "Leche vaporizada combinada con salsa de chocolate y vainilla, cubierto con crema batida y espiral de salsa de chocolate.",
+      "precio_base": 49,
+      "tamanos": [
+        "Corto",
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Calientes > Alternativas al Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23089",
+      "nombre": "Chai",
+      "descripcion": "Mezcla de Té negro especiado (Jengibre, Canela, Pimienta, Cardamomo, Anís Estrella, Clavo).",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Infusiones con Tés de Hoja Entera",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23097",
+      "nombre": "Helado Chai",
+      "descripcion": "Mezcla de Té negro especiado (Jengibre, Canela, Pimienta, Cardamomo, Anís Estrella, Clavo) con hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Base Té > Infusiones con Tés de Hoja Entera",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23099",
+      "nombre": "English Breakfast Latte",
+      "descripcion": "Una selecta mezcla de tés negros, de hoja entera, con leche al vapor y un toque de espuma aterciopelada.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Caliente",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23100",
+      "nombre": "Emperors Clouds & Mist Latte",
+      "descripcion": "Té suavemente ahumado y dulce, con leche al vapor.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Caliente",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23102",
+      "nombre": "Hibiscus Latte",
+      "descripcion": "Las flores de hibisco impregnan el té de una ligera acidez, que es balanceada sutilmente con leche al vapor.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Caliente",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23103",
+      "nombre": "Mint Latte",
+      "descripcion": "La base de hierbabuena de este té se complementa a la perfección con leche al vapor.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Caliente",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23104",
+      "nombre": "Youthberry Latte",
+      "descripcion": "Delicado té blanco, con notas tropicales combinadas con leche al vapor.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Caliente",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23106",
+      "nombre": "Manzanilla Latte",
+      "descripcion": "Una mezcla con sabores dulces y frutales con leche al vapor.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Caliente",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23107",
+      "nombre": "Helado English Breakfast Latte",
+      "descripcion": "Una selecta mezcla de tés negros, de hoja entera, con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23108",
+      "nombre": "Helado Emperors Clouds & Mist Latte",
+      "descripcion": "Té suavemente ahumado y dulce, con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23110",
+      "nombre": "Helado Hibiscus Latte",
+      "descripcion": "Las flores de hibisco impregnan el té de una ligera acidez, que es balanceada sutilmente con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23111",
+      "nombre": "Helado Mint Latte",
+      "descripcion": "La base de hierbabuena de este té se complementa a la perfección con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23112",
+      "nombre": "Helado Youthberry Latte",
+      "descripcion": "Delicado Té blanco, con notas tropicales combinadas con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23114",
+      "nombre": "Helado Manzanilla Latte",
+      "descripcion": "Una mezcla con sabores dulces y frutales con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Té Latte Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25001",
+      "nombre": "Helado Latte",
+      "descripcion": "Café espresso mezclado con leche y hielos.",
+      "precio_base": 55,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25002",
+      "nombre": "Helado Caramel Macchiato",
+      "descripcion": "Delicioso toque de vainilla mezclado con leche con hielos, coronado con nuestro shot de espresso y decorado con una rejilla de caramelo.",
+      "precio_base": 65,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25003",
+      "nombre": "Helado Mocha",
+      "descripcion": "Café espresso mezclado con Mocha y leche con hielos, decorado con crema batida.",
+      "precio_base": 65,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25004",
+      "nombre": "Helado Mocha Blanco",
+      "descripcion": "Café espresso mezclado con Mocha Blanco y leche con hielos, decorado con crema batida.",
+      "precio_base": 65,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25005",
+      "nombre": "Helado Espresso Americano",
+      "descripcion": "Café espresso con agua y hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25006",
+      "nombre": "Helado Chai Latte",
+      "descripcion": "Deliciosa mezcla de té negro con canela y clavo entre otras especias cálidas con leche fría; logrando el equilibrio perfecto entre dulce y especiado.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Infusiones con Tés de Hoja Entera",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28002",
+      "nombre": "Mocha Frappuccino®",
+      "descripcion": "La salsa de chocolate, con la intensidad del café Frappuccino®, leche y hielo se unen para obtener un sabor a mocha que te dejará con ganas de más.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28004",
+      "nombre": "Espresso Frappuccino®",
+      "descripcion": "Combinación de leche y hielo con shots de espresso, para darle intensidad sofisticada a tu Frappuccino®.",
+      "precio_base": 65,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28005",
+      "nombre": "Mocha Blanco Frappuccino®",
+      "descripcion": "Una mezcla de chocolate Blanco con café, hielo y leche, podría ser lo mejor que te pudiera pasar en todo el día.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28036",
+      "nombre": "Chai Cream Frappuccino®",
+      "descripcion": "Nuestro concentrado de chai (mezcla de tés y especias) se combina con leche y hielos, para tener una experiencia de otro nivel.",
+      "precio_base": 75,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "47001",
+      "nombre": "Espresso Roast",
+      "descripcion": "Mezcla de granos multiregional. Cuerpo Completo, Acidez Media y con notas a caramelo: Selecciona tu tipo de molido: Sin Moler, Fino (Espresso), Medio (Filtros de Papel) y Grueso (Prensas de Café).",
+      "precio_base": 189,
+      "tamanos": [
+        "-"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de molido"
+      ],
+      "categoria": "Retail > Café en Grano > Tostado Intenso",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "51024",
+      "nombre": "Té Chai",
+      "descripcion": "Té negro Chai.",
+      "precio_base": 174,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Té en Caja > Té en Caja",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "bebidas_frias": [
+    {
+      "id": "10244",
+      "nombre": "Strawberry Acai Refresher",
+      "descripcion": "Nuestro exclusivo extracto de café verde mezclado con un refrescante concentrado de frutas (fresa y acaí), con inclusiones de fresa y hielo.",
+      "precio_base": 61,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10284",
+      "nombre": "Mango Dragonfruit Refresher",
+      "descripcion": "Nuestro exclusivo extracto de café verde mezclado con un refrescante concentrado de frutas (mango y pitahaya), infusiones de pitahaya y hielo.",
+      "precio_base": 61,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10306",
+      "nombre": "Strawberry Acaí Refresher Lemonade",
+      "descripcion": "Nuestro exclusivo extracto de café verde mezclado con un refrescante concentrado de frutas (fresa y acaí), con inclusiones de fresa, limonada y hielo.",
+      "precio_base": 70,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10307",
+      "nombre": "Pink Drink",
+      "descripcion": "Nuestro clásico Strawberry Acaí con un toque de leche de coco.",
+      "precio_base": 70,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10308",
+      "nombre": "Mango Dragonfruit Refreshers Lemonade",
+      "descripcion": "Nuestro exclusivo extracto de café verde mezclado con un refrescante concentrado de frutas (mango y pitahaya), infusiones de pitahaya, limonada y hielo.",
+      "precio_base": 70,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10309",
+      "nombre": "Dragon Drink",
+      "descripcion": "Nuestro clásico Mango – Dragonfruit (mango – pitaya) con un toque de leche de coco.",
+      "precio_base": 70,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20047",
+      "nombre": "Matcha Green Tea Cream Frappuccino®",
+      "descripcion": "Frappuccino base leche, mezclado con Té Matcha, un toque dulce y molido con hielo.",
+      "precio_base": 75,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20061",
+      "nombre": "Cookies & Cream Frappuccino®",
+      "descripcion": "Salsa de Mocha Blanco y Chips mezclados con nuestro Café Frappuccino®, leche y hielo, coronado con crema batida y galleta de chocolate.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20068",
+      "nombre": "Cold Brew",
+      "descripcion": "Café preparado artesanalmente e infusionado durante 20 hrs. para extraer sabores excepcionales.",
+      "precio_base": 59,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Cold Brew > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20069",
+      "nombre": "Vainilla Sweet Cream Cold Brew",
+      "descripcion": "Bebida refrescante y re-energizante, preparada artesanalmente con un toque de vainilla.",
+      "precio_base": 62,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Cold Brew > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "22010",
+      "nombre": "Helado Matcha Green Tea Lemonade",
+      "descripcion": "Nuestro tradicional té verde Teavana® mezclado con limonada, hacen de esta combinación una bebida refrescante.",
+      "precio_base": 70,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "22011",
+      "nombre": "Strawberry Acai Frozen Refreshers",
+      "descripcion": "Una refrescante mezcla de jugos de fruta con sabores intensos (fresa y acai), extracto de café verde y trozos de frutas liofilizadas mezclados con limonada y hielo.",
+      "precio_base": 72,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "22077",
+      "nombre": "Helado Café del día: Chiapas",
+      "descripcion": "Café Starbucks Chiapas recién hecho (fresco cada hora) sobre hielos.",
+      "precio_base": 30,
+      "tamanos": [
+        "Corto",
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23016",
+      "nombre": "Helado Chocolate Blanco",
+      "descripcion": "Deliciosa combinación de salsa de chocolate blanco, con leche, hielos y decorada con crema batida.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23017",
+      "nombre": "Chocolate Blanco Frappuccino®",
+      "descripcion": "Leche combinada con salsa de chocolate y vainilla, cubierto con crema batida y espiral de salsa de chocolate.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23019",
+      "nombre": "Hibiscus Shaken Lemon Tea",
+      "descripcion": "Helada y deliciosa bebida a base de infusión de hibisco con limonada y ligeramente endulzado.",
+      "precio_base": 61,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Shakens",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23077",
+      "nombre": "Shaken Green Tea",
+      "descripcion": "Helada y deliciosa bebida a base de Té verde con limonada y ligeramente endulzado.",
+      "precio_base": 61,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Shakens",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23078",
+      "nombre": "Shaken Black Tea",
+      "descripcion": "Helada y deliciosa bebida a base de Té negro con limonada y ligeramente endulzado.",
+      "precio_base": 61,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Shakens",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23115",
+      "nombre": "Helado Chocolate Mexicano",
+      "descripcion": "Mezcla de chocolate, frutos secos y un toque de especias con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25009",
+      "nombre": "Helado Chocolate",
+      "descripcion": "Deliciosa combinación de salsa de Mocha y vainilla con leche y hielos.",
+      "precio_base": 56,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Frías > Starbucks Con Hielo",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25030",
+      "nombre": "Mango Dragon Fruit Frozen Refreshers",
+      "descripcion": "Una refrescante mezcla de jugos de fruta con sabores intensos (pitahaya), extracto de café verde y trozos de frutas liofilizadas mezclados con limonada y hielo.",
+      "precio_base": 72,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Frías > Refreshers",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28001",
+      "nombre": "Café Frappuccino®",
+      "descripcion": "Mezclamos el café con leche y hielo para crear una de nuestras bebidas más originales de Frappuccino®.",
+      "precio_base": 61,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28003",
+      "nombre": "Caramel Frappuccino®",
+      "descripcion": "El jarabe de caramelo se encuentra con el café, la leche y el hielo para una cita en la licuadora, mientras que la crema batida y la salsa de caramelo con mantequilla cubren de amor por encima. ",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28011",
+      "nombre": "Fresa Cream Frappuccino®",
+      "descripcion": "Rica y cremosa mezcla de fresa, cubierta con crema batida.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28012",
+      "nombre": "Chocolate Cream Frappuccino®",
+      "descripcion": "Rica y cremosa mezcla de chocolate, cubierta con crema batida.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28013",
+      "nombre": "Vainilla Cream Frappuccino®",
+      "descripcion": "Rica y cremosa mezcla de vainilla, cubierta con crema batida.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28020",
+      "nombre": "Chip Frappuccino®",
+      "descripcion": "Mezclamos salsa de chocolate y chips de chocolate con café, hielo y leche, para crear el característico Frappuccino® de todos los tiempos.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28031",
+      "nombre": "Cajeta Frappuccino®",
+      "descripcion": "El sabor acaramelado de la cajeta se une con café, hielo y leche, que se volverá tu favorito.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Café",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28033",
+      "nombre": "Cajeta Cream Frappuccino®",
+      "descripcion": "El sabor acaramelado de la cajeta cream se une con hielo y leche.",
+      "precio_base": 75,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28056",
+      "nombre": "Berry Yogurt Frappuccino®",
+      "descripcion": "Combinación de yogurt natural con salsa de moras y mezclados con hielo.",
+      "precio_base": 75,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Yogurt",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28057",
+      "nombre": "Piñacoco Yogurt Frappuccino®",
+      "descripcion": "Fusionamos el yogurt natural con salsa de piña-coco y hielos, ideal para cualquier momento del día.",
+      "precio_base": 75,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Yogurt",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "28064",
+      "nombre": "Chocolate Mexicano Frappuccino®",
+      "descripcion": "Rica y cremosa mezcla de leche con nuestra base de chocolate mexicano y molido con hielo.",
+      "precio_base": 71,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Bebidas > Frappuccinos® > Frappuccino Crema",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "productos_temporada": [
+    {
+      "id": "20024",
+      "nombre": "Cajeta Latte",
+      "descripcion": "¡Un clásico! Nuestro delicioso shot de Espresso mezclado con salsa de cajeta y leche vaporizada.",
+      "precio_base": 60,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Nuevos por Temporada > Favoritos de otoño  > Bebidas",
+      "combo": false,
+      "temporada": true,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "25032",
+      "nombre": "Helado Cajeta Latte ",
+      "descripcion": "Nuestro delicioso shot de Espresso mezclado con salsa de cajeta, leche fría y hielos. Decorado con crema batida y un espiral de caramelo.",
+      "precio_base": 60,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de grano de café",
+        "Tipo de leche ",
+        "Crema batida"
+      ],
+      "categoria": "Nuevos por Temporada > Favoritos de otoño  > Bebidas",
+      "combo": false,
+      "temporada": true,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "productos_en_promocion": [],
+  "alimentos_salados": [
+    {
+      "id": "10007",
+      "nombre": "Breakfast Muffin",
+      "descripcion": "Tradicional english muffin con una Frittata de huevo, jamón de pavo y queso gouda, aderezado con nuestro aderezo de chipotle. ",
+      "precio_base": 51,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Salados > Desayunos",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10009",
+      "nombre": "Baguette Clásica",
+      "descripcion": "Crujiente baguette rellena con pechuga de pavo y queso gouda con un cremoso aderezo de chipotle, ensamblada al momento en la que realizas tu orden.",
+      "precio_base": 86,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Salados > Paninis",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10010",
+      "nombre": "Baguette Española",
+      "descripcion": "Deliciosa baguette de Chorizo con queso gouda y aderezo cremoso de chipotle, ensamblada al momento en la que realizas tu orden.",
+      "precio_base": 86,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Salados > Paninis",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10017",
+      "nombre": "Croissant Español",
+      "descripcion": "Suave croissant de mantequilla horneado en tienda y ensamblado con huevo, chorizo y queso gouda.",
+      "precio_base": 77,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Recién Horneados > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10022",
+      "nombre": "Sándwich pechuga guacamole",
+      "descripcion": "Hogaza rustica alta en fibra y proteína, además baja en carbohidratos, rellena de pechuga de pavo, queso gouda y acompañada de un blíster de guacamole.",
+      "precio_base": 99,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Salados > Sándwiches",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10023",
+      "nombre": "Baguette Notburger con guacamole",
+      "descripcion": "Baguette rustica natural, crujiente por fuera y suave por dentro, rellena de NotBurger, aderezada con mayonesa vegana y complementada con Guacamole.",
+      "precio_base": 99,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Salados > Paninis",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10024",
+      "nombre": "Baguette Notchicken con guacamole",
+      "descripcion": "Baguette rustica natural, crujiente por fuera y suave por dentro, rellena de NotChicken, aderezada con mayonesa vegana y complementada con Guacamole.",
+      "precio_base": 99,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Salados > Paninis",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10135",
+      "nombre": "Grilled Cheese Sándwich",
+      "descripcion": "Pan de caja tipo brioche, queso mozarella, queso manchego y queso gouda, cubierto con una corteza de queso gratinado.",
+      "precio_base": 74,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Salados > Sándwiches",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10226",
+      "nombre": "Guacamole",
+      "descripcion": "Guacamole",
+      "precio_base": 21,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Adicionales > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10234",
+      "nombre": "Croissant con Pechuga y Queso",
+      "descripcion": "Croissant de mantequilla relleno de jamón de pechuga de pavo y queso manchego, excelente combinación de sabores.",
+      "precio_base": 77,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Recién Horneados > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10235",
+      "nombre": "Croissant de Mantequilla",
+      "descripcion": "Ligero y crujiente con notas marcadas a mantequilla, cereales y sal.",
+      "precio_base": 45,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Recién Horneados > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10264",
+      "nombre": "Bagel de Pechuga y Queso",
+      "descripcion": "Tradicional receta americana de consistencia única con jamón de pechuga de pavo y queso manchego.",
+      "precio_base": 73,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Salados > Sándwiches",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10615",
+      "nombre": "Sándwich Pavo y Panela",
+      "descripcion": "Sándwich de pan multigrano, jamón de pechuga de pavo, queso panela, espinacas y aderezo de yogurt.",
+      "precio_base": 83,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Salados > Sándwiches",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10616",
+      "nombre": "Panini de 3 Quesos",
+      "descripcion": "Sándwich elaborado con pan tipo ciabatta, queso tipo gouda, queso tipo mozarella, queso de cabra con cenizas y tomate deshidratado.",
+      "precio_base": 83,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food"
+      ],
+      "categoria": "Alimentos > Salados > Paninis",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10621",
+      "nombre": "Piadini de Claras",
+      "descripcion": "Pan tipo campesino de cereales con una fritatta de claras de huevo, queso cheddar blanco y espinacas salteadas con queso ricotta.",
+      "precio_base": 74,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Salados > Desayunos",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "11001",
+      "nombre": "Ensalada Cesar ",
+      "descripcion": "Mezcla de hojas verdes, acompañadas con pollo, jitomate cherry, pasta mini fusilli, queso parmesano y aderezo César.",
+      "precio_base": 115,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Frescos > Frescos",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12012",
+      "nombre": "Bagel con Guacamole",
+      "descripcion": "Bagel tradicional acompañado de queso crema y guacamole.",
+      "precio_base": 50,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Salados > Sándwiches",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12501",
+      "nombre": "Queso Crema",
+      "descripcion": "Queso Crema",
+      "precio_base": 15,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Adicionales > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12521",
+      "nombre": "Chipotle",
+      "descripcion": "Blíster de salsa chipotle y piloncillo de 17 gr. ",
+      "precio_base": 15,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Adicionales > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13011",
+      "nombre": "Pan de Queso",
+      "descripcion": "Delicioso pan de queso.",
+      "precio_base": 19,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Recién Horneados > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13012",
+      "nombre": "Pan de Queso para Compartir",
+      "descripcion": "Compra 3 Panes de Queso y te obsequiamos uno más para compartir.",
+      "precio_base": 58,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Para Compartir > Salados",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "15021",
+      "nombre": "Envuelto Poblano",
+      "descripcion": "Pan relleno de rajas poblanas tatemadas con elote del huerto, queso crema y pollo, cubierta de queso parmesano.",
+      "precio_base": 74,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Salados > Sándwiches",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "alimentos_dulces": [
+    {
+      "id": "10163",
+      "nombre": "Media docena de donas",
+      "descripcion": "Disfruta de 6 donas de doble chocolate por un precio especial.",
+      "precio_base": 190,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Para Compartir > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10164",
+      "nombre": "Panqué de Limón (Completo)",
+      "descripcion": "7 rebanadas de delicioso panqué de limón de textura suave y húmeda, decorado a mano con un delicioso y delicado glaseado de limón.",
+      "precio_base": 266,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Para Compartir > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10204",
+      "nombre": "Mini Brownie",
+      "descripcion": "Brownie de chocolate sin gluten y sin azúcar añadida.",
+      "precio_base": 40,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10233",
+      "nombre": "Pan de Chocolate",
+      "descripcion": "Tradicional pan francés relleno con chocolate semi-amargo de origen belga.",
+      "precio_base": 49,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Recién Horneados > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10271",
+      "nombre": "Cronut Chocolate",
+      "descripcion": "Dona hecha de masa hojaldrada con chocolate semi-amargo.",
+      "precio_base": 48,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Donas > Donas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10272",
+      "nombre": "Mini Cronuts",
+      "descripcion": "Donas hechas de masa hojaldre. Chocolate blanco y semi-amargo o bañada en azúcar.",
+      "precio_base": 32,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Donas > Donas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10273",
+      "nombre": "Cheesecake Roulet",
+      "descripcion": "Masa hojaldrada rellena de queso crema y mermelada de frambuesa.",
+      "precio_base": 48,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Recién Horneados > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10396",
+      "nombre": "Strudel de Manzana",
+      "descripcion": "Tradicional rejilla hojaldrada rellena de compota de manzana, con notas a mantequilla y textura laminada.",
+      "precio_base": 48,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Recién Horneados > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12006",
+      "nombre": "Media docena de Cronuts",
+      "descripcion": "Disfruta de 6 donas de masa hojaldrada de chocolate por un precio especial.",
+      "precio_base": 212,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Para Compartir > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12007",
+      "nombre": "Docena de minicronuts",
+      "descripcion": "12 mini donas de masa hojaldrada de sabores mixtos (chocolate, chocolate blanco o azúcar) a un precio especial.",
+      "precio_base": 292,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Para Compartir > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12027",
+      "nombre": "Crema de Avellana",
+      "descripcion": "Crema de Avellana",
+      "precio_base": 15,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Adicionales > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12125",
+      "nombre": "Dona Doble Chocolate",
+      "descripcion": "Deliciosa dona tipo old fashion con miga y cobertura de chocolate obscuro y cristales de azúcar.",
+      "precio_base": 42,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Donas > Donas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12503",
+      "nombre": "Mermelada de Chabacano",
+      "descripcion": "Mermelada de Chabacano.",
+      "precio_base": 15,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Adicionales > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12504",
+      "nombre": "Mermelada de Fresa",
+      "descripcion": "Mermelada de Fresa.",
+      "precio_base": 15,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Adicionales > Dulces",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13238",
+      "nombre": "Chips Taro y Betabel",
+      "descripcion": "Combinación perfecta de Taro y Betabel ideal para el antojo a cualquier hora del día.",
+      "precio_base": 39,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13248",
+      "nombre": "Cookie Straw",
+      "descripcion": "Barquillo de galleta bicolor en forma de popote relleno sabor chocolate.",
+      "precio_base": 19,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13319",
+      "nombre": "Chips de Camote",
+      "descripcion": "Botana de camote con sal del Himalaya.",
+      "precio_base": 39,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14010",
+      "nombre": "Nueces y Frutos",
+      "descripcion": "Mezcla de nuez de la India, almendra, arándano, pasas y cacahuate.",
+      "precio_base": 45,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14011",
+      "nombre": "Wafers de Chocolate",
+      "descripcion": "Caja con 9 barquillos de galleta con relleno de chocolate.",
+      "precio_base": 43,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14012",
+      "nombre": "Brownie de chocolate con chispas",
+      "descripcion": "Brownie de chocolate con chispas",
+      "precio_base": 41,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14014",
+      "nombre": "Galleta dulce de leche ",
+      "descripcion": "Deliciosa galleta de mantequilla con dulce de leche. \\n",
+      "precio_base": 49,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14015",
+      "nombre": "Galleta de Avena con Arándanos",
+      "descripcion": "Crujiente y deliciosa galleta de avena con arándanos. ",
+      "precio_base": 49,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14020",
+      "nombre": "Madeleines",
+      "descripcion": "Tradicional pan francés con notas sabor a mantequilla (2 piezas).",
+      "precio_base": 49,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14021",
+      "nombre": "Waffle Tradicional",
+      "descripcion": "Tradicional Waffle Belga de textura suave con cristales de azúcar.",
+      "precio_base": 49,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14023",
+      "nombre": "Tejas de Almendra",
+      "descripcion": "3 galletas de mantequilla con almendras.",
+      "precio_base": 45,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14031",
+      "nombre": "Biscottis",
+      "descripcion": "Tradicionales biscuits. Mini galletas con almendras.",
+      "precio_base": 42,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14035",
+      "nombre": "Panqué de plátano con nuez",
+      "descripcion": "Delicioso y suave panqué de plátano con nuez ideal para aquellos que buscan una opción sin gluten y sin perder un gran sabor.",
+      "precio_base": 44,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "14081",
+      "nombre": "Galleta Decorada",
+      "descripcion": "Galleta decorada sabor vainilla o chocolate. (El modelo y sabor, está sujeto a disponibilidad en tienda).",
+      "precio_base": 45,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Dulcero",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "51590",
+      "nombre": "Muffin de Blueberry",
+      "descripcion": "Deliciosa combinación de blueberrys y yogurt natural, con textura suave y crocante en el topping de vainilla.",
+      "precio_base": 49,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "51591",
+      "nombre": "Muffin de ChocoChip",
+      "descripcion": "Muffin de miga suave con crocantes crumbles de cocoa y chunks de chocolate.",
+      "precio_base": 49,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "postres": [
+    {
+      "id": "10352",
+      "nombre": "Mini Tarta de Limón",
+      "descripcion": "Suave masa rellena de limón con bombón flameado.",
+      "precio_base": 19,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Pasteles > Pasteles",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10353",
+      "nombre": "Mini Tarta de Frambuesa",
+      "descripcion": "Suave masa rellena de limón con queso hornado y frambuesa.",
+      "precio_base": 19,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Pasteles > Pasteles",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10354",
+      "nombre": "Mini Tarta de Chocolate",
+      "descripcion": "Suave masa rellena de limón con chocolate, cajeta y nuez.",
+      "precio_base": 19,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Pasteles > Pasteles",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10397",
+      "nombre": "Celabration Cake",
+      "descripcion": "Miga suave sabor crema y vainilla, decorado con confetis de azúcar, cobertura de betún y moneda de sirena.",
+      "precio_base": 90,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Pasteles > Pasteles",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13010",
+      "nombre": "Tarta de Nuez",
+      "descripcion": "Crujiente tarta rellena de nuez trozada y leche condensada con un ligero toque de vainilla horneada lentamente para lograr una caramelización perfecta.",
+      "precio_base": 78,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13104",
+      "nombre": "Tarta de Moras con Chocolate Blanco",
+      "descripcion": "Selección de moras o blueberry con ganache de chocolate blanco de origen belga.",
+      "precio_base": 78,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Pasteles > Pasteles",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13105",
+      "nombre": "Cheesecake Brulee de Frambuesa",
+      "descripcion": "Cheesecake de frambuesa preparado artesanalmente.",
+      "precio_base": 78,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Pasteles > Pasteles",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "panaderia": [
+    {
+      "id": "12028",
+      "nombre": "Bagel con Crema de Avellana",
+      "descripcion": "Deliciosa crema de avellanas con cacao con una suave consistencia, perfecta para untar en nuestro bagel tradicional.",
+      "precio_base": 56,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12111",
+      "nombre": "Panqué de Linaza",
+      "descripcion": "Suave panqué con selección de cereales: avena, linaza y salvado de trigo con miel y arándanos.",
+      "precio_base": 48,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12401",
+      "nombre": "Bagel Tradicional",
+      "descripcion": "Pan tradicional denso con una cubierta exterior ligeramente crujiente acompañado por un cup de queso crema y con opción de mermelada de fresa o chabacano.",
+      "precio_base": 50,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13017",
+      "nombre": "Biscuit de arandanos con queso",
+      "descripcion": "Biscuit relleno con una crema de chocolate blanco y queso con arándanos. ",
+      "precio_base": 53,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13306",
+      "nombre": "Pan de Elote",
+      "descripcion": "Delicioso y doradito pan de elote libre de gluten, con una textura esponjosa y húmeda con notas marcadas a mantequilla y leche condensada.",
+      "precio_base": 50,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "13307",
+      "nombre": "Panqué Limón",
+      "descripcion": "Delicioso panqué de limón de textura suave y húmeda, decorado a mano con un delicioso y delicado glaseado de limón.",
+      "precio_base": 48,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Temperatura"
+      ],
+      "categoria": "Alimentos > Panadería > Panadería",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "combos": [
+    {
+      "id": "10008",
+      "nombre": "Croissants para Compartir",
+      "descripcion": "Media docena de croissant jamón y queso.",
+      "precio_base": 345,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Croissant´s 2",
+        "Croissant´s 2",
+        "Croissant´s 2",
+        "Croissant´s 2",
+        "Croissant´s 2",
+        "Croissant´s 2"
+      ],
+      "categoria": "Alimentos > Para Compartir > Salados",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10320",
+      "nombre": "Mini Cronuts para compartir",
+      "descripcion": "Compra 3 Mini Cronuts y te obsequiamos uno más para compartir.",
+      "precio_base": 96,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Mini Cronuts"
+      ],
+      "categoria": "Alimentos > Para Compartir > Dulces",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10339",
+      "nombre": "El complemento ideal para tu día",
+      "descripcion": "Disfruta de un Latte grande (400 mL) caliento o helado más un Croissant con Pechuga y Queso a un precio especial.",
+      "precio_base": 87,
+      "tamanos": [
+        "Grande (16oz - 437ml)"
+      ],
+      "opciones_obligatorias": [
+        "Croissant´s",
+        "Latte Cal/Helado"
+      ],
+      "categoria": "Alimentos > Salados > Desayunos",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10360",
+      "nombre": "La combinación perfecta todo el día",
+      "descripcion": "Disfruta de un Latte grande (400 mL) caliento o helado más un Sandwich Pavo Panela a un precio especial.",
+      "precio_base": 87,
+      "tamanos": [
+        "Grande (16oz - 437ml)"
+      ],
+      "opciones_obligatorias": [
+        "Panini Pavo Mult",
+        "Latte´s"
+      ],
+      "categoria": "Alimentos > Salados > Desayunos",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10380",
+      "nombre": "Un lunch conveniente",
+      "descripcion": "Elige entre una Baguette Clásica o una Baguette española y acompáñala con tu Refresher tamaño grande favorito.",
+      "precio_base": 167,
+      "tamanos": [
+        "Grande (16oz - 437ml)"
+      ],
+      "opciones_obligatorias": [
+        "Baguette´s",
+        "Refresher´s"
+      ],
+      "categoria": "Combinación Perfecta > Para consertirte > Para consertirte",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "10382",
+      "nombre": "Desayuno en casa",
+      "descripcion": "Elige una opción para desayunar: Envuelto Poblano, Grilled Cheese o Bagel de Jamón y Queso y acompañalo con tu bebida favorita grande de la barra de Espresso.",
+      "precio_base": 137,
+      "tamanos": [
+        "Grande (16oz - 437ml)"
+      ],
+      "opciones_obligatorias": [
+        "Desayuno Mundial",
+        "Bebidas Mundial"
+      ],
+      "categoria": "Combinación Perfecta > Para consertirte > Para consertirte",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12036",
+      "nombre": "Un boost para mantener el ritmo",
+      "descripcion": "Prueba nuestro nuevo sándwich de Pechuga y guacamole, un refrescante Cold Brew grande y unas Chips de Camote.",
+      "precio_base": 201,
+      "tamanos": [
+        "Grande (16oz - 437ml)"
+      ],
+      "opciones_obligatorias": [
+        "Sdw Pechuga Guac",
+        "Chips de Camote",
+        "Cold Brew"
+      ],
+      "categoria": "Combinación Perfecta > Para consertirte > Para consertirte",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "12037",
+      "nombre": "Opciones Funcionales",
+      "descripcion": "Elige entre nuestra Baguette Vegana de NOTCHICKEN o NOTBURGER, acompañado de un delicioso Refresher tamaño grande y una galleta de avena.",
+      "precio_base": 214,
+      "tamanos": [
+        "Grande (16oz - 437ml)"
+      ],
+      "opciones_obligatorias": [
+        "NotBrgr/Chk",
+        "Gallet AvenaAran",
+        "Refresher´s"
+      ],
+      "categoria": "Combinación Perfecta > Para consertirte > Para consertirte",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "20863",
+      "nombre": "Un momento especial ",
+      "descripcion": "Elige entre nuestros favoritos para iniciar el día, y disfruta de diferentes combinaciones a un precio especial.",
+      "precio_base": 180,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Lunch Box FOOD",
+        "Lunch Box Beb",
+        "Lunch Box Frutas"
+      ],
+      "categoria": "Alimentos > Salados > Desayunos",
+      "combo": true,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "otros": [
+    {
+      "id": "13317",
+      "nombre": "Pastel de Chocolate",
+      "descripcion": "Pastel de chocolate oscuro semi-amargo de origen belga y nuez.",
+      "precio_base": 78,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Alimentos > Pasteles > Pasteles",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26003",
+      "nombre": "Agua natural Evian",
+      "descripcion": "Agua natural Evian Nude 400ml.",
+      "precio_base": 46,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26036",
+      "nombre": "Aranchiatta",
+      "descripcion": "Bebida Carbonatada de Naranja (330 ml.).",
+      "precio_base": 47,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26046",
+      "nombre": "Agua de Coco",
+      "descripcion": "Agua de Coco Niau (350 ml.).",
+      "precio_base": 46,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26069",
+      "nombre": "Jugo de Naranja",
+      "descripcion": "Jugo de Naranja Cold Press, natural sin conservadores, sin azúcares añadidas.",
+      "precio_base": 63,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26070",
+      "nombre": "Jugo Frutos Rojos",
+      "descripcion": "Jugo de Frutos Rojos Cold Press, natural sin conservadores, sin azúcares añadidas.",
+      "precio_base": 63,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26071",
+      "nombre": "Jugo Tropical",
+      "descripcion": "Jugo Tropical Cold Press, natural sin conservadores, sin azúcares añadidas.",
+      "precio_base": 63,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26073",
+      "nombre": "CA Agua Natural ",
+      "descripcion": "Natural alcalina",
+      "precio_base": 45,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26074",
+      "nombre": "CA Agua Gasificada",
+      "descripcion": "Casa del Agua: Gasificada",
+      "precio_base": 45,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26078",
+      "nombre": "Te Very Blanco",
+      "descripcion": "Te blanco con manzanilla ",
+      "precio_base": 55,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "26079",
+      "nombre": "Te Very Negro",
+      "descripcion": "Te negro con frutos rojos. ",
+      "precio_base": 55,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Snacks & Embotellados > Bebidas Embotelladas",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "50254",
+      "nombre": "Vaso Reusable",
+      "descripcion": "Vaso Reusable blanco con Logotipo.",
+      "precio_base": 29,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Merch > Vaso Reusable",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "51293",
+      "nombre": "Bearista® San Valentín ",
+      "descripcion": "¡Comparte el amor del nuevo Bearista® con tu persona favorita! Compra tu bebida Venti favorita y llévate el nuevo llavero a un precio especial.",
+      "precio_base": 179,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Merch > Bearista® San Valentín ",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "alimentos_saludables": [
+    {
+      "id": "10369",
+      "nombre": "Avena con Chía",
+      "descripcion": "Avena con Chía, una opción muy saludable con un delicioso sabor lista para comer.",
+      "precio_base": 46,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [
+        "Adicionales Food",
+        "Splash de leche "
+      ],
+      "categoria": "Retail > Frescos > Frescos",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "11008",
+      "nombre": "Fruta Mixta",
+      "descripcion": "Combinación de porciones de fruta de temporada.",
+      "precio_base": 50,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Frescos > Frescos",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "11009",
+      "nombre": "Toronja Natural",
+      "descripcion": "Toronja natural en gajos.",
+      "precio_base": 50,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Frescos > Frescos",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "11027",
+      "nombre": "Yogurt Natural",
+      "descripcion": "Yogurt natural con fresas y mora azul.",
+      "precio_base": 54,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Frescos > Frescos",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "cafe_en_grano": [
+    {
+      "id": "22506",
+      "nombre": "Pike Place",
+      "descripcion": "Este grano de café, dona una planta resistente a la roya a comunidades de Oaxaca, Chiapas y Puebla. Mezcla de granos. Cuerpo: Medio, Acidez Media y con notas a Canela, Nueces y leche: Selecciona tu tipo de molido: Sin Moler, Fino (Espresso), Medio (Filtros de Papel) y Grueso (Prensas de Café).",
+      "precio_base": 219,
+      "tamanos": [
+        "-"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de molido"
+      ],
+      "categoria": "Retail > Café en Grano > Tostado Medio",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "22514",
+      "nombre": "Chiapas",
+      "descripcion": "Este grano de café, dona una planta resistente a la roya a comunidades de Oaxaca, Chiapas y Puebla. Café de Origen. Cuerpo Ligero, Acidez Alta y con notas a cacahuate y limón: Selecciona tu tipo de molido: Sin Moler, Fino (Espresso), Medio (Filtros de Papel) y Grueso (Prensas de Café).",
+      "precio_base": 189,
+      "tamanos": [
+        "-"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de molido"
+      ],
+      "categoria": "Retail > Café en Grano > Tostado Medio",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "43003",
+      "nombre": "Colombia",
+      "descripcion": "Este grano de café, dona una planta resistente a la roya a comunidades de Oaxaca, Chiapas y Puebla. Café de Origen. Cuerpo Ligero, Acidez Alta y con notas a nueces: Selecciona tu tipo de molido: Sin Moler, Fino (Espresso), Medio (Filtros de Papel) y Grueso (Prensas de Café).",
+      "precio_base": 189,
+      "tamanos": [
+        "-"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de molido"
+      ],
+      "categoria": "Retail > Café en Grano > Tostado Medio",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "44011",
+      "nombre": "Kenya",
+      "descripcion": "Este grano de café, dona una planta resistente a la roya a comunidades de Oaxaca, Chiapas y Puebla. Café de Origen. Cuerpo Completo, Acidez Alta y con notas a toronja y grosella: Selecciona tu tipo de molido: Sin Moler, Fino (Espresso), Medio (Filtros de Papel) y Grueso (Prensas de Café).",
+      "precio_base": 219,
+      "tamanos": [
+        "-"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de molido"
+      ],
+      "categoria": "Retail > Café en Grano > Tostado Medio",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "45001",
+      "nombre": "Verona",
+      "descripcion": "Este grano de café, dona una planta resistente a la roya a comunidades de Oaxaca, Chiapas y Puebla. Mezcla de granos multiregional. Cuerpo Completo, Acidez Baja y con notas a cacao oscuro: Selecciona tu tipo de molido: Sin Moler, Fino (Espresso), Medio (Filtros de Papel) y Grueso (Prensas de Café).",
+      "precio_base": 219,
+      "tamanos": [
+        "-"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de molido"
+      ],
+      "categoria": "Retail > Café en Grano > Tostado Intenso",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "46001",
+      "nombre": "Sumatra",
+      "descripcion": "Este grano de café, dona una planta resistente a la roya a comunidades de Oaxaca, Chiapas y Puebla.Café de Origen. Cuerpo Completo, Acidez Baja y con notas terrosas y herbales: Selecciona tu tipo de molido: Sin Moler, Fino (Espresso), Medio (Filtros de Papel) y Grueso (Prensas de Café).",
+      "precio_base": 254,
+      "tamanos": [
+        "-"
+      ],
+      "opciones_obligatorias": [
+        "Tipo de molido"
+      ],
+      "categoria": "Retail > Café en Grano > Tostado Intenso",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "te": [
+    {
+      "id": "23083",
+      "nombre": "English Breakfast",
+      "descripcion": "Un clásico elegante Té negro, complejo y de larga tradición con astringencia suave, equilibrada y notas generosas de miel. ",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Starbucks Tea",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23084",
+      "nombre": "Emperors Clouds & Mist",
+      "descripcion": "Té verde, exclusivamente recolectado durante el mes de abril a más de mil metros sobre el nivel del mar, este té tiene un rico cuerpo y un sabor dulce natural.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Starbucks Tea",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23086",
+      "nombre": "Hibiscus",
+      "descripcion": "Deliciosa infusión con un brillante sabor de jugosos mangos y papayas combinados con hierba limón cítrica para lograr una mezcla natural sin cafeína. Las flores de hibisco impregnan el té de una ligera acidez y un extraordinario color fiusha profundo.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Starbucks Tea",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23087",
+      "nombre": "Mint",
+      "descripcion": "La base de hierbabuena de este té se complementa con notas de menta fresca y toques de verbena dulce y especiada. ",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Starbucks Tea",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23088",
+      "nombre": "Youthberry",
+      "descripcion": "Té blanco, inspirado en las superfrutas, el fruto acaí se mezcla con los sabores tropicales de la piña y el mango y con té blanco de alta calidad, equilibrado con rosa mosqueta y manzana verde ácida. ",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Starbucks Tea",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23090",
+      "nombre": "Manzanilla",
+      "descripcion": "Una mezcla de flores de manzanilla, flores de hibisco, hojas de hierbabuena, hierba limón, pétalos de rosa, hojas de zarzamora, hojas de menta, raíz de zarzaparrilla, melisa, lavanda y caléndula.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [
+        "Splash de leche "
+      ],
+      "categoria": "Bebidas > Bebidas Base Té > Starbucks Tea",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23091",
+      "nombre": "Helado English Breakfast",
+      "descripcion": "Un clásico elegante Té negro con astringencia suave y hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Base Té > Té Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23092",
+      "nombre": "Helado Emperors Clouds & Mist",
+      "descripcion": "Té verde con un rico cuerpo y un sabor dulce natural, con hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Base Té > Té Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23094",
+      "nombre": "Helado Hibiscus",
+      "descripcion": "Deliciosa infusión con un brillante sabor de jugosos mangos y papayas combinados con hierba limón cítrica y hojas de hibisco con hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Base Té > Té Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23095",
+      "nombre": "Helado Mint",
+      "descripcion": "La infusión de hierbabuena se complementa con notas de menta fresca y toques de verbena dulce y especiada, con hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Base Té > Té Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23096",
+      "nombre": "Helado Youthberry",
+      "descripcion": "Té blanco, con sabores tropicales y hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Base Té > Té Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "23098",
+      "nombre": "Helado Manzanilla",
+      "descripcion": "Una mezcla de flores de manzanilla, flores de hibisco, hojas de hierbabuena, hierba limón, pétalos de rosa, hojas de zarzamora, hojas de menta, raíz de zarzaparrilla, melisa, lavanda y caléndula, con hielos.",
+      "precio_base": 44,
+      "tamanos": [
+        "Alto (12oz - 350ml)",
+        "Grande (16oz - 437ml)",
+        "Venti (20oz - 606ml)"
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Bebidas > Bebidas Base Té > Té Helado",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "51021",
+      "nombre": "Té Hibiscus",
+      "descripcion": "Infusión herbal Hibiscus.",
+      "precio_base": 174,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Té en Caja > Té en Caja",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "51022",
+      "nombre": "Té Emperors C&M",
+      "descripcion": "Té verde Emperor''''s Clouds and Mist.",
+      "precio_base": 174,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Té en Caja > Té en Caja",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    },
+    {
+      "id": "51023",
+      "nombre": "Té Youthberry",
+      "descripcion": "Té blanco Youthberry.",
+      "precio_base": 229,
+      "tamanos": [
+        ""
+      ],
+      "opciones_obligatorias": [],
+      "categoria": "Retail > Té en Caja > Té en Caja",
+      "combo": false,
+      "temporada": false,
+      "promocion": false,
+      "disponible": true
+    }
+  ],
+  "extras": {
+    "leches": [
+      "Entera",
+      "Deslactosada",
+      "Descremada",
+      "Light",
+      "Soya",
+      "Almendra",
+      "Avena",
+      "Coco"
+    ],
+    "endulzantes": [
+      "Azúcar normal",
+      "Azúcar morena",
+      "Splenda",
+      "Stevia",
+      "Sin azúcar"
+    ],
+    "jarabes": [
+      "Vainilla",
+      "Caramelo",
+      "Avellana",
+      "Canela",
+      "Chocolate blanco",
+      "Toffee nut"
+    ],
+    "salsas": [
+      "Caramelo",
+      "Mocha",
+      "Chocolate blanco",
+      "Fresa"
+    ],
+    "toppings": [
+      "Crema batida",
+      "Chispas de chocolate",
+      "Canela en polvo",
+      "Cacao"
+    ]
+  },
+  "metadata": {
+    "contextos": {
+      "manana": {
+        "sugerencias": [
+          "Latte de avena",
+          "Café Americano",
+          "Croissant de mantequilla",
+          "Sandwich de pavo"
+        ],
+        "mensaje": "Ideal para comenzar el día con energía"
+      },
+      "tarde": {
+        "sugerencias": [
+          "Frappuccino de vainilla",
+          "Iced Latte",
+          "Muffin de chocolate",
+          "Ensalada César"
+        ],
+        "mensaje": "Perfecto para refrescarte en la tarde"
+      },
+      "noche": {
+        "sugerencias": [
+          "Té Chai Latte",
+          "Chocolate caliente",
+          "Pan de plátano",
+          "Brownie"
+        ],
+        "mensaje": "Relájate con algo suave para cerrar el día"
+      },
+      "clima": {
+        "frio": [
+          "Mocha caliente",
+          "Latte de canela",
+          "Chocolate caliente"
+        ],
+        "calido": [
+          "Refresher de fresa acai",
+          "Cold Brew",
+          "Frappuccino de café"
+        ],
+        "lluvioso": [
+          "Cappuccino",
+          "Té Chai",
+          "Pan dulce"
+        ]
+      },
+      "perfil": {
+        "energia": [
+          "Espresso doble",
+          "Cold Brew",
+          "Americano"
+        ],
+        "ligero": [
+          "Refresher de mango dragon",
+          "Té verde",
+          "Ensalada"
+        ],
+        "dulce": [
+          "Frappuccino de caramelo",
+          "Muffin de chocolate"
+        ],
+        "sinCafeina": [
+          "Té de manzanilla",
+          "Chocolate caliente"
+        ]
+      }
+    }
+  },
+  "resumen": {
+    "total_disponibles": 195,
+    "bebidas_calientes": 49,
+    "bebidas_frias": 32,
+    "te": 15,
+    "productos_temporada": 2,
+    "productos_en_promocion": 0,
+    "alimentos_salados": 22,
+    "alimentos_saludables": 4,
+    "alimentos_dulces": 30,
+    "postres": 7,
+    "panaderia": 6,
+    "combos": 9,
+    "cafe_en_grano": 6,
+    "otros": 13
+  }
+}

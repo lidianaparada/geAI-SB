@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura Caffi-Starbucks </title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0a0a0a 0%, #000 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgb(241, 238, 238);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+        }
+        h1 {
+            text-align: center;
+            color: #00704A;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        svg {
+            width: 100%;
+            height: auto;
+        }
+        .box {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .box:hover {
+            filter: brightness(1.1);
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .legend-box {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid rgb(75, 73, 73);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1> Arquitectura Completa Gen-IA</h1>
+        <div class="subtitle">Asistente Virtual Starbucks - Agente IA Conversacional</div>
+        
+        <svg viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
+            <!-- Definiciones de gradientes y efectos -->
+            <defs>
+                <linearGradient id="clientGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#083b50;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#083b50;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="backendGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#e079e4;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#b5a2b6;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="nvidiaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#76B947;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#5A9033;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="openaiGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#000F;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#000;stop-opacity:1" />
+                </linearGradient>
+                <linearGradient id="moduleGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#FFE5CC;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#FFD9B3;stop-opacity:1" />
+                </linearGradient>
+                
+                <filter id="shadow">
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.3"/>
+                </filter>
+            </defs>
+            
+            <!-- Título superior -->
+            <text x="600" y="30" text-anchor="middle" font-size="24" font-weight="bold" fill="#333">
+                Powered by NVIDIA & OpenAI 
+            </text>
+            
+            <!-- CLIENTES -->
+            <g class="box" filter="url(#shadow)">
+                <rect x="50" y="60" width="220" height="140" rx="10" fill="url(#clientGrad)" stroke="#333" stroke-width="2"/>
+                <text x="160" y="90" text-anchor="middle" font-size="18" font-weight="bold" fill="white">🌐 Cliente Web</text>
+                <text x="160" y="115" text-anchor="middle" font-size="12" fill="white">HTML5 + JavaScript</text>
+                <text x="160" y="135" text-anchor="middle" font-size="11" fill="white">• Fetch API</text>
+                <text x="160" y="150" text-anchor="middle" font-size="11" fill="white">• Web Audio API</text>
+                <text x="160" y="165" text-anchor="middle" font-size="11" fill="white">• Speech Recognition</text>
+                <text x="160" y="185" text-anchor="middle" font-size="10" fill="white" opacity="0.8">index.html</text>
+            </g>
+            
+            <g class="box" filter="url(#shadow)">
+                <rect x="320" y="60" width="220" height="140" rx="10" fill="url(#clientGrad)" stroke="#333" stroke-width="2"/>
+                <text x="430" y="90" text-anchor="middle" font-size="18" font-weight="bold" fill="white">📱 Cliente Android</text>
+                <text x="430" y="115" text-anchor="middle" font-size="12" fill="white">Kotlin + Material</text>
+                <text x="430" y="135" text-anchor="middle" font-size="11" fill="white">• Retrofit</text>
+                <text x="430" y="150" text-anchor="middle" font-size="11" fill="white">• OkHttp</text>
+                <text x="430" y="165" text-anchor="middle" font-size="11" fill="white">• MediaPlayer</text>
+                <text x="430" y="185" text-anchor="middle" font-size="10" fill="white" opacity="0.8">App Nativa</text>
+            </g>
+            
+            <!-- Flechas de clientes a backend -->
+            <path d="M 160 210 L 160 280" stroke="#333" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            <path d="M 430 210 L 430 280" stroke="#333" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            
+            <text x="200" y="245" font-size="11" fill="#333" font-weight="bold">POST /chat</text>
+            <text x="450" y="245" font-size="11" fill="#333" font-weight="bold">POST /chat</text>
+            
+            <!-- BACKEND PRINCIPAL -->
+            <g class="box" filter="url(#shadow)">
+                <rect x="50" y="290" width="490" height="180" rx="10" fill="url(#backendGrad)" stroke="#333" stroke-width="3"/>
+                <text x="295" y="320" text-anchor="middle" font-size="20" font-weight="bold" fill="#333"> BACKEND - Node.js Express</text>
+                <text x="295" y="345" text-anchor="middle" font-size="14" fill="#333">server.js (Controlador Principal)</text>
+                
+                <!-- Endpoints -->
+                <rect x="70" y="360" width="140" height="90" rx="8" fill="white" stroke="#333" stroke-width="2" opacity="0.9"/>
+                <text x="140" y="380" text-anchor="middle" font-size="12" font-weight="bold" fill="#333"> Endpoints</text>
+                <text x="140" y="400" text-anchor="middle" font-size="11" fill="#333">POST /chat</text>
+                <text x="140" y="418" text-anchor="middle" font-size="11" fill="#333">POST /speak</text>
+                <text x="140" y="436" text-anchor="middle" font-size="11" fill="#333">GET /health</text>
+                
+                <!-- Datos -->
+                <rect x="230" y="360" width="140" height="90" rx="8" fill="white" stroke="#333" stroke-width="2" opacity="0.9"/>
+                <text x="300" y="380" text-anchor="middle" font-size="12" font-weight="bold" fill="#333"> Datos</text>
+                <text x="300" y="400" text-anchor="middle" font-size="10" fill="#333">menu.json</text>
+                <text x="300" y="418" text-anchor="middle" font-size="10" fill="#333">sessionContext</text>
+                <text x="300" y="436" text-anchor="middle" font-size="10" fill="#333">responseCache</text>
+                
+                <!-- Info -->
+                <rect x="390" y="360" width="130" height="90" rx="8" fill="white" stroke="#333" stroke-width="2" opacity="0.9"/>
+                <text x="455" y="380" text-anchor="middle" font-size="12" font-weight="bold" fill="#333"> Config</text>
+                <text x="455" y="400" text-anchor="middle" font-size="10" fill="#333">Port: 3000</text>
+                <text x="455" y="418" text-anchor="middle" font-size="10" fill="#333">CORS: ✓</text>
+                <text x="455" y="436" text-anchor="middle" font-size="10" fill="#333">Timeout: 10s</text>
+            </g>
+            
+            <!-- MÓDULOS -->
+            <g class="box" filter="url(#shadow)">
+                <rect x="50" y="500" width="490" height="120" rx="10" fill="url(#moduleGrad)" stroke="#333" stroke-width="2"/>
+                <text x="295" y="525" text-anchor="middle" font-size="16" font-weight="bold" fill="#333"> Módulos del Sistema</text>
+                
+                <text x="80" y="550" font-size="11" fill="#333">• menuUtils.js</text>
+                <text x="80" y="570" font-size="11" fill="#333">• sizeDetection.js</text>
+                <text x="80" y="590" font-size="11" fill="#333">• priceCalculator.js</text>
+                
+                <text x="270" y="550" font-size="11" fill="#333">• orderValidation.js</text>
+                <text x="270" y="570" font-size="11" fill="#333">• promptGenerator.js</text>
+                <text x="270" y="590" font-size="11" fill="#333">• recommendationEngine.js</text>
+            </g>
+            
+            <!-- Flechas a APIs -->
+            <path d="M 295 480 L 295 520" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+            <path d="M 295 630 L 295 670" stroke="#333" stroke-width="3" fill="none"/>
+            <path d="M 295 670 L 200 720" stroke="#333" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            <path d="M 295 670 L 390 720" stroke="#333" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+            
+            <text x="220" y="695" font-size="11" fill="#333" font-weight="bold">Prompt + Context</text>
+            <text x="380" y="695" font-size="11" fill="#333" font-weight="bold">Text para TTS</text>
+            
+            <!-- NVIDIA API -->
+            <g class="box" filter="url(#shadow)">
+                <rect x="50" y="730" width="240" height="130" rx="10" fill="url(#nvidiaGrad)" stroke="#333" stroke-width="2"/>
+                <text x="170" y="755" text-anchor="middle" font-size="18" font-weight="bold" fill="white"> NVIDIA NIM API</text>
+                <text x="170" y="780" text-anchor="middle" font-size="13" fill="white">Llama 3.3 70B Instruct</text>
+                <line x1="70" y1="790" x2="270" y2="790" stroke="white" stroke-width="1" opacity="0.5"/>
+                <text x="170" y="810" text-anchor="middle" font-size="11" fill="white">✓ Procesamiento NLP</text>
+                <text x="170" y="828" text-anchor="middle" font-size="11" fill="white">✓ Generación respuestas</text>
+                <text x="170" y="846" text-anchor="middle" font-size="11" fill="white">✓ Contexto conversacional</text>
+            </g>
+            
+            <!-- OpenAI API -->
+            <g class="box" filter="url(#shadow)">
+                <rect x="320" y="730" width="240" height="130" rx="10" fill="url(#openaiGrad)" stroke="#333" stroke-width="2"/>
+                <text x="440" y="755" text-anchor="middle" font-size="18" font-weight="bold" fill="white"> OpenAI TTS API</text>
+                <text x="440" y="780" text-anchor="middle" font-size="13" fill="white">Model: tts-1 (Voice: nova)</text>
+                <line x1="340" y1="790" x2="540" y2="790" stroke="white" stroke-width="1" opacity="0.5"/>
+                <text x="440" y="810" text-anchor="middle" font-size="11" fill="white">✓ Text-to-Speech</text>
+                <text x="440" y="828" text-anchor="middle" font-size="11" fill="white">✓ Audio MP3 natural</text>
+                <text x="440" y="846" text-anchor="middle" font-size="11" fill="white">✓ Voz femenina clara</text>
+            </g>
+            
+            <!-- Sección FLUJO -->
+            <g filter="url(#shadow)">
+                <rect x="620" y="60" width="530" height="800" rx="15" fill="#f8f9fa" stroke="#333" stroke-width="2"/>
+                <text x="885" y="95" text-anchor="middle" font-size="20" font-weight="bold" fill="#333">🔄 Flujo de Datos</text>
+                
+                <!-- Paso 1 -->
+                <rect x="650" y="120" width="470" height="60" rx="8" fill="#4FACFE" stroke="#333" stroke-width="2"/>
+                <text x="885" y="145" text-anchor="middle" font-size="14" font-weight="bold" fill="white">1️⃣ Usuario: "Quiero un latte"</text>
+                <text x="885" y="165" text-anchor="middle" font-size="12" fill="white">Cliente captura entrada (voz/texto)</text>
+                
+                <!-- Paso 2 -->
+                <rect x="650" y="200" width="470" height="60" rx="8" fill="#e079e4" stroke="#333" stroke-width="2"/>
+                <text x="885" y="225" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">2️⃣ Backend Procesa</text>
+                <text x="885" y="245" text-anchor="middle" font-size="11" fill="#333">• Detecta bebida: "Latte" • Actualiza orden</text>
+                
+                <!-- Paso 3 -->
+                <rect x="650" y="280" width="470" height="60" rx="8" fill="#76B947" stroke="#333" stroke-width="2"/>
+                <text x="885" y="305" text-anchor="middle" font-size="14" font-weight="bold" fill="white">3️⃣ NVIDIA LLM</text>
+                <text x="885" y="325" text-anchor="middle" font-size="11" fill="white">Genera: "¿Qué tamaño prefieres?"</text>
+                
+                <!-- Paso 4 -->
+                <rect x="650" y="360" width="470" height="60" rx="8" fill="#e079e4" stroke="#333" stroke-width="2"/>
+                <text x="885" y="385" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">4️⃣ Backend Personaliza</text>
+                <text x="885" y="405" text-anchor="middle" font-size="11" fill="#333">"¿Qué tamaño? Tenemos: Alto, Grande, Venti"</text>
+                
+                <!-- Paso 5 -->
+                <rect x="650" y="440" width="470" height="60" rx="8" fill="#10A37F" stroke="#333" stroke-width="2"/>
+                <text x="885" y="465" text-anchor="middle" font-size="14" font-weight="bold" fill="white">5️⃣ OpenAI TTS</text>
+                <text x="885" y="485" text-anchor="middle" font-size="11" fill="white">Convierte texto → Audio MP3</text>
+                
+                <!-- Paso 6 -->
+                <rect x="650" y="520" width="470" height="60" rx="8" fill="#4FACFE" stroke="#333" stroke-width="2"/>
+                <text x="885" y="545" text-anchor="middle" font-size="14" font-weight="bold" fill="white">6️⃣ Cliente Reproduce</text>
+                <text x="885" y="565" text-anchor="middle" font-size="11" fill="white">🔊 Usuario escucha respuesta en voz natural</text>
+                
+                <!-- Ciclo -->
+                <rect x="650" y="600" width="470" height="60" rx="8" fill="#e0e0e0" stroke="#333" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="885" y="625" text-anchor="middle" font-size="14" font-weight="bold" fill="#333">🔄 Ciclo Continúa...</text>
+                <text x="885" y="645" text-anchor="middle" font-size="11" fill="#333">Hasta completar pedido (7-9 pasos totales)</text>
+                
+                <!-- Resultado -->
+                <rect x="650" y="680" width="470" height="150" rx="8" fill="#073000" stroke="#333" stroke-width="2"/>
+                <text x="885" y="710" text-anchor="middle" font-size="16" font-weight="bold" fill="white">✅ Pedido Completado</text>
+                <line x1="670" y1="720" x2="1100" y2="720" stroke="white" stroke-width="1" opacity="0.5"/>
+                <text x="885" y="745" text-anchor="middle" font-size="12" fill="white"> Número de orden: SBX061234</text>
+                <text x="885" y="765" text-anchor="middle" font-size="12" fill="white"> Total: $105 pesos mexicanos</text>
+                <text x="885" y="785" text-anchor="middle" font-size="12" fill="white"> Estrellas ganadas: 10</text>
+                <text x="885" y="805" text-anchor="middle" font-size="12" fill="white"> Recoge en: Starbucks Condesa</text>
+            </g>
+            
+            <!-- Flecha marker -->
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                    <polygon points="0 0, 10 3, 0 6" fill="#333" />
+                </marker>
+            </defs>
+        </svg>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #083b50 0%, #083b50 100%);"></div>
+                <span>Clientes (Web/Android)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #e079e4 0%, #b5a2b6 100%);"></div>
+                <span>Backend (Node.js)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #76B947 0%, #5A9033 100%);"></div>
+                <span>NVIDIA API (LLM)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background: linear-gradient(135deg, #000 0%, #000 100%);"></div>
+                <span>OpenAI API (TTS)</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

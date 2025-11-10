@@ -1,0 +1,36 @@
+{
+  "timestamp": "2025-10-29T06:10:57.222Z",
+  "totals": {
+    "original": 113,
+    "processed": 102,
+    "missing": 7,
+    "percentage": "90.3%"
+  },
+  "by_category": {
+    "bebidas_calientes": 29,
+    "bebidas_frias": 48,
+    "te": 4,
+    "alimentos_salados": 7,
+    "postres": 11,
+    "cafe_grano": 3
+  },
+  "missing_samples": {
+    "bebidas": [
+      "VT Iced Decaf Brown Sugar Oat Shaken Espresso",
+      "GR Iced Decaf Brown Sugar Oat Shaken Espresso",
+      "TL Iced Decaf Brown Sugar Oat Shaken Espresso",
+      "VT Iced Signature Brown Sugar Oat Shaken Espresso",
+      "GR Iced Signature Brown Sugar Oat Shaken Espresso"
+    ],
+    "alimentos": []
+  },
+  "chai_verification": {
+    "original_count": 3,
+    "processed_count": 3,
+    "products": [
+      "VT Chai Tea Latte",
+      "TL Chai Tea Latte",
+      "GR Chai Tea Latte"
+    ]
+  }
+}

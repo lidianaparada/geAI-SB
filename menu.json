@@ -1,0 +1,205 @@
+{
+    "bebidas_calientes": [
+      {
+        "nombre": "Café Americano",
+        "tamaños": ["Short", "Tall", "Grande", "Venti"],
+        "precio_base": 45,
+        "descripcion": "Espresso con agua caliente"
+      },
+      {
+        "nombre": "Latte",
+        "tamaños": ["Short", "Tall", "Grande", "Venti"],
+        "precio_base": 55,
+        "descripcion": "Espresso con leche vaporizada"
+      },
+      {
+        "nombre": "Cappuccino",
+        "tamaños": ["Short", "Tall", "Grande", "Venti"],
+        "precio_base": 55,
+        "descripcion": "Espresso con leche y espuma densa"
+      },
+      {
+        "nombre": "Caramel Macchiato",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 65,
+        "descripcion": "Espresso con vainilla, leche y caramelo"
+      },
+      {
+        "nombre": "Mocha",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 65,
+        "descripcion": "Espresso con chocolate y leche"
+      },
+      {
+        "nombre": "White Mocha",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 65,
+        "descripcion": "Espresso con chocolate blanco y leche"
+      },
+      {
+        "nombre": "Té Chai Latte",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 60,
+        "descripcion": "Té especiado con leche vaporizada"
+      },
+      {
+        "nombre": "Flat White",
+        "tamaños": ["Short", "Tall", "Grande"],
+        "precio_base": 60,
+        "descripcion": "Espresso con microespuma de leche"
+      }
+    ],
+    "bebidas_frias": [
+      {
+        "nombre": "Frappuccino de Caramelo",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 70,
+        "descripcion": "Bebida helada con café, caramelo y crema"
+      },
+      {
+        "nombre": "Frappuccino de Mocha",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 70,
+        "descripcion": "Bebida helada con café y chocolate"
+      },
+      {
+        "nombre": "Frappuccino de Vainilla",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 70,
+        "descripcion": "Bebida helada con café y vainilla"
+      },
+      {
+        "nombre": "Frappuccino de Java Chip",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 75,
+        "descripcion": "Bebida helada con café y chispas de chocolate"
+      },
+      {
+        "nombre": "Cold Brew",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 50,
+        "descripcion": "Café preparado en frío por 20 horas"
+      },
+      {
+        "nombre": "Iced Latte",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 55,
+        "descripcion": "Espresso con leche servido sobre hielo"
+      },
+      {
+        "nombre": "Iced Americano",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 45,
+        "descripcion": "Espresso con agua fría y hielo"
+      },
+      {
+        "nombre": "Refresher de Fresa",
+        "tamaños": ["Tall", "Grande", "Venti"],
+        "precio_base": 60,
+        "descripcion": "Bebida refrescante con fresas reales"
+      }
+    ],
+    "alimentos": [
+      {
+        "nombre": "Croissant",
+        "precio": 35,
+        "categoria": "Panadería",
+        "descripcion": "Croissant de mantequilla recién horneado"
+      },
+      {
+        "nombre": "Muffin de Arándano",
+        "precio": 40,
+        "categoria": "Panadería",
+        "descripcion": "Muffin esponjoso con arándanos azules"
+      },
+      {
+        "nombre": "Muffin de Chocolate",
+        "precio": 40,
+        "categoria": "Panadería",
+        "descripcion": "Muffin con doble chocolate"
+      },
+      {
+        "nombre": "Sandwich de Pavo",
+        "precio": 70,
+        "categoria": "Comida",
+        "descripcion": "Sandwich con pavo, queso suizo y verduras"
+      },
+      {
+        "nombre": "Sandwich de Pollo",
+        "precio": 75,
+        "categoria": "Comida",
+        "descripcion": "Sandwich con pollo a la plancha y aguacate"
+      },
+      {
+        "nombre": "Bagel con Queso Crema",
+        "precio": 45,
+        "categoria": "Panadería",
+        "descripcion": "Bagel tostado con queso crema Philadelphia"
+      },
+      {
+        "nombre": "Cookie de Chispas de Chocolate",
+        "precio": 30,
+        "categoria": "Postres",
+        "descripcion": "Galleta crujiente con chispas de chocolate"
+      },
+      {
+        "nombre": "Brownie",
+        "precio": 35,
+        "categoria": "Postres",
+        "descripcion": "Brownie de chocolate con nueces"
+      },
+      {
+        "nombre": "Cake Pop",
+        "precio": 25,
+        "categoria": "Postres",
+        "descripcion": "Mini pastel en palito cubierto de chocolate"
+      }
+    ],
+    "opciones": {
+      "leches": [
+        "Entera",
+        "Descremada",
+        "Deslactosada",
+        "Almendra",
+        "Avena",
+        "Coco",
+        "Soya"
+      ],
+      "endulzantes": [
+        "Normal",
+        "Light",
+        "Sin azúcar",
+        "Miel",
+        "Stevia",
+        "Splenda"
+      ],
+      "extras": [
+        {
+          "nombre": "Shot extra de espresso",
+          "precio": 15
+        },
+        {
+          "nombre": "Crema batida",
+          "precio": 10
+        },
+        {
+          "nombre": "Caramelo extra",
+          "precio": 10
+        },
+        {
+          "nombre": "Chocolate extra",
+          "precio": 10
+        },
+        {
+          "nombre": "Vainilla extra",
+          "precio": 10
+        }
+      ]
+    },
+    "metadata": {
+      "version": "1.0",
+      "ultima_actualizacion": "2025-01-15",
+      "moneda": "MXN",
+      "nota": "Los precios pueden variar según la ubicación"
+    }
+  }

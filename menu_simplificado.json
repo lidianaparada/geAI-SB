@@ -1,0 +1,1153 @@
+{
+  "bebidas_calientes": [
+    {
+      "nombre": "Café Espresso",
+      "sku": "11017024",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "Espresso Americano",
+      "sku": "94",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 45
+    },
+    {
+      "nombre": "GR Americano",
+      "sku": "95",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 45
+    },
+    {
+      "nombre": "GR Caramel Macchiato",
+      "sku": "126198",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "GR Classic Hot Chocolate",
+      "sku": "128642",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "GR Decaf Americano",
+      "sku": "11130888",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 45,
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Decaf Carml Macchiato",
+      "sku": "11130919",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Decaf Latte",
+      "sku": "11130905",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Hot White Chocolate",
+      "sku": "11039887",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "GR Latte",
+      "sku": "42",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55
+    },
+    {
+      "nombre": "Latte",
+      "sku": "11130904",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "descafeinado": true
+    },
+    {
+      "nombre": "SH Classic Hot Chocolate",
+      "sku": "128640",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "SH Hot White Chocolate",
+      "sku": "11039885",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "TL Americano",
+      "sku": "94",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 45
+    },
+    {
+      "nombre": "TL Caramel Macchiato",
+      "sku": "126197",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "TL Classic Hot Chocolate",
+      "sku": "128641",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "TL Decaf Americano",
+      "sku": "11130887",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 45,
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Decaf Carml Macchiato",
+      "sku": "11130918",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Decaf Latte",
+      "sku": "11130904",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Hot White Chocolate",
+      "sku": "11039886",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "TL Latte",
+      "sku": "41",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55
+    },
+    {
+      "nombre": "VT Americano",
+      "sku": "121969",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 45
+    },
+    {
+      "nombre": "VT Caramel Macchiato",
+      "sku": "126199",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "VT Classic Hot Chocolate",
+      "sku": "11016401",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "VT Decaf Americano",
+      "sku": "11130889",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 45,
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Decaf Carml Macchiato",
+      "sku": "11130920",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Decaf Latte",
+      "sku": "11130906",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Hot White Chocolate",
+      "sku": "11039888",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "VT Latte",
+      "sku": "121966",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55
+    }
+  ],
+  "bebidas_frias": [
+    {
+      "nombre": "Caramel Frappuccino®",
+      "sku": "11002655",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "GR Caramel Frappuccino",
+      "sku": "11002656",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "GR Cold Foam Cappuccino",
+      "sku": "11077152",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "GR Decaf Caramel Frappuccino",
+      "sku": "11141014",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Decaf Cold Foam Cappuccino",
+      "sku": "11135566",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Decaf Espresso Frapp",
+      "sku": "11130989",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Decaf Mocha Frappuccino",
+      "sku": "11141006",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Espresso Frapp",
+      "sku": "11002663",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "GR Iced Decaf Brown Sugar Oat Shaken Espresso",
+      "sku": "11135375",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "shaken",
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Iced Decaf Latte",
+      "sku": "11130970",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Iced Decaf White Mocha",
+      "sku": "11130985",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "GR Iced Latte",
+      "sku": "110570",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "GR Iced Signature Brown Sugar Oat Shaken Espresso",
+      "sku": "11135372",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "shaken"
+    },
+    {
+      "nombre": "GR Iced White Mocha",
+      "sku": "153121",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "GR Mango Dragonfruit Starbucks Refresher",
+      "sku": "11137873",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 65,
+      "tipo": "refresher"
+    },
+    {
+      "nombre": "GR Mocha Frappuccino",
+      "sku": "11002669",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "GR Strawberry Acai Lemonade",
+      "sku": "11092419",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "TL Cold Foam Cappuccino",
+      "sku": "11077151",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "TL Decaf Caramel Frappuccino",
+      "sku": "11141013",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Decaf Cold Foam Cappuccino",
+      "sku": "11135565",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Decaf Espresso Frapp",
+      "sku": "11130988",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Decaf Mocha Frappuccino",
+      "sku": "11141005",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Espresso Frapp",
+      "sku": "11002662",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "TL Iced Decaf Brown Sugar Oat Shaken Espresso",
+      "sku": "11135374",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "shaken",
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Iced Decaf Latte",
+      "sku": "11130969",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Iced Decaf White Mocha",
+      "sku": "11130984",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "TL Iced Latte",
+      "sku": "110569",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "TL Iced Signature Brown Sugar Oat Shaken Espresso",
+      "sku": "11135371",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "shaken"
+    },
+    {
+      "nombre": "TL Iced White Mocha",
+      "sku": "153120",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "TL Mango Dragonfruit Starbucks Refresher",
+      "sku": "11137872",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 65,
+      "tipo": "refresher"
+    },
+    {
+      "nombre": "TL Mocha Frappuccino",
+      "sku": "11002668",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "TL Strawberry Acai Lemonade",
+      "sku": "11092418",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "VT Caramel Frappuccino",
+      "sku": "11009933",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "VT Cold Foam Cappuccino",
+      "sku": "11077153",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "VT Decaf Caramel Frappuccino",
+      "sku": "11141015",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Decaf Cold Foam Cappuccino",
+      "sku": "11135567",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Decaf Espresso Frapp",
+      "sku": "11130990",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Decaf Mocha Frappuccino",
+      "sku": "11141007",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino",
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Espresso Frapp",
+      "sku": "11009932",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "VT Iced Decaf Brown Sugar Oat Shaken Espresso",
+      "sku": "11135376",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "shaken",
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Iced Decaf Latte",
+      "sku": "11130971",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Iced Decaf White Mocha",
+      "sku": "11130986",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced",
+      "descafeinado": true
+    },
+    {
+      "nombre": "VT Iced Latte",
+      "sku": "116482",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "VT Iced Signature Brown Sugar Oat Shaken Espresso",
+      "sku": "11135373",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "shaken"
+    },
+    {
+      "nombre": "VT Iced White Mocha",
+      "sku": "11017595",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    },
+    {
+      "nombre": "VT Mango Dragonfruit Starbucks Refresher",
+      "sku": "11137874",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 65,
+      "tipo": "refresher"
+    },
+    {
+      "nombre": "VT Mocha Frappuccino",
+      "sku": "11009983",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 75,
+      "tipo": "frappuccino"
+    },
+    {
+      "nombre": "VT Strawberry Acai Lemonade",
+      "sku": "11150108",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60,
+      "tipo": "iced"
+    }
+  ],
+  "te": [
+    {
+      "nombre": "Café Del Día: Chiapas",
+      "sku": "11157774",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 60
+    },
+    {
+      "nombre": "GR Chai Tea Latte",
+      "sku": "135609",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55
+    },
+    {
+      "nombre": "TL Chai Tea Latte",
+      "sku": "135608",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55
+    },
+    {
+      "nombre": "VT Chai Tea Latte",
+      "sku": "168477",
+      "tamaños": [
+        "Tall",
+        "Grande",
+        "Venti"
+      ],
+      "precio_base": 55
+    }
+  ],
+  "alimentos_salados": [
+    {
+      "nombre": "3 Cheese Panini",
+      "sku": "11158085",
+      "precio": 60,
+      "requiere_calentar": true
+    },
+    {
+      "nombre": "Bagel with Jam and Cream Cheese",
+      "sku": "11158092",
+      "precio": 60,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Fruit Cup",
+      "sku": "11122284",
+      "precio": 60,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Grilled Cheese Sandwich",
+      "sku": "11158087",
+      "precio": 60,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Ham and Cheese Croissant",
+      "sku": "11151985",
+      "precio": 60,
+      "requiere_calentar": true
+    },
+    {
+      "nombre": "Turkey Ham & Cheese Panini",
+      "sku": "11158084",
+      "precio": 60,
+      "requiere_calentar": true
+    },
+    {
+      "nombre": "Turkey Ham and Cheese Baguette",
+      "sku": "11158090",
+      "precio": 60,
+      "requiere_calentar": false
+    }
+  ],
+  "postres": [
+    {
+      "nombre": "Almond Cookies Deliana",
+      "sku": "11158170",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Carrot Cake",
+      "sku": "11115653",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Chocolate Cake",
+      "sku": "11118888",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Chocolate Cronut",
+      "sku": "11158075",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Chocolate Doughnut",
+      "sku": "11158074",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Croissant",
+      "sku": "11087764",
+      "precio": 35,
+      "requiere_calentar": true
+    },
+    {
+      "nombre": "Lemon Loaf Cake",
+      "sku": "11081770",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Pan de Chocolate",
+      "sku": "11150916",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Pan de Queso",
+      "sku": "11157104",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Raspberry Cheesecake",
+      "sku": "11099615",
+      "precio": 45,
+      "requiere_calentar": false
+    },
+    {
+      "nombre": "Raspberry Cheesecake Roulet",
+      "sku": "11158076",
+      "precio": 45,
+      "requiere_calentar": false
+    }
+  ],
+  "cafe_grano": [
+    {
+      "nombre": "Café Sumatra",
+      "sku": "11019856",
+      "peso": "250g",
+      "precio": 180
+    },
+    {
+      "nombre": "Café Verona",
+      "sku": "11017011",
+      "peso": "250g",
+      "precio": 180
+    },
+    {
+      "nombre": "Yogurt with Granola & Strawberry Marmelade",
+      "sku": "11146089",
+      "peso": "250g",
+      "precio": 180
+    }
+  ],
+  "extras": {
+    "leches": [
+      "Entera",
+      "Descremada",
+      "Almendra",
+      "Coco",
+      "Soya",
+      "Avena"
+    ],
+    "salsas": [
+      "Mocha",
+      "Caramelo",
+      "Chocolate Blanco",
+      "Chai",
+      "Fresa"
+    ],
+    "jarabes": [
+      "Vainilla",
+      "Caramelo",
+      "Avellana",
+      "Canela",
+      "Frambuesa",
+      "Coco",
+      "Menta"
+    ],
+    "endulzantes": [
+      "Normal",
+      "Light",
+      "Sin azúcar"
+    ],
+    "toppings": [
+      "Crema batida",
+      "Drizzle de caramelo",
+      "Drizzle de mocha"
+    ],
+    "temperatura": [
+      "Extra caliente",
+      "Caliente",
+      "Tibio"
+    ]
+  },
+  "metadata": {
+    "contextos": {
+      "manana": {
+        "descripcion": "6:00 - 11:00",
+        "sugerencias": [
+          "Americano",
+          "Latte",
+          "Cappuccino",
+          "Croissant",
+          "Bagel"
+        ]
+      },
+      "tarde": {
+        "descripcion": "12:00 - 18:00",
+        "sugerencias": [
+          "Frappuccino",
+          "Iced Latte",
+          "Refreshers",
+          "Panini"
+        ]
+      },
+      "noche": {
+        "descripcion": "19:00 - 22:00",
+        "sugerencias": [
+          "Chocolate Caliente",
+          "Chai Tea Latte",
+          "Mocha"
+        ]
+      }
+    },
+    "recomendaciones_clima": {
+      "calor": [
+        "Frappuccino",
+        "Iced Coffee",
+        "Refreshers",
+        "Cold Foam Cappuccino"
+      ],
+      "frio": [
+        "Latte",
+        "Americano",
+        "Chocolate Caliente",
+        "Mocha"
+      ],
+      "templado": [
+        "Iced Latte",
+        "Cappuccino",
+        "Chai Tea"
+      ]
+    },
+    "recomendaciones_perfil": {
+      "energia": [
+        "Americano",
+        "Espresso",
+        "Shaken Espresso"
+      ],
+      "dulce": [
+        "Frappuccino",
+        "Mocha",
+        "Caramel Macchiato"
+      ],
+      "ligero": [
+        "Americano",
+        "Té",
+        "Refreshers"
+      ],
+      "cremoso": [
+        "Latte",
+        "Cappuccino",
+        "White Chocolate Mocha"
+      ]
+    },
+    "preguntas_flujo": {
+      "1_inicial": "¿Qué te gustaría hoy?",
+      "2_categoria": "¿Algo caliente o frío?",
+      "3_tipo": "¿Café, té o algo dulce?",
+      "4_tamano": "¿Qué tamaño? Tall, Grande o Venti",
+      "5_personalizacion": "¿Con qué leche?",
+      "6_extras": "¿Le agregamos algo?",
+      "7_alimento": "¿Algo para acompañar?",
+      "8_confirmacion": "Tu pedido: [RESUMEN]. ¿Algo más?",
+      "9_cierre": "Total: $[X] pesos. Pasa a caja"
+    }
+  }
+}
