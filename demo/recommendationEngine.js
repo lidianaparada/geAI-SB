@@ -361,29 +361,70 @@ function getFallbackRecommendations(menu, count = 3) {
 // ---- Modificar buscarProductoEnMenu para usar fallback si recommendationEngine devuelve vacío ----
 // Reemplaza la creación de sugerencias por algo como esto:
 
+/**
+ * ✅ NORMALIZACIÓN MEJORADA V3: Maneja caracteres mal codificados
+ */
+
+/**
+ * Mapa de caracteres mal codificados a su versión correcta
+ */
+const CARACTERES_MAL_CODIFICADOS = {
+  'Ã©': 'e',  // é mal codificado
+  'Ã¡': 'a',  // á mal codificado
+  'Ã­': 'i',  // í mal codificado
+  'Ã³': 'o',  // ó mal codificado
+  'Ãº': 'u',  // ú mal codificado
+  'Ã±': 'n',  // ñ mal codificado
+  'Ã': 'a',   // à mal codificado
+  'Â®': '',   // ® mal codificado
+  'Â©': '',   // © mal codificado
+  'Â´': '',   // ´ mal codificado
+  'Ã¼': 'u',  // ü mal codificado
+  'Ã©': 'e',  // é
+  'Ã¨': 'e',  // è
+  'Ã«': 'e',  // ë
+  'Ã¯': 'i',  // ï
+  'Ã´': 'o',  // ô
+  'Ã¶': 'o',  // ö
+  'Ã»': 'u',  // û
+};
+
+/**
+ * Normalizar texto INCLUYENDO caracteres mal codificados
+ */
 function normalizarTexto(texto) {
-  return texto
-    .toLowerCase()
+  if (!texto) return '';
+  
+  let textoNormalizado = texto.toLowerCase();
+  
+  // 1️⃣ ARREGLAR caracteres mal codificados
+  for (const [malCodificado, correcto] of Object.entries(CARACTERES_MAL_CODIFICADOS)) {
+    textoNormalizado = textoNormalizado.split(malCodificado).join(correcto);
+  }
+  
+  // 2️⃣ Normalización estándar
+  textoNormalizado = textoNormalizado
     .normalize("NFD")                    // Descomponer acentos
     .replace(/[\u0300-\u036f]/g, "")    // Quitar marcas diacríticas
     .replace(/[®©™]/g, "")               // Quitar símbolos registrados
     .replace(/[^\w\s]/g, "")             // Quitar puntuación
     .replace(/\s+/g, " ")                // Normalizar espacios múltiples
     .trim();
+  
+  return textoNormalizado;
 }
 
 /**
- * Buscar producto en el menú con jerarquía de búsqueda
+ * Buscar producto en el menú - VERSIÓN FINAL V3
  */
-function buscarProductoEnMenu(userInput, tipo = null) {
+function buscarProductoEnMenu(userInput, menu, tipo = null) {
   console.log(`\n🔍 buscarProductoEnMenu()`);
   console.log(`   Input original: "${userInput}"`);
-  console.log(`   Tipo: ${tipo || 'cualquiera'}`);
   
   const inputNormalizado = normalizarTexto(userInput);
   console.log(`   Input normalizado: "${inputNormalizado}"`);
   
-  // Obtener todos los productos del tipo especificado
+  // Obtener categorías según tipo
   const categorias = tipo === 'alimento'
     ? ['alimentos_salados', 'alimentos_dulces', 'alimentos_saludables', 'panaderia']
     : ['bebidas_calientes', 'bebidas_frias', 'frappuccino', 'bebidas_te'];
@@ -391,33 +432,33 @@ function buscarProductoEnMenu(userInput, tipo = null) {
   const todosLosProductos = [];
   
   for (const cat of categorias) {
-    if (MENU[cat] && Array.isArray(MENU[cat])) {
-      todosLosProductos.push(...MENU[cat].filter(p => p.disponible !== false));
+    if (menu[cat] && Array.isArray(menu[cat])) {
+      todosLosProductos.push(...menu[cat].filter(p => p.disponible !== false));
     }
   }
   
-  console.log(`   📦 Total productos a buscar: ${todosLosProductos.length}`);
+  console.log(`   📦 Productos a buscar: ${todosLosProductos.length}`);
   
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 1️⃣ BÚSQUEDA EXACTA (máxima prioridad)
+  // 1️⃣ BÚSQUEDA EXACTA
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  
-  console.log(`   🎯 Paso 1: Búsqueda exacta...`);
   
   for (const producto of todosLosProductos) {
     const nombreNormalizado = normalizarTexto(producto.nombre);
     
     if (nombreNormalizado === inputNormalizado) {
-      console.log(`   ✅ MATCH EXACTO: "${producto.nombre}"`);
+      console.log(`   ✅ MATCH EXACTO: "${producto.nombre}" (ID: ${producto.id})`);
+      console.log(`      Original en menú: "${producto.nombre}"`);
+      console.log(`      Normalizado: "${nombreNormalizado}"`);
       return { encontrado: true, producto };
     }
   }
   
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 2️⃣ BÚSQUEDA SIN ESPACIOS (alta prioridad)
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  console.log(`   ⏭️ No hay match exacto, intentando sin espacios...`);
   
-  console.log(`   🎯 Paso 2: Búsqueda sin espacios...`);
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 2️⃣ BÚSQUEDA SIN ESPACIOS
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   
   const inputSinEspacios = inputNormalizado.replace(/\s+/g, "");
   
@@ -425,19 +466,19 @@ function buscarProductoEnMenu(userInput, tipo = null) {
     const nombreSinEspacios = normalizarTexto(producto.nombre).replace(/\s+/g, "");
     
     if (nombreSinEspacios === inputSinEspacios) {
-      console.log(`   ✅ MATCH SIN ESPACIOS: "${producto.nombre}"`);
+      console.log(`   ✅ MATCH SIN ESPACIOS: "${producto.nombre}" (ID: ${producto.id})`);
       return { encontrado: true, producto };
     }
   }
   
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 3️⃣ BÚSQUEDA POR PALABRAS COMPLETAS (prioridad media)
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  console.log(`   ⏭️ No hay match sin espacios, intentando palabras...`);
   
-  console.log(`   🎯 Paso 3: Búsqueda por palabras completas...`);
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 3️⃣ BÚSQUEDA POR PALABRAS
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   
   const palabrasInput = inputNormalizado.split(/\s+/).filter(p => p.length > 0);
-  console.log(`   Palabras del input: [${palabrasInput.join(", ")}]`);
+  console.log(`   Palabras: [${palabrasInput.join(", ")}]`);
   
   let mejorCoincidencia = null;
   let mejorScore = 0;
@@ -448,10 +489,9 @@ function buscarProductoEnMenu(userInput, tipo = null) {
     
     let palabrasCoinciden = 0;
     
-    // Contar coincidencias de palabras COMPLETAS
     for (const palabraInput of palabrasInput) {
       for (const palabraProd of palabrasProducto) {
-        if (palabraInput === palabraProd) {  // ⭐ Coincidencia EXACTA de palabra
+        if (palabraInput === palabraProd) {
           palabrasCoinciden++;
           break;
         }
@@ -460,25 +500,25 @@ function buscarProductoEnMenu(userInput, tipo = null) {
     
     const score = palabrasCoinciden / palabrasInput.length;
     
-    if (score > mejorScore && score >= 0.5) {  // Al menos 50% de palabras
+    if (score > mejorScore) {
       mejorScore = score;
       mejorCoincidencia = producto;
     }
   }
   
   if (mejorCoincidencia && mejorScore >= 0.5) {
-    console.log(`   ✅ MATCH PALABRAS: "${mejorCoincidencia.nombre}" (score: ${(mejorScore * 100).toFixed(0)}%)`);
+    console.log(`   ✅ MATCH PALABRAS: "${mejorCoincidencia.nombre}" (ID: ${mejorCoincidencia.id})`);
+    console.log(`      Score: ${(mejorScore * 100).toFixed(0)}%`);
     return { encontrado: true, producto: mejorCoincidencia };
   }
   
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 4️⃣ BÚSQUEDA FUZZY CON PALABRAS LARGAS (última opción)
-  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  console.log(`   ⏭️ No hay match de palabras suficiente, intentando fuzzy...`);
   
-  console.log(`   🎯 Paso 4: Búsqueda fuzzy (palabras ≥5 letras)...`);
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 4️⃣ BÚSQUEDA FUZZY
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   
   const palabrasLargas = palabrasInput.filter(p => p.length >= 5);
-  console.log(`   Palabras largas: [${palabrasLargas.join(", ")}]`);
   
   if (palabrasLargas.length > 0) {
     mejorCoincidencia = null;
@@ -497,54 +537,29 @@ function buscarProductoEnMenu(userInput, tipo = null) {
       
       const score = coincidencias / palabrasLargas.length;
       
-      if (score > mejorScore && score >= 0.7) {  // ⭐ 70% mínimo para fuzzy
+      if (score > mejorScore) {
         mejorScore = score;
         mejorCoincidencia = producto;
       }
     }
     
     if (mejorCoincidencia && mejorScore >= 0.7) {
-      console.log(`   ✅ MATCH FUZZY: "${mejorCoincidencia.nombre}" (score: ${(mejorScore * 100).toFixed(0)}%)`);
+      console.log(`   ✅ MATCH FUZZY: "${mejorCoincidencia.nombre}" (ID: ${mejorCoincidencia.id})`);
+      console.log(`      Score: ${(mejorScore * 100).toFixed(0)}%`);
       return { encontrado: true, producto: mejorCoincidencia };
     }
   }
   
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  // 5️⃣ NO ENCONTRADO - Generar sugerencias
+  // ❌ NO ENCONTRADO
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   
-  console.log(`   ❌ No encontrado en ninguna estrategia`);
-  console.log(`   💡 Generando sugerencias...`);
-  
-  const timeContext = promptGen.getTimeContext();
-  let sugerencias = [];
-  
-  if (tipo === 'bebida' || !tipo) {
-    const recomendaciones = recommendationEngine
-      .getRecommendations(MENU, timeContext.momento)
-      .slice(0, 3);
-    
-    sugerencias = recomendaciones.map(r => r.nombre);
-  } else if (tipo === 'alimento') {
-    for (const cat of categorias) {
-      if (MENU[cat] && Array.isArray(MENU[cat])) {
-        const items = MENU[cat]
-          .filter(item => item.disponible !== false)
-          .slice(0, 2)
-          .map(item => item.nombre);
-        
-        sugerencias.push(...items);
-      }
-    }
-    sugerencias = sugerencias.slice(0, 3);
-  }
-  
-  console.log(`   💡 Sugerencias: ${sugerencias.join(", ")}`);
+  console.log(`   ❌ NO ENCONTRADO en ninguna estrategia`);
   
   return {
     encontrado: false,
     producto: null,
-    sugerencias: sugerencias
+    sugerencias: []
   };
 }
 
