@@ -184,7 +184,7 @@ function suggestionsForCategory(menu, categoria, count = 3) {
   }
 
   // fallback a getFallbackRecommendations si vacío
-  if (items.length === 0) return getFallbackRecommendations(menu, count);
+  if (items.length === 0) return recommendationEngine.getFallbackRecommendations(menu, count);
 
   return items.slice(0, count);
 }
@@ -353,7 +353,7 @@ function buscarProductoEnMenu(userInput, tipo = null) {
 
   if (!sugerencias || sugerencias.length === 0) {
     console.warn('⚠️ recommendationEngine devolvió vacío, usando fallback del menú');
-    sugerencias = getFallbackRecommendations(MENU, 3);
+    sugerencias = recommendationEngine.getFallbackRecommendations(MENU, 3);
   }
 
   return {
@@ -992,7 +992,7 @@ if (proximoPaso === "bebida") {
 
     if (!recomendaciones || recomendaciones.length === 0) {
       console.warn('⚠️ recommendationEngine vacío en flujo de recomendación. Usando fallback.');
-      recomendaciones = getFallbackRecommendations(MENU, 3);
+      recomendaciones = recommendationEngine.getFallbackRecommendations(MENU, 3);
     }
 
     // Guardar objetos COMPLETOS en sesión para matching posterior
