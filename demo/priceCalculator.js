@@ -13,56 +13,24 @@
   */
   export function calculateOrderPrice(order, menu) {
     console.log(`\n💰 calculateOrderPrice()`);
-    console.log(`   Orden:`, JSON.stringify(order, null, 2));
     
     let total = 0;
     let estrellas = 0;
     const detalles = [];
     
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 1️⃣ PRECIO DE LA BEBIDA
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 1️⃣ PRECIO DE LA BEBIDA (SIEMPRE CALCULA)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     if (order.bebida) {
       console.log(`   🔍 Buscando bebida: "${order.bebida}"`);
       
-      // Buscar la bebida en el menú
-      const bebida = menuUtils.findProductByName(menu, order.bebida);
+      const bebida = findProductByName(menu, order.bebida);
       
       if (bebida) {
-        console.log(`   ✅ Bebida encontrada: ${bebida.nombre} (ID: ${bebida.id})`);
-        
-        let precioBebida = bebida.precio_base || 0;
-        console.log(`   💵 Precio base bebida: $${precioBebida}`);
-        
-        // Si tiene tamaño, buscar el precio específico del tamaño
-        if (order.tamano && bebida.tamanos && Array.isArray(bebida.tamanos)) {
-          console.log(`   📏 Tamaño seleccionado: ${order.tamano}`);
-          
-          // El tamaño puede ser el nombre completo o solo el ID
-          const tamanoEncontrado = bebida.tamanos.find(t => 
-            t === order.tamano || 
-            t.toLowerCase().includes(order.tamano.toLowerCase())
-          );
-          
-          if (tamanoEncontrado) {
-            console.log(`   ✅ Tamaño válido: ${tamanoEncontrado}`);
-            // El precio base ya incluye el tamaño, no se suma extra
-          }
-        }
-        
-        // Agregar modificadores (si tienen costo adicional)
-        if (order.modificadores && Array.isArray(order.modificadores)) {
-          console.log(`   🔧 Procesando ${order.modificadores.length} modificadores...`);
-          
-          for (const mod of order.modificadores) {
-            // Por ahora, la mayoría de modificadores son gratuitos
-            // pero algunos como "crema batida" o "shot extra" pueden tener costo
-            console.log(`      - ${mod.grupoId}: ${mod.opcionId} (costo: $0)`);
-          }
-        }
-        
+        const precioBebida = bebida.precio_base || 0;
         total += precioBebida;
+        
         detalles.push({
           tipo: 'bebida',
           nombre: bebida.nombre,
@@ -70,66 +38,54 @@
           precio: precioBebida
         });
         
-        console.log(`   ✅ Subtotal bebida: $${precioBebida}`);
-      } else {
-        console.warn(`   ⚠️ Bebida no encontrada en menú: "${order.bebida}"`);
+        console.log(`   ✅ Bebida: ${bebida.nombre} = $${precioBebida}`);
       }
     }
     
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 2️⃣ PRECIO DEL ALIMENTO
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 2️⃣ PRECIO DEL ALIMENTO (SIEMPRE CALCULA)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     if (order.alimento && order.alimento !== 'ninguno') {
       console.log(`   🔍 Buscando alimento: "${order.alimento}"`);
       
-      // Buscar el alimento en el menú
-      const alimento = menuUtils.findProductByName(menu, order.alimento, 'alimento');
+      const alimento = findProductByName(menu, order.alimento, 'alimento');
       
       if (alimento) {
-        console.log(`   ✅ Alimento encontrado: ${alimento.nombre} (ID: ${alimento.id})`);
-        
         const precioAlimento = alimento.precio_base || 0;
-        console.log(`   💵 Precio alimento: $${precioAlimento}`);
-        
         total += precioAlimento;
+        
         detalles.push({
           tipo: 'alimento',
           nombre: alimento.nombre,
           precio: precioAlimento
         });
         
-        console.log(`   ✅ Subtotal con alimento: $${total}`);
-      } else {
-        console.warn(`   ⚠️ Alimento no encontrado en menú: "${order.alimento}"`);
+        console.log(`   ✅ Alimento: ${alimento.nombre} = $${precioAlimento}`);
       }
-    } else {
-      console.log(`   ℹ️ Sin alimento en la orden`);
     }
     
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 3️⃣ CALCULAR ESTRELLAS SEGÚN MÉTODO DE PAGO
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 3️⃣ ESTRELLAS (SOLO SI YA ELIGIÓ MÉTODO)
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     if (order.metodoPago) {
+      console.log(`   💳 Método de pago: ${order.metodoPago}`);
+      
       if (order.metodoPago.toLowerCase().includes('starbucks card')) {
-        // Starbucks Card: 1 estrella por cada $10
         estrellas = Math.floor(total / 10);
         console.log(`   ⭐ Estrellas (Starbucks Card): ${estrellas} (1 por cada $10)`);
       } else {
-        // Efectivo o Tarjeta: 1 estrella por cada $20
         estrellas = Math.floor(total / 20);
         console.log(`   ⭐ Estrellas (Efectivo/Tarjeta): ${estrellas} (1 por cada $20)`);
       }
+    } else {
+      console.log(`   ⏸️ Sin método de pago aún → 0 estrellas por ahora`);
+      estrellas = 0;
     }
-    
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 4️⃣ RESULTADO FINAL
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     
     console.log(`\n   💰 TOTAL: $${total}`);
     console.log(`   ⭐ ESTRELLAS: ${estrellas}`);
-    console.log(`   📋 DETALLES:`, detalles);
     
     return {
       total,

@@ -536,7 +536,7 @@ case "bebida":
     }
   }
   break;
-    case "tamano":
+case "tamano":
       const productoActual = menuUtils.findProductByName(MENU, order.bebida);
       if (productoActual) {
         const detectedSizeId = sizeDetection.detectSizeFromInput(userInput, productoActual);
@@ -648,53 +648,76 @@ case "alimento":
   }
   break;
    
-      case "revision":
-        // ✅ NUEVO CASO: Paso de revisión
-        const normalizado = lower
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "");
-        
-        // Detectar si quiere agregar algo
-        if (normalizado.includes('agrega') || 
-            normalizado.includes('añade') || 
-            normalizado.includes('agregar') ||
-            normalizado.includes('quiero agregar') ||
-            normalizado.includes('pon')) {
-          console.log(`   ➕ Usuario quiere agregar algo`);
-          order.revisado = false; // Mantener en revisión
-        } 
-        // Detectar si quiere quitar algo
-        else if (normalizado.includes('quita') || 
-                 normalizado.includes('quitar') || 
-                 normalizado.includes('elimina')) {
-          console.log(`   ➖ Usuario quiere quitar algo`);
-          order.revisado = false; // Mantener en revisión
-        }
-        // Detectar si está listo para continuar
-        else if (/(no|nada|está bien|esta bien|asi esta|todo bien|perfecto|listo|continua|cerrar|confirmar|ok)/i.test(lower)) {
-          console.log(`   ✅ Usuario listo para confirmar`);
-          order.revisado = true;
-        }
-        break;
-  
-      case "confirmacion":
-        if (/(sí|si|correcto|está bien|así está bien|dale)/i.test(lower)) {
-          order.confirmado = true;
-          console.log(`   ✅ Guardado: confirmado = true`);
-        }
-        break;
-  
-    case "metodoPago":
-      if (lower.includes("efectivo")) order.metodoPago = "Efectivo";
-      else if (lower.includes("tarjeta")) order.metodoPago = "Tarjeta bancaria";
-      else if (lower.includes("starbucks")) order.metodoPago = "Starbucks Card";
-      if (order.metodoPago) {
-        console.log(`   ✅ Guardado: metodoPago = ${order.metodoPago}`);
-      }
-      break;
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CASO: REVISION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+case "revision":
+  const normalizado = lower
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  
+  // Usuario quiere agregar algo
+  if (normalizado.includes('agrega') || 
+      normalizado.includes('añade') || 
+      normalizado.includes('agregar') ||
+      normalizado.includes('anadir')) {
+    console.log(`   ➕ Usuario quiere agregar algo`);
+    order.revisado = false;
+  } 
+  // Usuario quiere quitar algo
+  else if (normalizado.includes('quita') || 
+           normalizado.includes('quitar') || 
+           normalizado.includes('elimina') ||
+           normalizado.includes('eliminar')) {
+    console.log(`   ➖ Usuario quiere quitar algo`);
+    order.revisado = false;
+  } 
+  // Usuario está listo para continuar
+  else if (/(no|nada|está bien|esta bien|asi esta|así está|todo bien|perfecto|listo|continua|continúa|continuar|cerrar|confirmar|ok|si|sí|correcto|dale|vamos)/i.test(lower)) {
+    console.log(`   ✅ Usuario listo para continuar al pago`);
+    order.revisado = true;  // ⭐ MARCAR COMO REVISADO
+  }
+  break;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CASO: CONFIRMACION
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+case "confirmacion":
+  // Usuario confirma que todo está bien
+  if (/(sí|si|correcto|está bien|así está bien|todo bien|perfecto|dale|confirmo|ok|okay|yes)/i.test(lower)) {
+    order.confirmado = true;  // ⭐ MARCAR COMO CONFIRMADO
+    console.log(`   ✅ Guardado: confirmado = true`);
+  } 
+  // Usuario quiere cambiar algo
+  else if (/(no|cambiar|modificar|espera|quiero cambiar|mal|incorrecto)/i.test(lower)) {
+    order.confirmado = false;
+    order.revisado = false;  // Volver a revisión
+    console.log(`   ⏮️ Usuario quiere modificar, volviendo a revisión`);
+  }
+  break;
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// CASO: METODO DE PAGO
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+case "metodoPago":
+  if (lower.includes("efectivo")) {
+    order.metodoPago = "Efectivo";
+    console.log(`   ✅ Guardado: metodoPago = Efectivo`);
+  } 
+  else if (lower.includes("tarjeta")) {
+    order.metodoPago = "Tarjeta bancaria";
+    console.log(`   ✅ Guardado: metodoPago = Tarjeta bancaria`);
+  } 
+  else if (lower.includes("starbucks") || lower.includes("card")) {
+    order.metodoPago = "Starbucks Card";
+    console.log(`   ✅ Guardado: metodoPago = Starbucks Card`);
+  }
+  break;
    
-    default:
+default:
       // ✅ Manejo de modificadores con fuzzy matching
       if (proximoPaso.startsWith("modifier_")) {
         console.log(`   🔧 Procesando modificador...`);
