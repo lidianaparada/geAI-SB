@@ -12,6 +12,7 @@
  import * as menuUtils from './menuUtils.js';
  import * as sizeDetection from './sizeDetection.js';
  import * as orderValidation from './orderValidation.js';
+ import * as priceCalc from './priceCalculator.js';
  
  /**
   * Obtener contexto de tiempo
@@ -101,12 +102,11 @@
      case 'sucursal':
        guia = `
   PASO: SUCURSAL
- Instrucción: Pregunta en qué sucursal recogerá su pedido.
+ Instrucción: Pregunta en qué sucursal recogerá su pedido, mencionando que cerca de tí tenemos estas sucursales  ${sucursales.map((s) => `  • ${s.nombre}`).join('\n')}
  Tono: Profesional y directo.
- Ejemplo: "¿En qué sucursal recogerás tu pedido?"
+ Ejemplo: "¿En qué sucursal recogerás tu pedido? cerca de ti encontramos estas sucursales:  ${sucursales.map((s) => `  • ${s.nombre}`).join('\n')}"
  
- Sucursales disponibles:
- ${sucursales.map((s) => `  • ${s.nombre}`).join('\n')}
+
  
  IMPORTANTE: No uses frases excesivamente amigables. Sé breve.
  `;
@@ -124,9 +124,7 @@
  Sucursal: ${order.sucursal}
  Momento: ${timeContext.momento}
  Instrucción: Pregunta qué bebida desea.
- Ejemplo: "¿Qué te gustaría tomar?"
- 
- Sugerencias para ${timeContext.momento}: ${sugerencias}
+ Ejemplo: "¿Qué te gustaría tomar?", te recomeinto  ${timeContext.momento}: ${sugerencias}
  Si la bebida no está en el menú, notificar al usuario que no tenemos ese producto disponible.
  
  IMPORTANTE: No seas excesivamente descriptivo. Una pregunta simple es suficiente.
@@ -393,7 +391,7 @@
   */
  export function generateConfirmationMessage(order, menu, numeroOrden) {
    // Calcular precio dinámicamente
-   const priceCalc = require('./priceCalculator.js');
+   //const priceCalc = require('./priceCalculator.js');
    const precioInfo = priceCalc.calculateOrderPrice(order, menu);
    
    const total = precioInfo?.total || 0;

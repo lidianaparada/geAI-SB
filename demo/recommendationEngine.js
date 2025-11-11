@@ -1,7 +1,61 @@
 /**
- * recommendationEngine.js
- * Motor de recomendaciones de bebidas según contexto y momento del día
+ * recommendationEngine.js - v3.6.3 FINAL
+ * Usa indice_por_nombre + búsqueda en categorías para obtener objetos completos
  */
+
+/**
+ * Buscar producto completo por ID
+ * @param {Object} menu - Menú completo
+ * @param {string} productId - ID del producto
+ * @returns {Object|null} Producto completo o null
+ */
+ function findProductById(menu, productId) {
+  const categorias = [
+    'bebidas_calientes',
+    'bebidas_frias',
+    'frappuccino',
+    'bebidas_te',
+    'alimentos_salados',
+    'alimentos_dulces',
+    'panaderia'
+  ];
+  
+  for (const categoria of categorias) {
+    if (menu[categoria] && Array.isArray(menu[categoria])) {
+      const producto = menu[categoria].find(p => p.id === productId);
+      if (producto) {
+        return producto;
+      }
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Obtener todas las bebidas del menú
+ * @param {Object} menu - Menú completo
+ * @returns {Array} Array de todas las bebidas
+ */
+function getAllBeverages(menu) {
+  const bebidas = [];
+  
+  const categoriasBebidas = [
+    'bebidas_calientes',
+    'bebidas_frias',
+    'frappuccino',
+    'bebidas_te',
+    'bebidas_cafe'
+  ];
+  
+  for (const categoria of categoriasBebidas) {
+    if (menu[categoria] && Array.isArray(menu[categoria])) {
+      bebidas.push(...menu[categoria].filter(p => p.disponible !== false));
+    }
+  }
+  
+  return bebidas;
+}
 
 /**
  * Obtener recomendaciones según momento del día
@@ -9,62 +63,111 @@
  * @param {string} momento - 'mañana', 'tarde', 'noche'
  * @returns {Array} Array de productos recomendados
  */
- export function getRecommendations(menu, momento = 'tarde') {
-  if (!menu?.indice_por_nombre) {
-    return [];
-  }
-
-  // Recomendaciones por momento del día
+export function getRecommendations(menu, momento = 'tarde') {
+  console.log("getRecommendations: ", momento)
+  // Recomendaciones por momento del día (nombres normalizados)
   const recomendacionesPorMomento = {
     mañana: [
-      'Caffe Latte',
-      'Cappuccino',
-      'Americano',
-      'Café Americano',
-      'Espresso',
+      'latte',
+      'cappuccino',
+      'espresso americano',
+      'café del día: chiapas',
+      'flat white'
     ],
     tarde: [
-      'Frappuccino de Caramelo',
-      'Iced Latte',
-      'Caffe Latte',
-      'Iced Americano',
-      'Matcha Frappuccino',
+      'café frappuccino®',
+      'caramel frappuccino®',
+      'helado latte',
+      'helado espresso americano',
+      'mocha frappuccino®'
     ],
     noche: [
-      'Caffe Mocha',
-      'Hot Chocolate',
-      'Chai Tea Latte',
-      'Vanilla Steamer',
-      'Caramelo Macchiato',
+      'mocha',
+      'chocolate caliente',
+      'chai latte',
+      'chocolate 100% mexicano',
+      'caramel macchiato'
     ],
   };
 
   const nombresRecomendados = recomendacionesPorMomento[momento] || 
                                recomendacionesPorMomento['tarde'];
+  
+  console.log(`🔍 Buscando recomendaciones para ${momento}:`, nombresRecomendados);
 
   const recomendadas = [];
   
-  for (const nombre of nombresRecomendados) {
-    const producto = menu.indice_por_nombre[nombre.toLowerCase()];
-    if (producto) {
-      recomendadas.push({
-        nombre: producto.nombre,
-        id: producto.id,
-        precio: producto.tamaños?.[0]?.precio || 0,
-      });
+  // Estrategia 1: Buscar usando indice_por_nombre (rápido)
+  if (menu.indice_por_nombre) {
+    for (const nombreBuscado of nombresRecomendados) {
+      const productId = menu.indice_por_nombre[nombreBuscado];
+      
+      if (productId) {
+        // Encontramos el ID, ahora buscar el objeto completo
+        const producto = findProductById(menu, productId);
+        
+        if (producto && !recomendadas.find(r => r.id === producto.id)) {
+          recomendadas.push({
+            nombre: producto.nombre,
+            id: producto.id,
+            precio: producto.precio_base || 0,
+          });
+          console.log(`   ✅ Encontrado por índice: ${producto.nombre} (ID: ${producto.id})`);
+        }
+      }
     }
   }
 
-  // Si no encontró suficientes, retornar bebidas aleatorias
+  // Estrategia 2: Búsqueda fuzzy si no hay suficientes (backup)
   if (recomendadas.length < 3) {
-    const todasLasBebidas = Object.values(menu.indice_por_nombre || {})
-      .filter(p => p.categoria === 'Bebidas' || p.tipo === 'bebida')
-      .slice(0, 5);
+    console.log(`   ⚠️ Solo ${recomendadas.length} por índice, buscando más...`);
     
-    return todasLasBebidas.length > 0 ? todasLasBebidas : recomendadas;
+    const todasLasBebidas = getAllBeverages(menu);
+    
+    for (const nombreBuscado of nombresRecomendados) {
+      if (recomendadas.length >= 5) break;
+      
+      const encontrada = todasLasBebidas.find(bebida => {
+        // Saltar si ya está en recomendadas
+        if (recomendadas.find(r => r.id === bebida.id)) return false;
+        
+        const nombreNormalizado = bebida.nombre.toLowerCase();
+        const busquedaNormalizada = nombreBuscado.toLowerCase();
+        
+        return nombreNormalizado.includes(busquedaNormalizada) || 
+               busquedaNormalizada.includes(nombreNormalizado);
+      });
+      
+      if (encontrada) {
+        recomendadas.push({
+          nombre: encontrada.nombre,
+          id: encontrada.id,
+          precio: encontrada.precio_base || 0,
+        });
+        console.log(`   ✅ Encontrado por fuzzy: ${encontrada.nombre}`);
+      }
+    }
   }
 
-  return recomendadas;
+  // Estrategia 3: Agregar bebidas populares si aún faltan
+  if (recomendadas.length < 3) {
+    console.log(`   ⚠️ Solo ${recomendadas.length}, agregando populares...`);
+    
+    const todasLasBebidas = getAllBeverages(menu);
+    const adicionales = todasLasBebidas
+      .filter(b => !recomendadas.find(r => r.id === b.id))
+      .slice(0, 3 - recomendadas.length)
+      .map(b => ({
+        nombre: b.nombre,
+        id: b.id,
+        precio: b.precio_base || 0,
+      }));
+    
+    recomendadas.push(...adicionales);
+  }
+
+  console.log(`   📋 Total recomendadas: ${recomendadas.slice(0, 5)}`);
+  return recomendadas.slice(0, 5);
 }
 
 /**
@@ -73,13 +176,8 @@
  * @returns {Object} Bebida aleatoria
  */
 export function getRandomBeverage(menu) {
-  if (!menu?.indice_por_nombre) {
-    return null;
-  }
-
-  const bebidas = Object.values(menu.indice_por_nombre)
-    .filter(p => p.categoria === 'Bebidas' || p.tipo === 'bebida');
-
+  const bebidas = getAllBeverages(menu);
+  
   if (bebidas.length === 0) return null;
 
   return bebidas[Math.floor(Math.random() * bebidas.length)];
@@ -92,16 +190,22 @@ export function getRandomBeverage(menu) {
  * @returns {Array} Bebidas de esa categoría
  */
 export function getBeveragesByCategory(menu, categoria) {
-  if (!menu?.indice_por_nombre) {
-    return [];
+  const categoriaLower = categoria.toLowerCase();
+  const categorias = [
+    'bebidas_calientes',
+    'bebidas_frias',
+    'frappuccino',
+    'bebidas_te',
+    'bebidas_cafe'
+  ];
+  
+  for (const cat of categorias) {
+    if (cat.includes(categoriaLower) && menu[cat]) {
+      return menu[cat].slice(0, 5);
+    }
   }
-
-  return Object.values(menu.indice_por_nombre)
-    .filter(p => 
-      (p.categoria === categoria || p.tipo === categoria) &&
-      p.nombre.trim() !== ''
-    )
-    .slice(0, 5);
+  
+  return getAllBeverages(menu).slice(0, 5);
 }
 
 /**
@@ -110,38 +214,40 @@ export function getBeveragesByCategory(menu, categoria) {
  * @returns {Array} Bebidas populares
  */
 export function getPopularBeverages(menu) {
-  if (!menu?.indice_por_nombre) {
-    return [];
-  }
-
-  // Las bebidas más populares de Starbucks
+  // Lista de bebidas populares (nombres normalizados para el índice)
   const populares = [
-    'Caffe Latte',
-    'Iced Coffee',
-    'Caramel Macchiato',
-    'Americano',
-    'Cappuccino',
+    'latte',
+    'cappuccino',
+    'espresso americano',
+    'caramel macchiato',
+    'café frappuccino®',
   ];
 
   const resultado = [];
 
-  for (const nombre of populares) {
-    const producto = menu.indice_por_nombre[nombre.toLowerCase()];
-    if (producto) {
-      resultado.push(producto);
+  // Buscar primero en el índice
+  if (menu.indice_por_nombre) {
+    for (const nombrePopular of populares) {
+      const productId = menu.indice_por_nombre[nombrePopular];
+      if (productId) {
+        const producto = findProductById(menu, productId);
+        if (producto && !resultado.find(r => r.id === producto.id)) {
+          resultado.push(producto);
+        }
+      }
     }
   }
 
-  // Si no encontró suficientes, agregar aleatoriamente
+  // Si no hay suficientes, buscar en todas las bebidas
   if (resultado.length < 3) {
-    const todas = Object.values(menu.indice_por_nombre || {})
-      .filter(p => p.nombre.trim() !== '')
-      .slice(0, 5);
-    
-    return resultado.concat(todas).slice(0, 5);
+    const bebidas = getAllBeverages(menu);
+    const adicionales = bebidas
+      .filter(b => !resultado.find(r => r.id === b.id))
+      .slice(0, 3 - resultado.length);
+    resultado.push(...adicionales);
   }
 
-  return resultado;
+  return resultado.slice(0, 5);
 }
 
 /**
@@ -151,26 +257,23 @@ export function getPopularBeverages(menu) {
  * @returns {Array} Bebidas que coinciden
  */
 export function searchBeverages(menu, criterios = {}) {
-  if (!menu?.indice_por_nombre) {
-    return [];
-  }
-
-  let resultados = Object.values(menu.indice_por_nombre || {});
+  let resultados = getAllBeverages(menu);
 
   // Filtrar por temperatura
   if (criterios.temperatura) {
     const temp = criterios.temperatura.toLowerCase();
     resultados = resultados.filter(p => {
       const nombre = p.nombre.toLowerCase();
+      const categoria = p.categoria?.toLowerCase() || '';
+      
       if (temp === 'caliente') {
-        return nombre.includes('latte') || 
-               nombre.includes('cappuccino') ||
-               nombre.includes('macchiato') ||
-               nombre.includes('americano') ||
-               nombre.includes('mocha');
+        return categoria.includes('caliente') ||
+               (!nombre.includes('helado') && !nombre.includes('iced') && !nombre.includes('frappuccino'));
       }
       if (temp === 'frio' || temp === 'iced') {
-        return nombre.includes('iced') || 
+        return categoria.includes('fria') ||
+               nombre.includes('helado') ||
+               nombre.includes('iced') || 
                nombre.includes('frappuccino') ||
                nombre.includes('cold');
       }
@@ -182,7 +285,7 @@ export function searchBeverages(menu, criterios = {}) {
   if (criterios.tipo) {
     const tipo = criterios.tipo.toLowerCase();
     resultados = resultados.filter(p =>
-      p.tipo?.toLowerCase().includes(tipo) ||
+      p.categoria?.toLowerCase().includes(tipo) ||
       p.nombre.toLowerCase().includes(tipo)
     );
   }
@@ -190,19 +293,109 @@ export function searchBeverages(menu, criterios = {}) {
   // Filtrar por precio
   if (criterios.precioMin) {
     resultados = resultados.filter(p => {
-      const precio = p.tamaños?.[0]?.precio || 0;
+      const precio = p.precio_base || 0;
       return precio >= criterios.precioMin;
     });
   }
 
   if (criterios.precioMax) {
     resultados = resultados.filter(p => {
-      const precio = p.tamaños?.[0]?.precio || 0;
+      const precio = p.precio_base || 0;
       return precio <= criterios.precioMax;
     });
   }
 
   return resultados.slice(0, 5);
+}
+// Inserta estas funciones cerca de tus helpers (p. ej. después de normalizeText / isRecommendationRequest)
+
+function getFallbackRecommendations(menu, count = 3) {
+  const buckets = [
+    'bebidas_calientes',
+    'bebidas_frias',
+    'frappuccino',
+    'especialidades',
+    'brebajes'
+  ];
+
+  const items = [];
+
+  // Recolecta items por categoría conocida
+  for (const cat of buckets) {
+    if (menu[cat] && Array.isArray(menu[cat])) {
+      for (const p of menu[cat]) {
+        if (p && p.nombre) items.push(p);
+        if (items.length >= count) break;
+      }
+    }
+    if (items.length >= count) break;
+  }
+
+  // Si no hay en buckets, flatten todo el menú y toma primeros
+  if (items.length < count) {
+    for (const key of Object.keys(menu)) {
+      const arr = menu[key];
+      if (!Array.isArray(arr)) continue;
+      for (const p of arr) {
+        if (p && p.nombre && !items.some(x => x.nombre === p.nombre)) {
+          items.push(p);
+          if (items.length >= count) break;
+        }
+      }
+      if (items.length >= count) break;
+    }
+  }
+
+  // última defensa: crear objetos genéricos si aún vacíos
+  if (items.length === 0) {
+    return [
+      { nombre: 'Café Americano' },
+      { nombre: 'Caffè Latte' },
+      { nombre: 'Cappuccino' }
+    ].slice(0, count);
+  }
+
+  return items.slice(0, count);
+}
+
+// ---- Modificar buscarProductoEnMenu para usar fallback si recommendationEngine devuelve vacío ----
+// Reemplaza la creación de sugerencias por algo como esto:
+
+function buscarProductoEnMenu(userInput, tipo = null) {
+  const producto = menuUtils.findProductByName(MENU, userInput, tipo);
+  
+  if (producto) {
+    return { encontrado: true, producto };
+  }
+  
+  const timeContext = promptGen.getTimeContext();
+  let sugerencias = [];
+  
+  if (tipo === 'bebida' || !tipo) {
+    sugerencias = recommendationEngine
+      .getRecommendations(MENU, timeContext.momento)
+      .slice(0, 3);
+  } else if (tipo === 'alimento') {
+    const categorias = ['alimentos_salados', 'alimentos_dulces', 'panaderia'];
+    for (const cat of categorias) {
+      if (MENU[cat] && Array.isArray(MENU[cat])) {
+        sugerencias.push(...MENU[cat].slice(0, 2));
+      }
+    }
+    sugerencias = sugerencias.slice(0, 3);
+  }
+
+  // Si recommendationEngine devolvió vacío, usar fallback
+  if (!sugerencias || sugerencias.length === 0) {
+    console.warn('⚠️ recommendationEngine devolvió vacío, usando fallback del menú');
+    sugerencias = getFallbackRecommendations(MENU, 3);
+  }
+  
+  return {
+    encontrado: false,
+    producto: null,
+    sugerencias: sugerencias.map(p => p.nombre)
+  };
 }
 
 export default {
@@ -211,4 +404,7 @@ export default {
   getBeveragesByCategory,
   getPopularBeverages,
   searchBeverages,
+  getFallbackRecommendations,
+  buscarProductoEnMenu
+
 };
