@@ -1428,7 +1428,7 @@ if (proximoPaso === "revision") {
 • ${session.currentOrder.bebida}${alimentoText}
 • Sucursal: ${session.currentOrder.sucursal}
 
-💰 Subtotal: ${totalText} pesos mexicanos
+ Subtotal: ${totalText} pesos mexicanos
 
 ¿Deseas agregar o modificar algo, o continuamos?`;
 }
@@ -1494,18 +1494,18 @@ if (proximoPaso === "metodoPago") {
   const estrellasTarjeta = Math.floor(totalText / 20);
   const estrellasCard = Math.floor(totalText / 10);
   
-  replyConDetalles = `Perfecto. Tu total es de $${totalText} pesos mexicanos.
+  replyConDetalles = `Perfecto. 
 
 ¿Cómo deseas pagar?
 
-💵 Efectivo
-   → Acumulas ${estrellasEfectivo} estrella${estrellasEfectivo !== 1 ? 's' : ''}
+ Efectivo
+   → Acumulas 1 estrella por cada $20 pesos de compra
 
-💳 Tarjeta bancaria
-   → Acumulas ${estrellasTarjeta} estrella${estrellasTarjeta !== 1 ? 's' : ''}
+ Tarjeta bancaria
+   → Acumulas 1 estrella por cada $20 pesos de compra
 
-⭐ Starbucks Card (Recomendado)
-   → Acumulas ${estrellasCard} estrella${estrellasCard !== 1 ? 's' : ''} (¡el doble!)
+ Starbucks Card (Recomendado)
+   → Acumulas 1 estrella por cada $10 pesos de compra (¡el doble!)
 
 ¿Cuál prefieres?`;
 }
