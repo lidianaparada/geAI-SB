@@ -25,7 +25,7 @@
     if (order.bebida) {
       console.log(`   🔍 Buscando bebida: "${order.bebida}"`);
       
-      const bebida = findProductByName(menu, order.bebida);
+      const bebida = menuUtils.findProductByName(menu, order.bebida);
       
       if (bebida) {
         const precioBebida = bebida.precio_base || 0;
@@ -49,7 +49,7 @@
     if (order.alimento && order.alimento !== 'ninguno') {
       console.log(`   🔍 Buscando alimento: "${order.alimento}"`);
       
-      const alimento = findProductByName(menu, order.alimento, 'alimento');
+      const alimento = menuUtils.findProductByName(menu, order.alimento, 'alimento');
       
       if (alimento) {
         const precioAlimento = alimento.precio_base || 0;
