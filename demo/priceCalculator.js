@@ -11,122 +11,132 @@
   * @param {Object} menu - Menú completo
   * @returns {Object} {valido, precio_base, precio_modificadores, precio_alimento, total, detalles}
   */
- export function calculateOrderPrice(order, menu) {
-   const detalles = [];
-   let total = 0;
- 
-   // 1. VALIDAR QUE HAYA BEBIDA
-   if (!order.bebida) {
-     return {
-       valido: false,
-       error: 'No hay bebida seleccionada',
-       total: 0,
-     };
-   }
- 
-   // 2. BUSCAR PRODUCTO DE BEBIDA
-   const producto = menuUtils.findProductByName(menu, order.bebida);
-   if (!producto) {
-     return {
-       valido: false,
-       error: `Producto no encontrado: ${order.bebida}`,
-       total: 0,
-     };
-   }
- 
-   // 3. CALCULAR PRECIO DE BEBIDA CON TAMAÑO
-   let precioBebida = 0;
- 
-   if (menuUtils.requiresSize(producto)) {
-     // Si requiere tamaño
-     if (!order.tamano) {
-       return {
-         valido: false,
-         error: 'Se requiere seleccionar tamaño',
-         total: 0,
-       };
-     }
- 
-     if (!menuUtils.isValidSize(producto, order.tamano)) {
-       return {
-         valido: false,
-         error: `Tamaño inválido: ${order.tamano}`,
-         total: 0,
-       };
-     }
- 
-     precioBebida = menuUtils.getPriceForSize(producto, order.tamano);
-     detalles.push(`${producto.nombre} ${order.tamano}: $${precioBebida}`);
-   } else {
-     // Si no requiere tamaño
-     precioBebida = producto.precio_base || 0;
-     detalles.push(`${producto.nombre}: $${precioBebida}`);
-   }
- 
-   total += precioBebida;
- 
-   // 4. CALCULAR PRECIOS DE MODIFICADORES
-   let precioModificadores = 0;
- 
-   if (order.modificadores && Array.isArray(order.modificadores)) {
-     for (const selectedMod of order.modificadores) {
-       const grupoMod = menuUtils.getModifierById(producto, selectedMod.grupoId);
-       if (!grupoMod) {
-         return {
-           valido: false,
-           error: `Grupo de modificador no encontrado: ${selectedMod.grupoId}`,
-           total: 0,
-         };
-       }
- 
-       const opcion = menuUtils.getModifierOption(grupoMod, selectedMod.opcionId);
-       if (!opcion) {
-         return {
-           valido: false,
-           error: `Opción no encontrada: ${selectedMod.opcionId}`,
-           total: 0,
-         };
-       }
- 
-       // Obtener precio de la opción para el tamaño seleccionado
-       const precioOpcion = menuUtils.getOptionPrice(opcion, order.tamano || '3');
-       precioModificadores += precioOpcion;
- 
-       if (precioOpcion > 0) {
-         detalles.push(`  + ${grupoMod.nombre}: ${opcion.nombre} (+$${precioOpcion})`);
-       } else {
-         detalles.push(`  + ${grupoMod.nombre}: ${opcion.nombre}`);
-       }
-     }
-   }
- 
-   total += precioModificadores;
- 
-   // 5. CALCULAR PRECIO DE ALIMENTO (OPCIONAL)
-   let precioAlimento = 0;
- 
-   if (order.alimento && order.alimento !== 'ninguno' && order.alimento !== '') {
-     const productoAlimento = menuUtils.findProductByName(menu, order.alimento);
-     if (productoAlimento) {
-       precioAlimento = productoAlimento.precio_base || 0;
-       detalles.push(`${productoAlimento.nombre}: $${precioAlimento}`);
-       total += precioAlimento;
-     }
-   }
- 
-   // 6. CALCULAR ESTRELLAS
-   const estrellas = calculateStars(total, order.metodoPago);
- 
-   return {
-     valido: true,
-     precio_bebida: precioBebida,
-     precio_modificadores: precioModificadores,
-     precio_alimento: precioAlimento,
-     total,
-     estrellas,
-     detalles,
-   };
- }
+  export function calculateOrderPrice(order, menu) {
+    console.log(`\n💰 calculateOrderPrice()`);
+    console.log(`   Orden:`, JSON.stringify(order, null, 2));
+    
+    let total = 0;
+    let estrellas = 0;
+    const detalles = [];
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 1️⃣ PRECIO DE LA BEBIDA
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    if (order.bebida) {
+      console.log(`   🔍 Buscando bebida: "${order.bebida}"`);
+      
+      // Buscar la bebida en el menú
+      const bebida = menuUtils.findProductByName(menu, order.bebida);
+      
+      if (bebida) {
+        console.log(`   ✅ Bebida encontrada: ${bebida.nombre} (ID: ${bebida.id})`);
+        
+        let precioBebida = bebida.precio_base || 0;
+        console.log(`   💵 Precio base bebida: $${precioBebida}`);
+        
+        // Si tiene tamaño, buscar el precio específico del tamaño
+        if (order.tamano && bebida.tamanos && Array.isArray(bebida.tamanos)) {
+          console.log(`   📏 Tamaño seleccionado: ${order.tamano}`);
+          
+          // El tamaño puede ser el nombre completo o solo el ID
+          const tamanoEncontrado = bebida.tamanos.find(t => 
+            t === order.tamano || 
+            t.toLowerCase().includes(order.tamano.toLowerCase())
+          );
+          
+          if (tamanoEncontrado) {
+            console.log(`   ✅ Tamaño válido: ${tamanoEncontrado}`);
+            // El precio base ya incluye el tamaño, no se suma extra
+          }
+        }
+        
+        // Agregar modificadores (si tienen costo adicional)
+        if (order.modificadores && Array.isArray(order.modificadores)) {
+          console.log(`   🔧 Procesando ${order.modificadores.length} modificadores...`);
+          
+          for (const mod of order.modificadores) {
+            // Por ahora, la mayoría de modificadores son gratuitos
+            // pero algunos como "crema batida" o "shot extra" pueden tener costo
+            console.log(`      - ${mod.grupoId}: ${mod.opcionId} (costo: $0)`);
+          }
+        }
+        
+        total += precioBebida;
+        detalles.push({
+          tipo: 'bebida',
+          nombre: bebida.nombre,
+          tamano: order.tamano || 'N/A',
+          precio: precioBebida
+        });
+        
+        console.log(`   ✅ Subtotal bebida: $${precioBebida}`);
+      } else {
+        console.warn(`   ⚠️ Bebida no encontrada en menú: "${order.bebida}"`);
+      }
+    }
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 2️⃣ PRECIO DEL ALIMENTO
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    if (order.alimento && order.alimento !== 'ninguno') {
+      console.log(`   🔍 Buscando alimento: "${order.alimento}"`);
+      
+      // Buscar el alimento en el menú
+      const alimento = menuUtils.findProductByName(menu, order.alimento, 'alimento');
+      
+      if (alimento) {
+        console.log(`   ✅ Alimento encontrado: ${alimento.nombre} (ID: ${alimento.id})`);
+        
+        const precioAlimento = alimento.precio_base || 0;
+        console.log(`   💵 Precio alimento: $${precioAlimento}`);
+        
+        total += precioAlimento;
+        detalles.push({
+          tipo: 'alimento',
+          nombre: alimento.nombre,
+          precio: precioAlimento
+        });
+        
+        console.log(`   ✅ Subtotal con alimento: $${total}`);
+      } else {
+        console.warn(`   ⚠️ Alimento no encontrado en menú: "${order.alimento}"`);
+      }
+    } else {
+      console.log(`   ℹ️ Sin alimento en la orden`);
+    }
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 3️⃣ CALCULAR ESTRELLAS SEGÚN MÉTODO DE PAGO
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    if (order.metodoPago) {
+      if (order.metodoPago.toLowerCase().includes('starbucks card')) {
+        // Starbucks Card: 1 estrella por cada $10
+        estrellas = Math.floor(total / 10);
+        console.log(`   ⭐ Estrellas (Starbucks Card): ${estrellas} (1 por cada $10)`);
+      } else {
+        // Efectivo o Tarjeta: 1 estrella por cada $20
+        estrellas = Math.floor(total / 20);
+        console.log(`   ⭐ Estrellas (Efectivo/Tarjeta): ${estrellas} (1 por cada $20)`);
+      }
+    }
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    // 4️⃣ RESULTADO FINAL
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    console.log(`\n   💰 TOTAL: $${total}`);
+    console.log(`   ⭐ ESTRELLAS: ${estrellas}`);
+    console.log(`   📋 DETALLES:`, detalles);
+    
+    return {
+      total,
+      estrellas,
+      detalles
+    };
+  }
  
  /**
   * Calcular estrellas ganadas según método de pago

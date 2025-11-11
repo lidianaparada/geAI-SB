@@ -36,7 +36,148 @@ const sessionContext = new Map();
 const MAX_CACHE_SIZE = 50;
 
 let MENU = {};
-
+/**
+ * ✅ VERSIÓN MEJORADA: Buscar producto con fuzzy matching
+ * Encuentra productos incluso con variaciones de escritura
+ */
+ function buscarProductoEnMenu(userInput, tipo = null) {
+  console.log(`\n🔍 buscarProductoEnMenu()`);
+  console.log(`   Input original: "${userInput}"`);
+  console.log(`   Tipo: ${tipo || 'cualquiera'}`);
+  
+  // 1️⃣ Normalizar input del usuario
+  const inputNormalizado = userInput
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Quitar acentos
+    .replace(/[®©™]/g, "") // Quitar símbolos registrados
+    .replace(/[^\w\s]/g, " ") // Reemplazar símbolos por espacios
+    .replace(/\s+/g, " ") // Normalizar espacios múltiples
+    .trim();
+  
+  console.log(`   Input normalizado: "${inputNormalizado}"`);
+  
+  // 2️⃣ Intentar búsqueda exacta primero (usando menuUtils)
+  let producto = menuUtils.findProductByName(MENU, userInput, tipo);
+  
+  if (producto) {
+    console.log(`   ✅ Encontrado (búsqueda exacta): ${producto.nombre}`);
+    return { encontrado: true, producto };
+  }
+  
+  // 3️⃣ Búsqueda FUZZY mejorada
+  console.log(`   🔄 Búsqueda exacta falló, intentando fuzzy matching...`);
+  
+  const categorias = tipo === 'bebida' || !tipo
+    ? ['bebidas_calientes', 'bebidas_frias', 'frappuccino', 'bebidas_te']
+    : ['alimentos_salados', 'alimentos_dulces', 'panaderia','productos_temporada'];
+  
+  let mejorCoincidencia = null;
+  let mejorPuntaje = 0;
+  
+  // Input sin espacios para comparación flexible
+  const inputSinEspacios = inputNormalizado.replace(/\s+/g, "");
+  const palabrasInput = inputNormalizado.split(/\s+/).filter(p => p.length >= 3);
+  
+  console.log(`   Palabras clave: [${palabrasInput.join(", ")}]`);
+  
+  for (const cat of categorias) {
+    if (!MENU[cat] || !Array.isArray(MENU[cat])) continue;
+    
+    for (const item of MENU[cat]) {
+      if (item.disponible === false) continue;
+      
+      // Normalizar nombre del producto igual que el input
+      const nombreNormalizado = item.nombre
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[®©™]/g, "")
+        .replace(/[^\w\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+      
+      const nombreSinEspacios = nombreNormalizado.replace(/\s+/g, "");
+      
+      // ⭐ ESTRATEGIA 1: Coincidencia sin espacios (para "dragon fruit" vs "dragonfruit")
+      if (nombreSinEspacios.includes(inputSinEspacios)) {
+        console.log(`   ✅ MATCH (sin espacios): "${item.nombre}"`);
+        return { encontrado: true, producto: item };
+      }
+      
+      // Si el input es corto, revisar si está contenido
+      if (inputSinEspacios.length >= 5 && nombreSinEspacios.includes(inputSinEspacios)) {
+        console.log(`   ✅ MATCH (contenido): "${item.nombre}"`);
+        return { encontrado: true, producto: item };
+      }
+      
+      // ⭐ ESTRATEGIA 2: Coincidencia por palabras clave
+      if (palabrasInput.length > 0) {
+        let palabrasCoinciden = 0;
+        const palabrasProducto = nombreNormalizado.split(/\s+/);
+        
+        for (const palabraInput of palabrasInput) {
+          for (const palabraProd of palabrasProducto) {
+            // Coincidencia parcial (una palabra contiene a la otra)
+            if (palabraProd.includes(palabraInput) || palabraInput.includes(palabraProd)) {
+              palabrasCoinciden++;
+              break;
+            }
+          }
+        }
+        
+        const puntaje = palabrasCoinciden / palabrasInput.length;
+        
+        // Guardar la mejor coincidencia
+        if (puntaje > mejorPuntaje) {
+          mejorPuntaje = puntaje;
+          mejorCoincidencia = item;
+        }
+      }
+    }
+  }
+  
+  // Si encontramos una buena coincidencia (>= 60%)
+  if (mejorCoincidencia && mejorPuntaje >= 0.6) {
+    console.log(`   ✅ Encontrado (fuzzy): ${mejorCoincidencia.nombre} (score: ${(mejorPuntaje * 100).toFixed(0)}%)`);
+    return { encontrado: true, producto: mejorCoincidencia };
+  }
+  
+  // 4️⃣ No encontró nada, generar sugerencias
+  console.log(`   ❌ No encontrado en menú, generando sugerencias...`);
+  
+  const timeContext = promptGen.getTimeContext();
+  let sugerencias = [];
+  
+  if (tipo === 'bebida' || !tipo) {
+    const recomendaciones = recommendationEngine
+      .getRecommendations(MENU, timeContext.momento)
+      .slice(0, 3);
+    
+    sugerencias = recomendaciones.map(r => r.nombre);
+    console.log(`   💡 Sugerencias de bebidas: ${sugerencias.join(", ")}`);
+  } 
+  else if (tipo === 'alimento') {
+    for (const cat of categorias) {
+      if (MENU[cat] && Array.isArray(MENU[cat])) {
+        const items = MENU[cat]
+          .filter(item => item.disponible !== false)
+          .slice(0, 2)
+          .map(item => item.nombre);
+        
+        sugerencias.push(...items);
+      }
+    }
+    sugerencias = sugerencias.slice(0, 3);
+    console.log(`   💡 Sugerencias de alimentos: ${sugerencias.join(", ")}`);
+  }
+  
+  return {
+    encontrado: false,
+    producto: null,
+    sugerencias: sugerencias
+  };
+}
 function loadMenu() {
   try {
     const menuPath = path.join(__dirname, "menu_simplificado_CORRECTO.json");
@@ -59,7 +200,7 @@ function getCurrentStep(order) {
   console.log(`   sucursal: ${order.sucursal || 'falta'}`);
   console.log(`   bebida: ${order.bebida || 'falta'}`);
   console.log(`   tamano: ${order.tamano || 'falta'}`);
-  console.log(`   tamano: ${order.alimento || 'falta'}`);
+  console.log(`   alimento: ${order.alimento || 'falta'}`);
   console.log(`   modificadores: ${JSON.stringify(order.modificadores || [])}`);
   console.log(`   revisado: ${order.revisado || 'falta'}`);
   console.log(`   confirmado: ${order.confirmado || 'falta'}`);
@@ -337,7 +478,7 @@ function updateOrderFromInput(session, userInput) {
 
 case "bebida":
   // ✅ Detectar si está pidiendo recomendación
-  const pidieRecomendacion = /(recomienda|recomiéndame|recomendame|sugiere|sugiéreme|sugiereme|que me|qué me|sorpréndeme|sorprendeme|lo mejor|lo más|lo mas|popular|no sé|no se|cual|cuál|cualquier|dame recomendaciones)/i.test(lower);
+  const pidieRecomendacion = /(recomienda|recomiéndame|recomendame|sugiere|sugiéreme|sugiereme|que me|qué me|sorpréndeme|sorprendeme|lo mejor|lo más|lo mas|popular|no sé|no se|cual|cuál|cualquier|quiero|quiero algo|dame recomendaciones|temporada)/i.test(lower);
   
   if (pidieRecomendacion) {
     order.solicitoRecomendacion = true;
@@ -374,6 +515,10 @@ case "bebida":
       order.preferenciaRecomendacion = "te";
       console.log(`   💡 Usuario pidió recomendación + preferencia: TÉ`);
     }
+    else if (/(temporada)/i.test(inputNormalizado)) {
+      order.preferenciaRecomendacion = "temporada";
+      console.log(`   💡 Usuario pidió recomendación + preferencia: Temporada`);
+    }
     else {
       console.log(`   💡 Usuario pidió recomendación (sin preferencia específica)`);
     }
@@ -403,73 +548,106 @@ case "bebida":
       }
       break;
 
-    case "alimento":
-      // Primero verificar si el usuario NO quiere alimento
-      if (lower.includes("no") || lower.includes("sin") || lower.includes("ninguno") || lower.includes("nada")) {
-        order.alimento = "ninguno";
-        console.log(`   ✅ Guardado: alimento = ninguno`);
-      } else {
-        // ✅ NUEVA LÓGICA: Fuzzy matching para alimentos comunes
-        let alimentoDetectado = null;
-        
-        // Diccionario de alimentos con variaciones
-        const alimentosComunes = {
-          'croissant': ['croissant', 'cruasan', 'croissan', 'croasan'],
-          'muffin': ['muffin', 'mofin', 'mufin', 'magdalena'],
-          'brownie': ['brownie', 'brauni', 'browni'],
-          'sandwich': ['sandwich', 'sanwich', 'sándwich', 'emparedado'],
-          'bagel': ['bagel', 'baguel', 'beigel'],
-          'cookie': ['cookie', 'galleta', 'coki'],
-          'donut': ['donut', 'dona', 'dónut', 'donuts'],
-          'cake pop': ['cake pop', 'cakepop', 'paleta', 'cake-pop'],
-          'panini': ['panini', 'panino'],
-          'baguette': ['baguette', 'baget', 'baguete']
-        };
-        
-        // Normalizar input del usuario
-        const inputNormalizado = lower
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .replace(/[^\w\s]/g, "");
-        
-        // Buscar coincidencia en diccionario
-        for (const [alimentoKey, variantes] of Object.entries(alimentosComunes)) {
-          for (const variante of variantes) {
-            if (inputNormalizado.includes(variante)) {
-              alimentoDetectado = alimentoKey;
-              console.log(`   🍞 Detectado alimento por keyword: ${alimentoKey}`);
-              break;
-            }
+      // ✅ DETECCIÓN MEJORADA en updateOrderFromInput() - caso "alimento"
+
+case "alimento":
+  // ✅ Detectar si dijo "no" o "ninguno"
+  if (/(no|sin|ninguno|nada|no quiero|no gracias|paso|skip|continua|continuar|siguiente)/i.test(lower)) {
+    order.alimento = "ninguno";
+    console.log(`   ✅ Guardado: alimento = ninguno`);
+    break;
+  }
+  
+  // ✅ Detectar si está pidiendo recomendación de alimento
+  const pidieRecomendacionAlimento = /(recomienda|recomiéndame|recomendame|sugiere|sugiéreme|sugiereme|que me|qué me|opciones|que hay|qué hay|que tienen|qué tienen|no sé|no se|cual|cuál|cualquier)/i.test(lower);
+  
+  if (pidieRecomendacionAlimento) {
+    order.solicitoRecomendacionAlimento = true;
+    
+    // 🔥 Detectar preferencia de tipo de alimento
+    const inputNormalizado = lower.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    
+    // Tipo - Salado
+    if (/(salado|salada|sandwich|panini|bagel|baguette|pavo|jamon|queso|sal)/i.test(inputNormalizado)) {
+      order.preferenciaAlimento = "salado";
+      console.log(`   💡 Usuario pidió recomendación + preferencia: SALADO`);
+    }
+    // Tipo - Dulce
+    else if (/(dulce|postre|chocolate|brownie|cookie|galleta|dona|pastel|muffin|sweet|azucar)/i.test(inputNormalizado)) {
+      order.preferenciaAlimento = "dulce";
+      console.log(`   💡 Usuario pidió recomendación + preferencia: DULCE`);
+    }
+    // Tipo - Saludable
+    else if (/(saludable|sano|ligero|light|ensalada|fruta|yogurt|avena|chia|fit|natural)/i.test(inputNormalizado)) {
+      order.preferenciaAlimento = "saludable";
+      console.log(`   💡 Usuario pidió recomendación + preferencia: SALUDABLE`);
+    }
+    // Tipo - Desayuno
+    else if (/(desayuno|breakfast|mañana|morning)/i.test(inputNormalizado)) {
+      order.preferenciaAlimento = "desayuno";
+      console.log(`   💡 Usuario pidió recomendación + preferencia: DESAYUNO`);
+    }
+    else {
+      console.log(`   💡 Usuario pidió recomendación de alimento (sin preferencia específica)`);
+    }
+  } else {
+    // Buscar el alimento en el menú
+    const resultadoAlimento = buscarProductoEnMenu(userInput, 'alimento');
+    
+    if (resultadoAlimento.encontrado) {
+      order.alimento = resultadoAlimento.producto.nombre;
+      order.alimento_id = resultadoAlimento.producto.id;
+      console.log(`   ✅ Guardado: alimento = ${resultadoAlimento.producto.nombre}`);
+    } else {
+      // Intentar detectar alimentos comunes con variaciones
+      const alimentosComunes = {
+        'croissant': ['croissant', 'cruasan', 'croissan', 'croasan'],
+        'muffin': ['muffin', 'mofin', 'mufin', 'magdalena'],
+        'brownie': ['brownie', 'brauni', 'browni'],
+        'sandwich': ['sandwich', 'sanwich', 'sándwich', 'emparedado'],
+        'bagel': ['bagel', 'baguel', 'beigel'],
+        'cookie': ['cookie', 'galleta', 'coki', 'galeta'],
+        'dona': ['dona', 'donut', 'dona', 'donuts'],
+        'panini': ['panini', 'panini', 'pannini'],
+      };
+      
+      const inputNormalizado = lower
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s]/g, "");
+      
+      let alimentoDetectado = null;
+      for (const [alimentoKey, variantes] of Object.entries(alimentosComunes)) {
+        for (const variante of variantes) {
+          if (inputNormalizado.includes(variante)) {
+            alimentoDetectado = alimentoKey;
+            break;
           }
-          if (alimentoDetectado) break;
         }
-        
-        // Si se detectó por keyword, buscar en el menú
-        if (alimentoDetectado) {
-          const alimento = menuUtils.findProductByName(MENU, alimentoDetectado, 'alimento');
-          if (alimento) {
-            order.alimento = alimento.nombre;
-            order.alimento_id = alimento.id;
-            console.log(`   ✅ Guardado: alimento = ${alimento.nombre} (ID: ${alimento.id})`);
-          } else {
-            // Si no lo encuentra en el menú, guardar lo que dijo el usuario
-            order.alimento = alimentoDetectado.charAt(0).toUpperCase() + alimentoDetectado.slice(1);
-            console.log(`   ✅ Guardado: alimento = ${alimentoDetectado} (nombre genérico)`);
-          }
-        } else {
-          // Intentar búsqueda directa en el menú
-          const alimento = menuUtils.findProductByName(MENU, userInput, 'alimento');
-          if (alimento) {
-            order.alimento = alimento.nombre;
-            order.alimento_id = alimento.id;
-            console.log(`   ✅ Guardado: alimento = ${alimento.nombre} (ID: ${alimento.id})`);
-          } else {
-            console.log(`   ⚠️ No se detectó alimento para: "${userInput}"`);
-            // No guardar nada, dejarlo seguir intentando
-          }
-        }
+        if (alimentoDetectado) break;
       }
-      break;
+      
+      if (alimentoDetectado) {
+        const alimento = menuUtils.findProductByName(MENU, alimentoDetectado, 'alimento');
+        if (alimento) {
+          order.alimento = alimento.nombre;
+          order.alimento_id = alimento.id;
+          console.log(`   ✅ Guardado: alimento = ${alimento.nombre}`);
+        } else {
+          // Guardar como genérico
+          order.alimento = alimentoDetectado.charAt(0).toUpperCase() + alimentoDetectado.slice(1);
+          console.log(`   ✅ Guardado: alimento = ${alimentoDetectado} (genérico)`);
+        }
+      } else {
+        order.alimentoNoEncontrado = userInput;
+        order.sugerenciasAlimento = resultadoAlimento.sugerencias;
+        console.log(`   ⚠️ Alimento NO encontrado: "${userInput}"`);
+        console.log(`   💡 Sugerencias: ${resultadoAlimento.sugerencias.join(", ")}`);
+      }
+    }
+  }
+  break;
+   
       case "revision":
         // ✅ NUEVO CASO: Paso de revisión
         const normalizado = lower
@@ -648,32 +826,61 @@ function cleanTextForTTS(text) {
     .trim();
 }
 
+// ✅ Actualizar getSuggestions() - Agregar caso de alimentos
+
 function getSuggestions(order) {
   const proximoPaso = getCurrentStep(order);
 
   switch (proximoPaso) {
     case "bienvenida":
       return ["Sí, quiero ordenar", "Empecemos", "Iniciar orden"];
+      
     case "esperando_confirmacion":
       return ["Sí, estoy listo", "Empecemos", "Claro"];
+      
     case "sucursal":
       return SUCURSALES.map((s) => s.nombre);
+      
     case "bebida":
       const timeContext = promptGen.getTimeContext();
       return recommendationEngine
         .getRecommendations(MENU, timeContext.momento)
         .slice(0, 4)
         .map((p) => p.nombre);
+        
     case "tamano":
       const producto = menuUtils.findProductByName(MENU, order.bebida);
       if (producto) {
         return sizeDetection.getSizeSuggestions(producto);
       }
       return [];
+      
+    // ✅ NUEVO: Sugerencias para alimentos
     case "alimento":
-      return ["Croissant", "Muffin", "Brownie", "No, gracias"];
+      const sugerenciasAlimentos = [];
+      
+      // Tomar 2 salados
+      if (MENU.alimentos_salados && MENU.alimentos_salados.length > 0) {
+        sugerenciasAlimentos.push(
+          ...MENU.alimentos_salados.slice(0, 2).map(a => a.nombre)
+        );
+      }
+      
+      // Tomar 2 dulces
+      if (MENU.alimentos_dulces && MENU.alimentos_dulces.length > 0) {
+        sugerenciasAlimentos.push(
+          ...MENU.alimentos_dulces.slice(0, 2).map(a => a.nombre)
+        );
+      }
+      
+      // Agregar opción de "No, gracias"
+      sugerenciasAlimentos.push("No, gracias");
+      
+      return sugerenciasAlimentos.slice(0, 5);
+      
     case "metodoPago":
       return ["Efectivo", "Tarjeta bancaria", "Starbucks Card"];
+      
     default:
       return [];
   }
@@ -797,11 +1004,27 @@ Estoy aquí para ayudarte a hacer tu pedido de forma rápida y sencilla.
     // ✅ PASO: BEBIDA - MEJORADO con validación y recomendaciones
 // ✅ PASO: BEBIDA - Con detección de preferencias en recomendaciones
 
+// ✅ VERSIÓN SIMPLIFICADA Y GARANTIZADA - Paso Bebida con Preferencias
+
 if (proximoPaso === "bebida") {
   const timeContext = promptGen.getTimeContext();
+  
+  // 1️⃣ Obtener TODAS las bebidas del menú (fuente completa)
+  const todasLasBebidas = [];
+  const categorias = ['bebidas_calientes', 'bebidas_frias', 'frappuccino', 'te','productos_temporada'];
+  
+  for (const cat of categorias) {
+    if (MENU[cat] && Array.isArray(MENU[cat])) {
+      todasLasBebidas.push(...MENU[cat].filter(b => b.disponible !== false));
+    }
+  }
+  
+  console.log(`📋 Total bebidas en menú: ${todasLasBebidas.length}`);
+  
+  // 2️⃣ Obtener recomendaciones por momento (fallback)
   let recomendaciones = recommendationEngine
     .getRecommendations(MENU, timeContext.momento)
-    .slice(0, 5); // Obtener más para poder filtrar
+    .slice(0, 5);
   
   let mensajeMomento = "";
   if (timeContext.momento === 'mañana') {
@@ -816,113 +1039,134 @@ if (proximoPaso === "bebida") {
   if (session.currentOrder.solicitoRecomendacion) {
     console.log('💡 Usuario pidió recomendación');
     
-    // 🔥 Detectar preferencia de temperatura o tipo
     const preferencia = session.currentOrder.preferenciaRecomendacion || '';
-    let bebidasFiltradas = recomendaciones;
+    let bebidasSeleccionadas = [];
     let mensajePreferencia = mensajeMomento;
     
-    if (preferencia.includes('frio') || preferencia.includes('fría') || 
-        preferencia.includes('helado') || preferencia.includes('helada') || 
-        preferencia.includes('iced') || preferencia.includes('fresco')) {
-      // Filtrar solo bebidas frías
-      bebidasFiltradas = recomendaciones.filter(b => {
+    // 🔥 FILTRADO POR PREFERENCIA
+    if (preferencia === 'frio') {
+      console.log('❄️ Buscando bebidas FRÍAS...');
+      
+      // Usar directamente las categorías de bebidas frías
+      if (MENU.bebidas_frias) {
+        bebidasSeleccionadas.push(...MENU.bebidas_frias.slice(0, 5));
+      }
+      if (MENU.frappuccino) {
+        bebidasSeleccionadas.push(...MENU.frappuccino.slice(0, 5));
+      }
+      
+      // Filtrar adicionales que tengan palabras clave
+      const adicionales = todasLasBebidas.filter(b => {
         const nombre = b.nombre.toLowerCase();
-        return nombre.includes('helado') || 
-               nombre.includes('frappuccino') || 
-               nombre.includes('iced') || 
-               nombre.includes('cold') ||
-               nombre.includes('frozen') ||
-               nombre.includes('refresher');
-      });
+        return (nombre.includes('helado') || 
+                nombre.includes('iced') || 
+                nombre.includes('cold')) &&
+               !bebidasSeleccionadas.find(bs => bs.id === b.id);
+      }).slice(0, 3);
+      
+      bebidasSeleccionadas.push(...adicionales);
       mensajePreferencia = "Para refrescarte";
-      console.log(`   ❄️ Filtrado: bebidas frías (${bebidasFiltradas.length})`);
-    } 
-    else if (preferencia.includes('caliente') || preferencia.includes('calientito') || 
-             preferencia.includes('hot') || preferencia.includes('tibio')) {
-      // Filtrar solo bebidas calientes
-      bebidasFiltradas = recomendaciones.filter(b => {
-        const nombre = b.nombre.toLowerCase();
-        return !nombre.includes('helado') && 
-               !nombre.includes('frappuccino') && 
-               !nombre.includes('iced') && 
-               !nombre.includes('cold') &&
-               !nombre.includes('frozen');
-      });
-      mensajePreferencia = "Para entrar en calor";
-      console.log(`   🔥 Filtrado: bebidas calientes (${bebidasFiltradas.length})`);
+      
+      console.log(`❄️ Bebidas frías: ${bebidasSeleccionadas.length}`);
     }
-    else if (preferencia.includes('dulce') || preferencia.includes('chocolate') || 
-             preferencia.includes('caramelo') || preferencia.includes('sweet')) {
-      // Filtrar bebidas dulces
-      bebidasFiltradas = recomendaciones.filter(b => {
+    else if (preferencia === 'caliente') {
+      console.log('🔥 Buscando bebidas CALIENTES...');
+      
+      if (MENU.bebidas_calientes) {
+        bebidasSeleccionadas.push(...MENU.bebidas_calientes.slice(0, 8));
+      }
+      
+      mensajePreferencia = "Para entrar en calor";
+      console.log(`🔥 Bebidas calientes: ${bebidasSeleccionadas.length}`);
+    }
+    else if (preferencia === 'dulce') {
+      console.log('🍫 Buscando bebidas DULCES...');
+      
+      bebidasSeleccionadas = todasLasBebidas.filter(b => {
         const nombre = b.nombre.toLowerCase();
         return nombre.includes('mocha') || 
                nombre.includes('chocolate') || 
                nombre.includes('caramel') || 
-               nombre.includes('vainilla') ||
-               nombre.includes('cajeta') ||
                nombre.includes('frappuccino');
-      });
+      }).slice(0, 8);
+      
       mensajePreferencia = "Para tu antojo dulce";
-      console.log(`   🍫 Filtrado: bebidas dulces (${bebidasFiltradas.length})`);
+      console.log(`🍫 Bebidas dulces: ${bebidasSeleccionadas.length}`);
     }
-    else if (preferencia.includes('cafe') || preferencia.includes('café') || 
-             preferencia.includes('espresso') || preferencia.includes('coffee')) {
-      // Filtrar bebidas con café
-      bebidasFiltradas = recomendaciones.filter(b => {
+    else if (preferencia === 'cafe') {
+      console.log('☕ Buscando bebidas CON CAFÉ...');
+      
+      bebidasSeleccionadas = todasLasBebidas.filter(b => {
         const nombre = b.nombre.toLowerCase();
-        return nombre.includes('café') || 
-               nombre.includes('coffee') || 
-               nombre.includes('espresso') || 
-               nombre.includes('americano') ||
+        return nombre.includes('espresso') || 
+               nombre.includes('americano') || 
                nombre.includes('cappuccino') ||
-               nombre.includes('latte') ||
-               nombre.includes('mocha');
-      });
+               nombre.includes('latte') && !nombre.includes('matcha');
+      }).slice(0, 8);
+      
       mensajePreferencia = "Para llenarte de energía";
-      console.log(`   ☕ Filtrado: bebidas con café (${bebidasFiltradas.length})`);
+      console.log(`☕ Bebidas con café: ${bebidasSeleccionadas.length}`);
     }
-    else if (preferencia.includes('sin cafe') || preferencia.includes('sin cafeina') || 
-             preferencia.includes('sin cafeína') || preferencia.includes('decaf')) {
-      // Filtrar bebidas sin café
-      bebidasFiltradas = recomendaciones.filter(b => {
+    else if (preferencia === 'sin cafe') {
+      console.log('🌿 Buscando bebidas SIN CAFÉ...');
+      
+      if (MENU.bebidas_te) {
+        bebidasSeleccionadas.push(...MENU.bebidas_te.slice(0, 5));
+      }
+      
+      const adicionales = todasLasBebidas.filter(b => {
         const nombre = b.nombre.toLowerCase();
-        return nombre.includes('té') || 
-               nombre.includes('tea') || 
-               nombre.includes('chocolate') || 
-               nombre.includes('refresher') ||
-               nombre.includes('chai') ||
-               nombre.includes('matcha');
-      });
+        return (nombre.includes('chocolate') || 
+                nombre.includes('refresher') ||
+                nombre.includes('matcha')) &&
+               !bebidasSeleccionadas.find(bs => bs.id === b.id);
+      }).slice(0, 3);
+      
+      bebidasSeleccionadas.push(...adicionales);
       mensajePreferencia = "Sin cafeína para ti";
-      console.log(`   🌿 Filtrado: sin cafeína (${bebidasFiltradas.length})`);
+      console.log(`🌿 Bebidas sin café: ${bebidasSeleccionadas.length}`);
+    }
+    else if (preferencia === 'temporada') {
+      console.log('🔥 Buscando bebidas TEMPORADA...');
+      
+      if (MENU.productos_temporada) {
+        bebidasSeleccionadas.push(...MENU.productos_temporada.slice(0, 8));
+      }
+      
+      mensajePreferencia = "Estos productos son de temporada";
+      console.log(`🔥 Bebidas temporada: ${bebidasSeleccionadas.length}`);
+    }
+    else {
+      // Sin preferencia específica, usar recomendaciones del momento
+      bebidasSeleccionadas = recomendaciones;
     }
     
-    // Si el filtrado dejó muy pocas opciones, agregar más
-    if (bebidasFiltradas.length < 2) {
-      console.log(`   ⚠️ Solo ${bebidasFiltradas.length} opciones, agregando más...`);
-      bebidasFiltradas = recomendaciones.slice(0, 3);
+    // 🛡️ FALLBACK: Si no hay suficientes bebidas
+    if (bebidasSeleccionadas.length < 2) {
+      console.log(`⚠️ FALLBACK: Solo ${bebidasSeleccionadas.length}, usando recomendaciones generales`);
+      bebidasSeleccionadas = recomendaciones;
       mensajePreferencia = mensajeMomento;
     }
     
-    // Tomar solo las primeras 3
-    const nombresRecomendados = bebidasFiltradas.slice(0, 3).map(b => b.nombre).join(", ");
+    // 3️⃣ Tomar las primeras 3 y formatear
+    const nombresFinales = bebidasSeleccionadas
+      .slice(0, 3)
+      .map(b => b.nombre)
+      .join(", ");
+    
+    console.log(`✅ Sugerencias: ${nombresFinales}`);
     
     replyConDetalles = `Con gusto te doy algunas recomendaciones.
 
-${mensajePreferencia}, te sugiero: ${nombresRecomendados}
+${mensajePreferencia}, te sugiero: ${nombresFinales}
 
 ¿Cuál te gustaría probar?`;
     
-    // Limpiar flags
     delete session.currentOrder.solicitoRecomendacion;
     delete session.currentOrder.preferenciaRecomendacion;
-  } 
-  // ✅ CASO 2: Producto NO encontrado en el menú
+  }
+  // ✅ CASO 2: Producto NO encontrado
   else if (session.currentOrder.productoNoEncontrado) {
-    const productoSolicitado = session.currentOrder.productoNoEncontrado;
-    console.log(`⚠️ Producto no encontrado: "${productoSolicitado}"`);
-    
     const nombresRecomendados = recomendaciones.slice(0, 3).map(b => b.nombre).join(", ");
     
     replyConDetalles = `Lo que pides no está en el menú.
@@ -932,7 +1176,7 @@ ${mensajePreferencia}, te sugiero: ${nombresRecomendados}
     delete session.currentOrder.productoNoEncontrado;
     delete session.currentOrder.sugerencias;
   }
-  // ✅ CASO 3: Pregunta normal (primera vez)
+  // ✅ CASO 3: Pregunta normal
   else {
     const nombresRecomendados = recomendaciones.slice(0, 3).map(b => b.nombre).join(", ");
     
@@ -986,37 +1230,166 @@ También puedes decirme tu bebida favorita.`;
     }
     
     // ✅ PASO: ALIMENTO
-    if (proximoPaso === "alimento") {
-      if (session.currentOrder.alimentoNoEncontrado) {
-        const alimentoSolicitado = session.currentOrder.alimentoNoEncontrado;
-        const sugerencias = session.currentOrder.sugerenciasAlimento || [];
-        
-        replyConDetalles = `Lo siento, no contamos con "${alimentoSolicitado}" disponible.
+   // ✅ PASO: ALIMENTO - Con recomendaciones y categorías
 
-¿Te gustaría alguno de estos alimentos? ${sugerencias.join(", ")}. O puedes continuar sin alimento.`;
-        
-        delete session.currentOrder.alimentoNoEncontrado;
-        delete session.currentOrder.sugerenciasAlimento;
-      } else {
-        replyConDetalles = `¿Te gustaría algo para acompañar? Tenemos Croissant, Muffin, Brownie, Sandwich. O puedes continuar sin alimento.`;
-      }
+if (proximoPaso === "alimento") {
+  // 1️⃣ Obtener alimentos de todas las categorías
+  const todosLosAlimentos = [];
+  const categoriasAlimentos = ['alimentos_salados', 'alimentos_dulces', 'alimentos_saludables', 'panaderia'];
+  
+  for (const cat of categoriasAlimentos) {
+    if (MENU[cat] && Array.isArray(MENU[cat])) {
+      todosLosAlimentos.push(...MENU[cat].filter(a => a.disponible !== false));
     }
+  }
+  
+  console.log(`🍞 Total alimentos disponibles: ${todosLosAlimentos.length}`);
+  
+  // 2️⃣ Seleccionar 5 alimentos variados (mix de categorías)
+  const alimentosRecomendados = [];
+  
+  // Tomar 2 salados
+  if (MENU.alimentos_salados && MENU.alimentos_salados.length > 0) {
+    alimentosRecomendados.push(...MENU.alimentos_salados.slice(0, 2));
+  }
+  
+  // Tomar 2 dulces
+  if (MENU.alimentos_dulces && MENU.alimentos_dulces.length > 0) {
+    alimentosRecomendados.push(...MENU.alimentos_dulces.slice(0, 2));
+  }
+  
+  // Tomar 1 saludable o panadería
+  if (MENU.alimentos_saludables && MENU.alimentos_saludables.length > 0) {
+    alimentosRecomendados.push(MENU.alimentos_saludables[0]);
+  } else if (MENU.panaderia && MENU.panaderia.length > 0) {
+    alimentosRecomendados.push(MENU.panaderia[0]);
+  }
+  
+  console.log(`🍞 Alimentos recomendados: ${alimentosRecomendados.length}`);
+  
+  // ✅ CASO 1: Usuario pidió recomendación de alimentos
+  if (session.currentOrder.solicitoRecomendacionAlimento) {
+    console.log('💡 Usuario pidió recomendación de alimento');
     
-    // ✅ PASO: FORMA DE PAGO (con beneficios claros)
-    if (proximoPaso === "metodoPago") {
-      const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
-      const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
+    const preferencia = session.currentOrder.preferenciaAlimento || '';
+    let alimentosSeleccionados = [];
+    let mensajePreferencia = "Para acompañar tu bebida";
+    
+    // 🔥 FILTRADO POR PREFERENCIA
+    if (preferencia === 'salado') {
+      console.log('🧂 Buscando alimentos SALADOS...');
       
-      replyConDetalles = `¿Cómo deseas pagar? Tu total es de ${totalText} pesos mexicanos.
-
-Formas de pago y sus beneficios:
-• Efectivo: Acumulas 1 estrella por cada 20 pesos
-• Tarjeta bancaria: Acumulas 1 estrella por cada 20 pesos
-• Starbucks Card: Acumulas 1 estrella por cada 10 pesos (¡el doble de estrellas!)
-
-¿Cuál prefieres?`;
+      if (MENU.alimentos_salados) {
+        alimentosSeleccionados = MENU.alimentos_salados.slice(0, 5);
+      }
+      
+      mensajePreferencia = "Algo salado para ti";
+      console.log(`🧂 Alimentos salados: ${alimentosSeleccionados.length}`);
+    }
+    else if (preferencia === 'dulce') {
+      console.log('🍰 Buscando alimentos DULCES...');
+      
+      if (MENU.alimentos_dulces) {
+        alimentosSeleccionados = MENU.alimentos_dulces.slice(0, 5);
+      }
+      
+      mensajePreferencia = "Algo dulce para ti";
+      console.log(`🍰 Alimentos dulces: ${alimentosSeleccionados.length}`);
+    }
+    else if (preferencia === 'saludable') {
+      console.log('🥗 Buscando alimentos SALUDABLES...');
+      
+      if (MENU.alimentos_saludables) {
+        alimentosSeleccionados = MENU.alimentos_saludables.slice(0, 5);
+      }
+      
+      // Si hay pocos saludables, agregar panadería
+      if (alimentosSeleccionados.length < 3 && MENU.panaderia) {
+        alimentosSeleccionados.push(...MENU.panaderia.slice(0, 3));
+      }
+      
+      mensajePreferencia = "Opciones saludables para ti";
+      console.log(`🥗 Alimentos saludables: ${alimentosSeleccionados.length}`);
+    }
+    else if (preferencia === 'desayuno') {
+      console.log('🍳 Buscando opciones de DESAYUNO...');
+      
+      // Filtrar alimentos con palabras clave de desayuno
+      alimentosSeleccionados = todosLosAlimentos.filter(a => {
+        const nombre = a.nombre.toLowerCase();
+        const desc = (a.descripcion || '').toLowerCase();
+        return nombre.includes('breakfast') || 
+               nombre.includes('muffin') || 
+               nombre.includes('croissant') ||
+               nombre.includes('bagel') ||
+               nombre.includes('sandwich') ||
+               desc.includes('desayuno');
+      }).slice(0, 5);
+      
+      mensajePreferencia = "Para tu desayuno";
+      console.log(`🍳 Opciones desayuno: ${alimentosSeleccionados.length}`);
+    }
+    else {
+      // Sin preferencia específica, usar recomendaciones mixtas
+      alimentosSeleccionados = alimentosRecomendados;
     }
     
+    // 🛡️ FALLBACK: Si no hay suficientes alimentos
+    if (alimentosSeleccionados.length < 3) {
+      console.log(`⚠️ FALLBACK: Solo ${alimentosSeleccionados.length}, usando mix general`);
+      alimentosSeleccionados = alimentosRecomendados;
+      mensajePreferencia = "Para acompañar tu bebida";
+    }
+    
+    // Eliminar duplicados
+    alimentosSeleccionados = alimentosSeleccionados.filter((a, index, self) =>
+      index === self.findIndex(item => item.id === a.id)
+    );
+    
+    // 3️⃣ Tomar las primeras 5 y formatear
+    const nombresFinales = alimentosSeleccionados
+      .slice(0, 5)
+      .map(a => a.nombre)
+      .join(", ");
+    
+    console.log(`✅ Sugerencias de alimentos: ${nombresFinales}`);
+    
+    replyConDetalles = `Con gusto te doy algunas opciones.
+
+${mensajePreferencia}, te sugiero: ${nombresFinales}
+
+¿Te gustaría alguno, o prefieres continuar sin alimento?`;
+    
+    delete session.currentOrder.solicitoRecomendacionAlimento;
+    delete session.currentOrder.preferenciaAlimento;
+  }
+  // ✅ CASO 2: Alimento NO encontrado
+  else if (session.currentOrder.alimentoNoEncontrado) {
+    const alimentoSolicitado = session.currentOrder.alimentoNoEncontrado;
+    const nombresRecomendados = alimentosRecomendados.slice(0, 5).map(a => a.nombre).join(", ");
+    
+    console.log(`⚠️ Alimento no encontrado: "${alimentoSolicitado}"`);
+    
+    replyConDetalles = `Lo que pides no está disponible en este momento.
+
+¿Te gustaría alguno de estos alimentos? ${nombresRecomendados}
+
+O puedes continuar sin alimento.`;
+    
+    delete session.currentOrder.alimentoNoEncontrado;
+    delete session.currentOrder.sugerenciasAlimento;
+  }
+  // ✅ CASO 3: Pregunta normal (primera vez)
+  else {
+    const nombresRecomendados = alimentosRecomendados.slice(0, 5).map(a => a.nombre).join(", ");
+    
+    replyConDetalles = `¿Te gustaría algo para acompañar?
+
+Te recomiendo: ${nombresRecomendados}
+
+También puedes decir "no, gracias" si prefieres continuar sin alimento.`;
+  }
+}
     // ✅ NUEVO PASO: REVISIÓN
     if (proximoPaso === "revision") {
       const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
@@ -1053,6 +1426,20 @@ Total: ${totalText} pesos mexicanos (${estrellasText} estrellas)
 ¿Deseas agregar o modificar algo, o cerramos tu pedido?`;
       }
     }
+      // ✅ PASO: FORMA DE PAGO (con beneficios claros)
+      if (proximoPaso === "metodoPago") {
+        const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
+        const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
+        
+        replyConDetalles = `¿Cómo deseas pagar? Tu total es de ${totalText} pesos mexicanos.
+  
+  Formas de pago y sus beneficios:
+  • Efectivo: Acumulas 1 estrella por cada 20 pesos
+  • Tarjeta bancaria: Acumulas 1 estrella por cada 20 pesos
+  • Starbucks Card: Acumulas 1 estrella por cada 10 pesos (¡el doble de estrellas!)
+  
+  ¿Cuál prefieres?`;
+      }
     
     // ✅ PASO: CONFIRMACIÓN (resumen completo)
     if (proximoPaso === "confirmacion") {
@@ -1070,6 +1457,7 @@ ${resumen}
 
 ¿Confirmas tu pedido?`;
     }
+    
 
     let orderComplete = false;
     let orderData = null;
