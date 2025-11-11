@@ -11,88 +11,235 @@
   * @param {Object} menu - Menú completo
   * @returns {Object} {valido, precio_base, precio_modificadores, precio_alimento, total, detalles}
   */
-  export function calculateOrderPrice(order, menu) {
-    console.log(`\n💰 calculateOrderPrice()`);
+Pricecalculator con tamanos · JS
+Copiar
+
+/**
+ * ✅ calculateOrderPrice - VERSIÓN CORRECTA
+ * Lee precios del array tamaños según el tamaño seleccionado
+ */
+
+export function calculateOrderPrice(order, menu) {
+  console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  console.log(`💰 calculateOrderPrice() INICIANDO`);
+  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  console.log(`   📦 Orden:`, JSON.stringify(order, null, 2));
+  
+  let total = 0;
+  let estrellas = 0;
+  const detalles = [];
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 1️⃣ PRECIO DE LA BEBIDA
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  if (order.bebida) {
+    console.log(`\n   🍹 PROCESANDO BEBIDA`);
+    console.log(`   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    console.log(`   🔍 Buscando: "${order.bebida}"`);
     
-    let total = 0;
-    let estrellas = 0;
-    const detalles = [];
+    const bebida = findProductByName(menu, order.bebida);
     
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 1️⃣ PRECIO DE LA BEBIDA (SIEMPRE CALCULA)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    
-    if (order.bebida) {
-      console.log(`   🔍 Buscando bebida: "${order.bebida}"`);
+    if (bebida) {
+      console.log(`   ✅ BEBIDA ENCONTRADA: ${bebida.nombre} (ID: ${bebida.id})`);
+      console.log(`   📐 Tamaño en orden: "${order.tamano}"`);
       
-      const bebida = menuUtils.findProductByName(menu, order.bebida);
+      // ⭐ OBTENER PRECIO SEGÚN TAMAÑO
+      const precioInfo = obtenerPrecioPorTamano(bebida, order.tamano);
       
-      if (bebida) {
-        const precioBebida = bebida.precio_base || 0;
-        total += precioBebida;
+      if (precioInfo.precio > 0) {
+        console.log(`   💵 Precio encontrado: $${precioInfo.precio}`);
+        console.log(`   📏 Tamaño: ${precioInfo.tamanoNombre}`);
+        
+        total += precioInfo.precio;
         
         detalles.push({
           tipo: 'bebida',
           nombre: bebida.nombre,
-          tamano: order.tamano || 'N/A',
-          precio: precioBebida
+          tamano: precioInfo.tamanoNombre,
+          precio: precioInfo.precio
         });
         
-        console.log(`   ✅ Bebida: ${bebida.nombre} = $${precioBebida}`);
+        console.log(`   ✅ Precio sumado al total: $${total}`);
+      } else {
+        console.error(`   ❌ No se encontró precio para tamaño "${order.tamano}"`);
+        console.error(`   📦 Tamaños disponibles:`, bebida.tamaños || bebida.tamanos);
       }
+      
+    } else {
+      console.error(`   ❌ BEBIDA NO ENCONTRADA: "${order.bebida}"`);
     }
+  }
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 2️⃣ PRECIO DEL ALIMENTO
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  if (order.alimento && order.alimento !== 'ninguno') {
+    console.log(`\n   🍔 PROCESANDO ALIMENTO`);
+    console.log(`   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    console.log(`   🔍 Buscando: "${order.alimento}"`);
     
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 2️⃣ PRECIO DEL ALIMENTO (SIEMPRE CALCULA)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const alimento = findProductByName(menu, order.alimento, 'alimento');
     
-    if (order.alimento && order.alimento !== 'ninguno') {
-      console.log(`   🔍 Buscando alimento: "${order.alimento}"`);
+    if (alimento) {
+      console.log(`   ✅ ALIMENTO ENCONTRADO: ${alimento.nombre} (ID: ${alimento.id})`);
       
-      const alimento = menuUtils.findProductByName(menu, order.alimento, 'alimento');
+      // ⭐ ALIMENTO: Obtener precio (puede tener tamaño o no)
+      const precioInfo = obtenerPrecioPorTamano(alimento, null);
       
-      if (alimento) {
-        const precioAlimento = alimento.precio_base || 0;
-        total += precioAlimento;
+      if (precioInfo.precio > 0) {
+        console.log(`   💵 Precio: $${precioInfo.precio}`);
+        
+        total += precioInfo.precio;
         
         detalles.push({
           tipo: 'alimento',
           nombre: alimento.nombre,
-          precio: precioAlimento
+          precio: precioInfo.precio
         });
         
-        console.log(`   ✅ Alimento: ${alimento.nombre} = $${precioAlimento}`);
-      }
-    }
-    
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    // 3️⃣ ESTRELLAS (SOLO SI YA ELIGIÓ MÉTODO)
-    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    
-    if (order.metodoPago) {
-      console.log(`   💳 Método de pago: ${order.metodoPago}`);
-      
-      if (order.metodoPago.toLowerCase().includes('starbucks card')) {
-        estrellas = Math.floor(total / 10);
-        console.log(`   ⭐ Estrellas (Starbucks Card): ${estrellas} (1 por cada $10)`);
+        console.log(`   ✅ Precio sumado al total: $${total}`);
       } else {
-        estrellas = Math.floor(total / 20);
-        console.log(`   ⭐ Estrellas (Efectivo/Tarjeta): ${estrellas} (1 por cada $20)`);
+        console.error(`   ❌ No se encontró precio para el alimento`);
       }
+      
     } else {
-      console.log(`   ⏸️ Sin método de pago aún → 0 estrellas por ahora`);
-      estrellas = 0;
+      console.error(`   ❌ ALIMENTO NO ENCONTRADO: "${order.alimento}"`);
+    }
+  }
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 3️⃣ CALCULAR ESTRELLAS
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  console.log(`\n   ⭐ CALCULANDO ESTRELLAS`);
+  console.log(`   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  
+  if (order.metodoPago) {
+    console.log(`   💳 Método: ${order.metodoPago}`);
+    console.log(`   💰 Total: $${total}`);
+    
+    if (order.metodoPago.toLowerCase().includes('starbucks card')) {
+      estrellas = Math.floor(total / 10);
+      console.log(`   ⭐ Starbucks Card: ${estrellas} estrellas`);
+    } else {
+      estrellas = Math.floor(total / 20);
+      console.log(`   ⭐ Efectivo/Tarjeta: ${estrellas} estrellas`);
+    }
+  } else {
+    console.log(`   ℹ️ Sin método de pago → 0 estrellas`);
+    estrellas = 0;
+  }
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // 4️⃣ RESULTADO FINAL
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  console.log(`📊 RESULTADO FINAL:`);
+  console.log(`   💰 TOTAL: $${total}`);
+  console.log(`   ⭐ ESTRELLAS: ${estrellas}`);
+  console.log(`   📋 DETALLES:`, detalles);
+  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
+  
+  return {
+    total,
+    estrellas,
+    detalles
+  };
+}
+
+/**
+ * ⭐ FUNCIÓN CLAVE: Obtener precio según tamaño
+ */
+function obtenerPrecioPorTamano(producto, tamanoSeleccionado) {
+  console.log(`\n      💰 obtenerPrecioPorTamano()`);
+  console.log(`         Producto: ${producto.nombre}`);
+  console.log(`         Tamaño seleccionado: "${tamanoSeleccionado}"`);
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ESTRATEGIA 1: Buscar en array "tamaños" (con tilde)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  if (producto.tamaños && Array.isArray(producto.tamaños) && producto.tamaños.length > 0) {
+    console.log(`         ✅ Tiene array "tamaños" (${producto.tamaños.length} opciones)`);
+    
+    // Si hay tamaño seleccionado, buscarlo
+    if (tamanoSeleccionado) {
+      // Buscar por ID (puede ser "2", "3", "4")
+      let tamanoObj = producto.tamaños.find(t => t.id === tamanoSeleccionado);
+      
+      // Si no encuentra por ID, buscar por nombre parcial
+      if (!tamanoObj) {
+        const tamanoLower = tamanoSeleccionado.toLowerCase();
+        tamanoObj = producto.tamaños.find(t => 
+          t.nombre.toLowerCase().includes(tamanoLower) ||
+          tamanoLower.includes(t.nombre.toLowerCase().substring(0, 5))
+        );
+      }
+      
+      if (tamanoObj && tamanoObj.precio) {
+        console.log(`         ✅ Tamaño encontrado: ${tamanoObj.nombre} → $${tamanoObj.precio}`);
+        return {
+          precio: tamanoObj.precio,
+          tamanoNombre: tamanoObj.nombre
+        };
+      }
     }
     
-    console.log(`\n   💰 TOTAL: $${total}`);
-    console.log(`   ⭐ ESTRELLAS: ${estrellas}`);
-    
+    // Si no se especificó tamaño o no se encontró, usar el primero disponible
+    const primerTamano = producto.tamaños[0];
+    if (primerTamano && primerTamano.precio) {
+      console.log(`         ℹ️ Usando primer tamaño: ${primerTamano.nombre} → $${primerTamano.precio}`);
+      return {
+        precio: primerTamano.precio,
+        tamanoNombre: primerTamano.nombre
+      };
+    }
+  }
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ESTRATEGIA 2: Usar "tamaño_default"
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  if (producto.tamaño_default && producto.tamaño_default.precio) {
+    console.log(`         ✅ Usando tamaño_default: $${producto.tamaño_default.precio}`);
     return {
-      total,
-      estrellas,
-      detalles
+      precio: producto.tamaño_default.precio,
+      tamanoNombre: producto.tamaño_default.nombre || 'N/A'
     };
   }
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // ESTRATEGIA 3: Usar "precio_base" (fallback)
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  if (producto.precio_base) {
+    console.log(`         ⚠️ Usando precio_base (fallback): $${producto.precio_base}`);
+    return {
+      precio: producto.precio_base,
+      tamanoNombre: 'Único'
+    };
+  }
+  
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  // NO SE ENCONTRÓ PRECIO
+  // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  console.error(`         ❌ NO SE ENCONTRÓ PRECIO`);
+  console.error(`         📦 Estructura del producto:`, {
+    tiene_tamanos: !!producto.tamaños,
+    tiene_tamano_default: !!producto.tamaño_default,
+    tiene_precio_base: !!producto.precio_base
+  });
+  
+  return {
+    precio: 0,
+    tamanoNombre: 'N/A'
+  };
+}
+
  
  /**
   * Calcular estrellas ganadas según método de pago
