@@ -11,8 +11,7 @@
   * @param {Object} menu - Menú completo
   * @returns {Object} {valido, precio_base, precio_modificadores, precio_alimento, total, detalles}
   */
-Pricecalculator con tamanos · JS
-Copiar
+
 
 /**
  * ✅ calculateOrderPrice - VERSIÓN CORRECTA
