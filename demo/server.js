@@ -674,7 +674,7 @@ case "revision":
     order.revisado = false;
   } 
   // Usuario está listo para continuar
-  else if (/(no|nada|está bien|esta bien|asi esta|así está|todo bien|perfecto|listo|continua|continúa|continuar|cerrar|confirmar|ok|si|sí|correcto|dale|vamos)/i.test(lower)) {
+  else if (/(no|nada|está bien|esta bien|asi esta|así está|todo bien|perfecto|listo|continua|continúa|continuar|cerrar|confirmar|ok|si|sí|correcto|dale|vamos|continuar)/i.test(lower)) {
     console.log(`   ✅ Usuario listo para continuar al pago`);
     order.revisado = true;  // ⭐ MARCAR COMO REVISADO
   }
@@ -686,7 +686,7 @@ case "revision":
 
 case "confirmacion":
   // Usuario confirma que todo está bien
-  if (/(sí|si|correcto|está bien|así está bien|todo bien|perfecto|dale|confirmo|ok|okay|yes)/i.test(lower)) {
+  if (/(sí|si|correcto|está bien|así está bien|todo bien|perfecto|dale|confirmo|ok|okay|yes|confirmar)/i.test(lower)) {
     order.confirmado = true;  // ⭐ MARCAR COMO CONFIRMADO
     console.log(`   ✅ Guardado: confirmado = true`);
   } 
@@ -1211,7 +1211,7 @@ También puedes decirme tu bebida favorita.`;
   }
 }
     // ✅ PASO: TAMAÑO
-    if (proximoPaso === "tamano") {
+if (proximoPaso === "tamano") {
       const producto = menuUtils.findProductByName(MENU, session.currentOrder.bebida);
       if (producto && sizeDetection.requiresSize(producto)) {
         const tamaños = sizeDetection.getSizeSuggestions(producto);
@@ -1220,7 +1220,7 @@ También puedes decirme tu bebida favorita.`;
     }
     
     // ✅ PASO: MODIFICADORES (con nombre específico)
-    if (proximoPaso.startsWith("modifier_")) {
+if (proximoPaso.startsWith("modifier_")) {
       const producto = menuUtils.findProductByName(MENU, session.currentOrder.bebida);
       if (producto) {
         const requiredMods = menuUtils.getRequiredModifiers(producto);
@@ -1414,154 +1414,185 @@ También puedes decir "no, gracias" si prefieres continuar sin alimento.`;
   }
 }
     // ✅ NUEVO PASO: REVISIÓN
-    if (proximoPaso === "revision") {
-      const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
-      const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
-      const estrellasText = precioInfo?.estrellas ? `${precioInfo.estrellas}` : "0";
-      
-      // Verificar si está respondiendo a pregunta de agregar/quitar
-      const intent = detectOrderIntent(userInput);
-      
-      if (intent.tipo === 'modificar' && intent.accion === 'agregar') {
-        // Usuario quiere agregar
-        replyConDetalles = `¿Qué te gustaría agregar a tu pedido? Tenemos: Croissant, Muffin, Brownie, Sandwich, o más bebidas`;
-        session.currentOrder.revisado = false;
-      } else if (intent.tipo === 'modificar' && intent.accion === 'quitar') {
-        // Usuario quiere quitar
-        const items = [];
-        if (session.currentOrder.bebida) items.push(`la bebida (${session.currentOrder.bebida})`);
-        if (session.currentOrder.alimento && session.currentOrder.alimento !== 'ninguno') {
-          items.push(`el alimento (${session.currentOrder.alimento})`);
-        }
-        
-        replyConDetalles = `¿Qué te gustaría quitar? Tienes: ${items.join(' y ')}`;
-        session.currentOrder.revisado = false;
-      } else {
-        // Pregunta inicial de revisión
-        const alimentoText = session.currentOrder.alimento && session.currentOrder.alimento !== 'ninguno' 
-          ? ` y ${session.currentOrder.alimento}` 
+if (proximoPaso === "revision") {
+  const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
+  const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
+  
+  const alimentoText = session.currentOrder.alimento && 
+                       session.currentOrder.alimento !== 'ninguno' 
+    ? ` y ${session.currentOrder.alimento}` 
+    : '';
+  
+  replyConDetalles = `Perfecto. Tu pedido hasta ahora:
+
+• ${session.currentOrder.bebida}${alimentoText}
+• Sucursal: ${session.currentOrder.sucursal}
+
+💰 Subtotal: ${totalText} pesos mexicanos
+
+¿Deseas agregar o modificar algo, o continuamos?`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PASO 2: CONFIRMACIÓN (Desglose con precios individuales)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+if (proximoPaso === "confirmacion") {
+  const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
+  
+  // Construir desglose de precios
+  let desglose = '';
+  
+  if (precioInfo.detalles && precioInfo.detalles.length > 0) {
+    for (const detalle of precioInfo.detalles) {
+      if (detalle.tipo === 'bebida') {
+        const tamano = detalle.tamano && detalle.tamano !== 'N/A' 
+          ? ` - ${detalle.tamano}` 
           : '';
-        
-        replyConDetalles = `Perfecto. Tu pedido hasta ahora: ${session.currentOrder.bebida}${alimentoText}.
-
-Total: ${totalText} pesos mexicanos (${estrellasText} estrellas)
-
-¿Deseas agregar o modificar algo, o cerramos tu pedido?`;
+        desglose += `• ${detalle.nombre}${tamano}: $${detalle.precio}\n`;
+      } else if (detalle.tipo === 'alimento') {
+        desglose += `• ${detalle.nombre}: $${detalle.precio}\n`;
       }
     }
-      // ✅ PASO: FORMA DE PAGO (con beneficios claros)
-      if (proximoPaso === "metodoPago") {
-        const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
-        const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
-        
-        replyConDetalles = `¿Cómo deseas pagar? Tu total es de ${totalText} pesos mexicanos.
-  
-  Formas de pago y sus beneficios:
-  • Efectivo: Acumulas 1 estrella por cada 20 pesos
-  • Tarjeta bancaria: Acumulas 1 estrella por cada 20 pesos
-  • Starbucks Card: Acumulas 1 estrella por cada 10 pesos (¡el doble de estrellas!)
-  
-  ¿Cuál prefieres?`;
-      }
+  } else {
+    // Fallback si no hay detalles
+    const bebida = menuUtils.findProductByName(MENU, session.currentOrder.bebida);
+    if (bebida) {
+      desglose += `• ${bebida.nombre}: $${bebida.precio_base}\n`;
+    }
     
-    // ✅ PASO: CONFIRMACIÓN (resumen completo)
-    if (proximoPaso === "confirmacion") {
-      const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
-      const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
-      const estrellasText = precioInfo?.estrellas ? `${precioInfo.estrellas}` : "0";
-      
-      const resumen = promptGen.generarResumenPedido(session.currentOrder, MENU);
-      replyConDetalles = `Perfecto. Este es el resumen de tu pedido:
+    if (session.currentOrder.alimento && session.currentOrder.alimento !== 'ninguno') {
+      const alimento = menuUtils.findProductByName(MENU, session.currentOrder.alimento, 'alimento');
+      if (alimento) {
+        desglose += `• ${alimento.nombre}: $${alimento.precio_base}\n`;
+      }
+    }
+  }
+  
+  desglose += `• Sucursal: ${session.currentOrder.sucursal}`;
+  
+  const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
+  
+  replyConDetalles = `Excelente. Este es el resumen detallado de tu pedido:
 
-${resumen}
+${desglose}
 
+━━━━━━━━━━━━━━━━━━━━
 💰 Total a pagar: ${totalText} pesos mexicanos
-⭐ Estrellas que acumularás: ${estrellasText}
 
 ¿Confirmas tu pedido?`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PASO 3: MÉTODO DE PAGO (Opciones + estrellas por CADA método)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+if (proximoPaso === "metodoPago") {
+  const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
+  const totalText = precioInfo?.total || 0;
+  
+  // Calcular estrellas para CADA método
+  const estrellasEfectivo = Math.floor(totalText / 20);
+  const estrellasTarjeta = Math.floor(totalText / 20);
+  const estrellasCard = Math.floor(totalText / 10);
+  
+  replyConDetalles = `Perfecto. Tu total es de $${totalText} pesos mexicanos.
+
+¿Cómo deseas pagar?
+
+💵 Efectivo
+   → Acumulas ${estrellasEfectivo} estrella${estrellasEfectivo !== 1 ? 's' : ''}
+
+💳 Tarjeta bancaria
+   → Acumulas ${estrellasTarjeta} estrella${estrellasTarjeta !== 1 ? 's' : ''}
+
+⭐ Starbucks Card (Recomendado)
+   → Acumulas ${estrellasCard} estrella${estrellasCard !== 1 ? 's' : ''} (¡el doble!)
+
+¿Cuál prefieres?`;
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// LÓGICA DE FINALIZACIÓN
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+let orderComplete = false;
+let orderData = null;
+
+// Verificar si ya hay un pedido completado
+if (session.currentOrder.orderNumber) {
+  const intent = detectOrderIntent(userInput);
+  
+  if (intent.tipo === 'nuevo' || intent.tipo === 'posible_nuevo') {
+    console.log(`🆕 Usuario quiere nuevo pedido`);
+    
+    if (!session.orderHistory.some(o => o.orderNumber === session.currentOrder.orderNumber)) {
+      session.orderHistory.push({
+        ...session.currentOrder,
+        timestamp: Date.now()
+      });
     }
     
-
-    let orderComplete = false;
-    let orderData = null;
-
-    // ✅ NUEVO: Verificar si ya completó pedido y quiere hacer algo más
-    if (session.currentOrder.orderNumber) {
-      // Ya hay un pedido confirmado con número
-      const intent = detectOrderIntent(userInput);
-      
-      if (intent.tipo === 'nuevo' || intent.tipo === 'posible_nuevo') {
-        // Usuario quiere hacer un nuevo pedido
-        console.log(`🆕 Usuario quiere nuevo pedido después de confirmar`);
-        
-        // Guardar el pedido anterior en historial (si no está)
-        if (!session.orderHistory.some(o => o.orderNumber === session.currentOrder.orderNumber)) {
-          session.orderHistory.push({
-            ...session.currentOrder,
-            timestamp: Date.now()
-          });
+    const previousOrderNumber = session.currentOrder.orderNumber;
+    session.currentOrder = {};
+    
+    replyConDetalles = `Perfecto, iniciemos un nuevo pedido. Tu pedido anterior es ${previousOrderNumber}. ¿En qué sucursal recogerás esta nueva orden?`;
+  }
+} 
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// PASO 4: FINALIZACIÓN (Cuando YA tiene todo: confirmado + método de pago)
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+else if (
+  session.currentOrder.confirmado &&
+  session.currentOrder.metodoPago &&
+  session.currentOrder.bebida &&
+  session.currentOrder.sucursal &&
+  !session.currentOrder.orderNumber
+) {
+  console.log(`✅ Orden lista para finalizar`);
+  
+  const finalOrder = finalizeOrder(session);
+  
+  if (finalOrder) {
+    orderComplete = true;
+    orderData = finalOrder;
+    session.currentOrder.orderNumber = finalOrder.orderNumber;
+    
+    // Construir resumen final detallado
+    let resumenFinal = '';
+    
+    if (finalOrder.detalles && finalOrder.detalles.length > 0) {
+      for (const detalle of finalOrder.detalles) {
+        if (detalle.tipo === 'bebida') {
+          const tamano = detalle.tamano && detalle.tamano !== 'N/A' 
+            ? ` - ${detalle.tamano}` 
+            : '';
+          resumenFinal += `• ${detalle.nombre}${tamano}\n`;
+        } else if (detalle.tipo === 'alimento') {
+          resumenFinal += `• ${detalle.nombre}\n`;
         }
-        
-        // Resetear la orden actual
-        const previousOrderNumber = session.currentOrder.orderNumber;
-        session.currentOrder = {};
-        
-        replyConDetalles = `Perfecto, iniciemos un nuevo pedido. Tu pedido anterior es ${previousOrderNumber}. ¿En qué sucursal recogerás esta nueva orden?`;
-        
-        // Si mencionó un producto, intentar detectarlo
-        if (intent.producto) {
-          const producto = menuUtils.findProductByName(MENU, intent.producto, 'bebida');
-          if (producto) {
-            session.currentOrder.bebida = producto.nombre;
-            session.currentOrder.bebida_id = producto.id;
-            const sucursalAnterior = session.orderHistory[session.orderHistory.length - 1]?.sucursal;
-            if (sucursalAnterior) {
-              replyConDetalles = `Perfecto, un ${producto.nombre}. ¿En la misma sucursal (${sucursalAnterior}) o en otra?`;
-            } else {
-              replyConDetalles = `Perfecto, un ${producto.nombre}. ¿En qué sucursal recogerás tu pedido?`;
-            }
-          }
-        }
-      } else if (intent.tipo === 'modificar') {
-        // Usuario quiere modificar un pedido ya confirmado
-        replyConDetalles = `Tu pedido ${session.currentOrder.orderNumber} ya fue confirmado y está en preparación. No puedo modificarlo ahora, pero puedo ayudarte con un nuevo pedido. ¿Te gustaría ordenar algo más?`;
-      } else {
-        // Usuario solo está conversando
-        replyConDetalles = `Tu pedido ${session.currentOrder.orderNumber} está confirmado y listo. ¿Te gustaría hacer un nuevo pedido?`;
-      }
-    } else if (
-      session.currentOrder.confirmado &&
-      session.currentOrder.bebida &&
-      session.currentOrder.sucursal &&
-      !session.currentOrder.orderNumber
-    ) {
-      // Orden lista para finalizar (confirmada pero sin número)
-      const finalOrder = finalizeOrder(session);
-      if (finalOrder) {
-        orderComplete = true;
-        orderData = finalOrder;
-        session.currentOrder.orderNumber = finalOrder.orderNumber;
-        replyConDetalles = promptGen.generateConfirmationMessage(
-          finalOrder,
-          MENU,
-          finalOrder.orderNumber
-        );
-      }
-    } else if (proximoPaso === "confirmacion" && !session.currentOrder.confirmado) {
-      // ✅ NUEVO: En paso de confirmación, verificar si quiere modificar
-      const intent = detectOrderIntent(userInput);
-      
-      if (intent.tipo === 'modificar' && intent.accion === 'agregar') {
-        // Usuario quiere agregar algo antes de confirmar
-        console.log(` Usuario quiere agregar algo antes de confirmar`);
-        replyConDetalles = `Entendido. Por el momento solo puedo agregar un alimento por pedido. Si deseas hacer un pedido adicional, confirma este primero y luego iniciamos uno nuevo. ¿Confirmas este pedido?`;
-      } else if (intent.tipo === 'modificar' && intent.accion === 'quitar') {
-        // Usuario quiere quitar algo
-        console.log(` Usuario quiere quitar algo antes de confirmar`);
-        replyConDetalles = `Claro, ¿qué te gustaría modificar de tu pedido?`;
-        session.currentOrder.confirmado = false;
       }
     }
+    
+    replyConDetalles = `¡Listo! Tu pedido ha sido confirmado exitosamente.
+
+━━━━━━━━━━━━━━━━━━━━
+📋 NÚMERO DE ORDEN: ${finalOrder.orderNumber}
+━━━━━━━━━━━━━━━━━━━━
+
+${resumenFinal}
+━━━━━━━━━━━━━━━━━━━━
+💰 Total pagado: $${finalOrder.total} pesos mexicanos
+⭐ Estrellas acumuladas: ${finalOrder.estrellas}
+💳 Método de pago: ${finalOrder.metodoPago}
+📍 Sucursal de retiro: ${finalOrder.sucursal}
+
+¡Gracias por tu compra! Recoge tu pedido en ${finalOrder.sucursal}.`;
+    
+    console.log(`🎉 Orden finalizada: ${finalOrder.orderNumber}`);
+  } else {
+    console.error(`❌ Error al finalizar orden`);
+    replyConDetalles = `Hubo un problema al procesar tu pedido. Por favor, intenta de nuevo.`;
+  }
+}
 
     if (responseCache.size >= MAX_CACHE_SIZE) {
       const firstKey = responseCache.keys().next().value;
