@@ -112,24 +112,42 @@
  `;
        break;
  
-     case 'bebida':
-       const timeContext = getTimeContext();
-       const sugerencias = menuUtils.getRecommendations(menu, timeContext.momento, 'general')
-         .slice(0, 3)
-         .map((p) => p.nombre)
-         .join(', ');
-       
-       guia = `
- ☕ PASO: BEBIDA
- Sucursal: ${order.sucursal}
- Momento: ${timeContext.momento}
- Instrucción: Pregunta qué bebida desea.
- Ejemplo: "¿Qué te gustaría tomar?", te recomeinto  ${timeContext.momento}: ${sugerencias}
- Si la bebida no está en el menú, notificar al usuario que no tenemos ese producto disponible.
- 
- IMPORTANTE: No seas excesivamente descriptivo. Una pregunta simple es suficiente.
- `;
-       break;
+       case 'bebida':
+        const timeContext = getTimeContext();
+        const sugerencias = menuUtils.getRecommendations(menu, timeContext.momento, 'general')
+          .slice(0, 3)
+          .map((p) => p.nombre)
+          .join(', ');
+        
+        guia = `
+      ☕ PASO: BEBIDA
+      Sucursal: ${order.sucursal}
+      Momento: ${timeContext.momento}
+      
+      Instrucción CRÍTICA: 
+      1. Pregunta qué bebida desea
+      2. DEBES mencionar las sugerencias disponibles
+      3. Usa EXACTAMENTE este formato:
+      
+      "¿Qué te gustaría tomar?
+      
+      Te recomiendo: ${sugerencias}
+      
+      También puedes decirme tu bebida favorita."
+      
+      SUGERENCIAS DISPONIBLES PARA ${timeContext.momento}:
+      ${sugerencias}
+      
+      ⚠️ IMPORTANTE: 
+      - SIEMPRE menciona las 3 sugerencias
+      - NO inventes bebidas, usa SOLO las de la lista
+      - Sé breve pero INCLUYE las sugerencias
+      `;
+        break;
+
+
+
+
  
      case 'tamano':
        const bebidaProducto = menuUtils.findProductByName(menu, order.bebida);
