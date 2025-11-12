@@ -94,166 +94,200 @@
  /**
   * ✅ MEJORADO: Generar guía de paso con tono profesional
   */
- export function generateStepGuide(order, menu, sucursales) {
-   const proximoPaso = orderValidation.suggestNextStep(order, menu);
-   let guia = '';
- 
-   switch (proximoPaso) {
-     case 'sucursal':
-       guia = `
-  PASO: SUCURSAL
- Instrucción: Pregunta en qué sucursal recogerá su pedido, mencionando que cerca de tí tenemos estas sucursales  ${sucursales.map((s) => `  • ${s.nombre}`).join('\n')}
- Tono: Profesional y directo.
- Ejemplo: "¿En qué sucursal recogerás tu pedido? cerca de ti encontramos estas sucursales:  ${sucursales.map((s) => `  • ${s.nombre}`).join('\n')}"
- 
+export function generateStepGuide(order, menu, sucursales) {
+  const proximoPaso = orderValidation.suggestNextStep(order, menu);
 
- 
- IMPORTANTE: No uses frases excesivamente amigables. Sé breve.
- `;
-       break;
- 
-       case 'bebida':
-        const timeContext = getTimeContext();
-        const sugerencias = menuUtils.getRecommendations(menu, timeContext.momento, 'general')
-          .slice(0, 3)
-          .map((p) => p.nombre)
+  switch (proximoPaso) {
+    
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    case 'sucursal':
+      const listaSucursales = sucursales.map(s => s.nombre).join(', ');
+      const cantidadSucursales = sucursales.length;
+      
+      const sucursalesParaVoz = cantidadSucursales > 1
+        ? sucursales.slice(0, 2).map(s => s.nombre).join(', ') + ', entre otras'
+        : listaSucursales;
+      
+      return `📍 SELECCIÓN DE SUCURSAL
+
+⚠️ REGLA ABSOLUTA:
+Debes mencionar las sucursales disponibles EN LA MISMA respuesta inicial.
+NO esperes a que el usuario pregunte.
+
+Sucursales disponibles: ${listaSucursales}
+
+🎤 PARA VOZ, responde EXACTAMENTE así:
+"¿En qué sucursal recogerás tu pedido? Cerca de ti tenemos: ${sucursalesParaVoz}"
+
+ALTERNATIVAS ACEPTABLES (elige una):
+- "¿Dónde recogerás tu pedido? Contamos con: ${sucursalesParaVoz}"
+- "¿En cuál sucursal lo recoges? Disponibles: ${sucursalesParaVoz}"
+
+❌ PROHIBIDO responder solo:
+- "¿En qué sucursal recogerás tu pedido?" (SIN mencionar opciones)
+- "¿Dónde lo recogerás?" (SIN mencionar opciones)
+
+FORMATO:
+- Una sola oración
+- Máximo 25 palabras
+- Sin bullets (•), sin saltos de línea
+- Menciona sucursales separadas por comas`;
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    case 'bebida':
+      const timeContext = getTimeContext();
+      const sugerencias = menuUtils.getRecommendations(menu, timeContext.momento, 'general')
+        .slice(0, 3)
+        .map((p) => p.nombre)
+        .join(', ');
+      
+      return `☕ PASO: BEBIDA
+Sucursal: ${order.sucursal}
+Momento: ${timeContext.momento}
+
+Instrucción CRÍTICA: 
+1. Pregunta qué bebida desea
+2. DEBES mencionar las sugerencias disponibles
+3. Usa EXACTAMENTE este formato:
+
+"¿Qué te gustaría tomar? Te recomiendo: ${sugerencias}. También puedes decirme tu bebida favorita."
+
+SUGERENCIAS DISPONIBLES PARA ${timeContext.momento}:
+${sugerencias}
+
+⚠️ IMPORTANTE: 
+- SIEMPRE menciona las 3 sugerencias
+- NO inventes bebidas, usa SOLO las de la lista
+- Sé breve pero INCLUYE las sugerencias`;
+
+ case 'tamano':
+      const bebidaProducto = menuUtils.findProductByName(menu, order.bebida);
+      
+      if (!bebidaProducto) {
+        return `⚠️ ERROR: No se encontró la bebida "${order.bebida}" en el menú.
+Pregunta nuevamente qué bebida desea.`;
+      }
+      
+      const sizeGuide = generateSizeStepGuide(order, bebidaProducto, menu);
+      
+      if (sizeGuide) {
+        return sizeGuide;
+      }
+      
+      // Si no requiere tamaño
+      return `ℹ️ La bebida "${order.bebida}" no requiere selección de tamaño.
+Continúa al siguiente paso sin preguntar por tamaño.`;
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    case 'alimento':
+      return `🍽️ PASO: ALIMENTO (Opcional)
+Bebida configurada: ${order.bebida}
+
+Instrucción: Pregunta si desea algo para comer.
+
+Responde: "¿Te gustaría algo para acompañar? Tenemos croissants, muffins, brownies y sandwiches"
+
+IMPORTANTE: 
+- No presiones al usuario
+- Acepta "no" o "sin alimento" fácilmente
+- Sé breve (máximo 20 palabras)`;
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    case 'metodoPago':
+      return `💳 PASO: FORMA DE PAGO
+Estado: Bebida completamente configurada ✓
+
+Instrucción: Pregunta cómo desea pagar y MENCIONA los beneficios de estrellas.
+
+Responde: "¿Cómo prefieres pagar? Con efectivo o tarjeta acumulas 1 estrella cada 20 pesos. Con Starbucks Card acumulas 1 estrella cada 10 pesos, ¡el doble!"
+
+FORMAS DE PAGO (MENCIONAR TODAS):
+- Efectivo: 1 estrella por cada 20 pesos
+- Tarjeta bancaria: 1 estrella por cada 20 pesos  
+- Starbucks Card: 1 estrella por cada 10 pesos (¡el doble!)
+
+IMPORTANTE:
+- SIEMPRE menciona las estrellas
+- Resalta que Starbucks Card da más estrellas
+- Todos los montos en "pesos" o "pesos mexicanos"
+- Máximo 30 palabras`;
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    case 'confirmacion':
+      return `📋 PASO: CONFIRMACIÓN FINAL
+
+Instrucción: Muestra el resumen COMPLETO y pide confirmación.
+
+El resumen DEBE incluir:
+1. Bebida con tamaño
+2. Todos los modificadores (leche, café, etc.)
+3. Alimento (si lo hay)
+4. Sucursal
+5. Total en pesos mexicanos
+6. Estrellas que ganará
+
+Responde: "Este es tu resumen: [resumen completo]. ¿Confirmas tu pedido?"
+
+IMPORTANTE:
+- Muestra TODO el detalle
+- Menciona montos en "pesos mexicanos"
+- Sé profesional pero claro
+- No seas excesivamente efusivo`;
+
+    // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    default:
+      // Manejo de modificadores
+      if (proximoPaso.startsWith('modifier_')) {
+        const modifierId = proximoPaso.replace('modifier_', '');
+        const bebidaProdu = menuUtils.findProductByName(menu, order.bebida);
+        
+        if (!bebidaProdu) {
+          return `⚠️ ERROR: No se encontró la bebida para configurar modificadores.
+Pregunta nuevamente qué bebida desea.`;
+        }
+        
+        const modificador = menuUtils.getModifierById(bebidaProdu, modifierId);
+        
+        if (!modificador) {
+          return `⚠️ ERROR: Modificador "${modifierId}" no encontrado.
+Continúa al siguiente paso.`;
+        }
+        
+        const preguntaAmigable = getModifierFriendlyName(modifierId);
+        const opcionesLista = modificador.opciones
+          .slice(0, 4)
+          .map(o => o.nombre)
           .join(', ');
         
-        guia = `
-      ☕ PASO: BEBIDA
-      Sucursal: ${order.sucursal}
-      Momento: ${timeContext.momento}
-      
-      Instrucción CRÍTICA: 
-      1. Pregunta qué bebida desea
-      2. DEBES mencionar las sugerencias disponibles
-      3. Usa EXACTAMENTE este formato:
-      
-      "¿Qué te gustaría tomar?
-      
-      Te recomiendo: ${sugerencias}
-      
-      También puedes decirme tu bebida favorita."
-      
-      SUGERENCIAS DISPONIBLES PARA ${timeContext.momento}:
-      ${sugerencias}
-      
-      ⚠️ IMPORTANTE: 
-      - SIEMPRE menciona las 3 sugerencias
-      - NO inventes bebidas, usa SOLO las de la lista
-      - Sé breve pero INCLUYE las sugerencias
-      `;
-        break;
+        return `🔧 PASO: MODIFICADOR - ${modificador.nombre.toUpperCase()}
+Requerido: Sí
+Bebida: ${order.bebida}
 
+Opciones disponibles: ${opcionesLista}
 
+Responde: "${preguntaAmigable} prefieres? Tenemos ${opcionesLista}"
 
+IMPORTANTE: 
+- Menciona ESPECÍFICAMENTE qué estás preguntando (tipo de leche, tipo de café, etc.)
+- Sé directo, sin rodeos
+- No des explicaciones largas de cada opción
+- Máximo 25 palabras`;
+      }
+      
+      // ⚠️ Fallback para pasos no reconocidos
+      return `⚠️ Paso no reconocido: "${proximoPaso}"
 
- 
-     case 'tamano':
-       const bebidaProducto = menuUtils.findProductByName(menu, order.bebida);
-       if (bebidaProducto) {
-         const sizeGuide = generateSizeStepGuide(order, bebidaProducto, menu);
-         if (sizeGuide) {
-           guia = sizeGuide;
-         }
-       }
-       break;
- 
-     default:
-       if (proximoPaso.startsWith('modifier_')) {
-         const modifierId = proximoPaso.replace('modifier_', '');
-         const bebidaProdu = menuUtils.findProductByName(menu, order.bebida);
-         
-         if (bebidaProdu) {
-           const modificador = menuUtils.getModifierById(bebidaProdu, modifierId);
-           
-           if (modificador) {
-             const preguntaAmigable = getModifierFriendlyName(modifierId);
-             const opcionesTexto = modificador.opciones
-               .slice(0, 4)
-               .map((o) => {
-                 const precioInfo = Object.values(o.precios_por_tamano).some((p) => p > 0)
-                   ? ` (+$${Object.values(o.precios_por_tamano)[0]} pesos)`
-                   : '';
-                 return `  • ${o.nombre}${precioInfo}`;
-               })
-               .join('\n');
- 
-             guia = `
-  PASO: MODIFICADOR - ${modificador.nombre.toUpperCase()}
- Requerido: Sí
- Instrucción: ${preguntaAmigable}?
- Ejemplo: "${preguntaAmigable} prefieres?"
- 
- Opciones:
- ${opcionesTexto}
- 
- IMPORTANTE: 
- - Menciona ESPECÍFICAMENTE qué estás preguntando (tipo de leche, tipo de café, etc.)
- - Sé directo, sin rodeos
- - No des explicaciones largas de cada opción
- `;
-           }
-         }
-       } else if (proximoPaso === 'alimento') {
-         guia = `
-  PASO: ALIMENTO (Opcional)
- Bebida configurada: ${order.bebida}
- Instrucción: Pregunta si desea algo para comer.
- Ejemplo: "¿Te gustaría algo para acompañar?"
- 
- Sugerencias: Croissant, Muffin, Brownie, Sandwich
- 
- IMPORTANTE: 
- - No presiones al usuario
- - Acepta "no" o "sin alimento" fácilmente
- - Sé breve
- `;
-       } else if (proximoPaso === 'metodoPago') {
-         guia = `
-  PASO: FORMA DE PAGO
- Estado: Bebida completamente configurada ✓
- Instrucción: Pregunta cómo desea pagar y MENCIONA los beneficios de estrellas.
- 
- Ejemplo: "¿Cómo prefieres pagar? Te cuento los beneficios..."
- 
- FORMAS DE PAGO (MENCIONAR TODAS):
- • Efectivo: Acumulas 1 estrella por cada 20 pesos de compra
- • Tarjeta bancaria: Acumulas 1 estrella por cada 20 pesos de compra  
- • Starbucks Card: Acumulas 1 estrella por cada 10 pesos de compra (¡el doble de beneficios!)
- 
- IMPORTANTE:
- - SIEMPRE menciona las estrellas que ganará con cada opción
- - Resalta que Starbucks Card da más estrellas
- - Todos los montos deben estar en "pesos" o "pesos mexicanos"
- - Sé claro pero conciso (max 3 líneas)
- `;
-       } else if (proximoPaso === 'confirmacion') {
-         guia = `
-  PASO: CONFIRMACIÓN FINAL
- Instrucción: Muestra el resumen COMPLETO y pide confirmación.
- 
- El resumen DEBE incluir:
- 1. Bebida con tamaño
- 2. Todos los modificadores (leche, café, etc.)
- 3. Alimento (si lo hay)
- 4. Sucursal
- 5. Total en pesos mexicanos
- 6. Estrellas que ganará
- 
- Ejemplo: "Este es tu resumen: [resumen completo]. ¿Confirmas tu pedido?"
- 
- IMPORTANTE:
- - Muestra TODO el detalle
- - Menciona montos en "pesos mexicanos"
- - Sé profesional pero claro
- - No seas excesivamente efusivo
- `;
-       }
-   }
- 
-   return guia;
- }
+Analiza el estado de la orden y pregunta lo siguiente que falte:
+- Si no hay sucursal → pregunta sucursal
+- Si no hay bebida → pregunta bebida
+- Si no hay tamaño → pregunta tamaño
+- Si no hay modificadores → pregunta modificadores
+- Si no hay alimento → pregunta alimento
+- Si no hay método de pago → pregunta método de pago
+
+Mantén el tono profesional y conciso.`;
+  }
+}
  
  /**
   * ✅ MEJORADO: Resumen con formato claro y todos los detalles
@@ -312,64 +346,7 @@
  /**
   * ✅ MEJORADO: System prompt con tono profesional y menos empalagoso
   */
- export function generateSystemPrompt(
-   menu,
-   order = {},
-   sucursales = [],
-   userName = 'Usuario'
- ) {
-   const stepGuide = generateStepGuide(order, menu, sucursales);
-   const timeContext = getTimeContext();
- 
-   return `Eres Caffi, asistente virtual de Starbucks México. Tu función es tomar pedidos de manera eficiente y profesional.
- 
- 🎯 PERSONALIDAD Y TONO:
- - Profesional, amable pero NO excesivamente efusivo
- - Conciso: máximo 30 palabras por respuesta
- - Natural y conversacional, sin ser empalagoso
- - Evita frases como "¡sería un placer!", "¡encantado!", "¡maravilloso!"
- - Sé directo: "¿Qué tamaño?" es mejor que "¿Qué tamaño te gustaría que preparemos para ti?"
- 
- 🔧 REGLAS TÉCNICAS:
- - Una pregunta a la vez
- - Usa nombres exactos del menú
- - Al preguntar por modificadores, SIEMPRE menciona QUÉ estás preguntando:
-   ✓ "¿Con qué tipo de leche?" 
-   ✓ "¿Qué tipo de café prefieres?"
-   ✗ "¿Cuál prefieres?" (muy vaga)
- - Tamaños: usa solo los disponibles para cada producto (Alto, Grande, Venti, Corto)
- - Montos: SIEMPRE en "pesos" o "pesos mexicanos"
- 
- 💰 FORMA DE PAGO (IMPORTANTE):
- Cuando preguntes por la forma de pago, DEBES mencionar los beneficios:
- - Efectivo/Tarjeta: 1 estrella por cada 20 pesos
- - Starbucks Card: 1 estrella por cada 10 pesos (el doble)
- 
- 📋 CONTEXTO:
- Usuario: ${userName}
- Momento: ${timeContext.momento}
- Hora: ${timeContext.hora}:00
- 
- ${stepGuide}
- 
- 📦 ESTADO DE LA ORDEN:
- ${Object.keys(order).length > 0 
-   ? Object.entries(order)
-       .filter(([_, v]) => v !== undefined && v !== null && v !== '')
-       .map(([k, v]) => `${k}: ${JSON.stringify(v)}`)
-       .join('\n')
-   : 'Orden vacía'
- }
- 
- ⚠️ RECORDATORIOS CRÍTICOS:
- 1. NO seas excesivamente amable o empalagoso
- 2. Sé BREVE y DIRECTO
- 3. Al configurar modificadores, menciona QUÉ estás preguntando
- 4. La forma de pago se pregunta DESPUÉS de configurar toda la bebida
- 5. En confirmación, muestra resumen COMPLETO con precios en pesos mexicanos
- 6. Evita palabras repetitivas como "perfecto", "excelente", "maravilloso"
- 7. Habla de forma natural, como un barista profesional real`;
- }
+
  
  export function generateSystemPrompt(menu, order = {}, sucursales = [], userName = 'Usuario') {
   const timeContext = getTimeContext();
@@ -431,7 +408,7 @@ ${generarEstadoOrden(order)}
    - Si pide recomendación, usa el momento del día
 
 4️⃣ CONFIGURACIÓN DE BEBIDA (si pidió bebida)
-   a) Tamaño (si aplica para el producto)
+   a) Siempre pregunta primero el tamaño si aplica para el producto
    b) Modificadores obligatorios (tipo de leche, café, etc.)
    c) Modificadores opcionales (temperatura, crema, etc.)
 
@@ -503,26 +480,21 @@ NO menciones sucursales aún. Espera confirmación.`;
     case 'sucursal':
       const sucursalesTexto = sucursales.map(s => s.nombre).join(', ');
       return `📍 SELECCIÓN DE SUCURSAL
-Pregunta: "¿En qué sucursal recogerás tu pedido?"
-Opciones disponibles: ${sucursalesTexto}
+Pregunta: "¿En qué sucursal recogerás tu pedido?, cerca de ti tenemos : ${sucursalesTexto} "`;
 
-Si el usuario no conoce las opciones, menciona: "Cerca de ti tenemos: ${sucursalesTexto}"`;
 
     case 'bebida':
       const recomendaciones = menuUtils.getRecommendations(menu, timeContext.momento, 'general')
         .slice(0, 3)
         .map(p => p.nombre);
+      const listaBebidas= generarListaProductosDisponibles(menu, 'bebidas');
       
+
       return `☕ SELECCIÓN DE BEBIDA
-${order.solicitoRecomendacion ? '🎯 EL USUARIO PIDIÓ RECOMENDACIÓN' : ''}
-
-${generarRecomendacionesPorPreferencia(order, menu, timeContext)}
-
-Productos disponibles en el menú:
-${generarListaProductosDisponibles(menu, 'bebidas')}
-
+Pregunta: "¿Qué te gustaría tomar? Te recomiendo: ${listaBebidas}. También puedes decirme tu bebida favorita."
+IMPORTANTE:
 Si el usuario pide algo NO disponible, responde:
-"[Producto] no está en el menú. ¿Te gustaría [sugerencia1], [sugerencia2] o [sugerencia3]?"`;
+"[Producto] no está en el menú. ¿Te gustaría algo como ${recomendaciones.join(', ')}?"`;
 
     case 'tamano':
       const producto = menuUtils.findProductByName(menu, order.bebida);

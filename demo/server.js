@@ -12,6 +12,7 @@ import * as orderValidation from "./orderValidation.js";
 import * as promptGen from "./promptGenerator.js";
 import * as sizeDetection from "./sizeDetection.js";
 import * as recommendationEngine from "./recommendationEngine.js";
+import { Console } from "console";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -845,7 +846,10 @@ function cleanTextForTTS(text) {
     .replace(/[""]/g, "")
     .replace(/💰|⭐|📋|📦|☕|🍞|🎉/g, "")  // Quitar emojis
     .replace(/\s+/g, " ")  // Normalizar espacios
-    .replace(/(\d+)\s*estrellas?/gi, "$1 estrella")  // Normalizar
+    .replace(/(\d+)\s*estrellas?/gi, "$1 estrella") 
+    .replace(/[•●◦▪]/g, '') // Eliminar bullets
+    .replace(/━+/g, '') // Eliminar separadores visuales
+    .replace(/\n{2,}/g, '. ') // Convertir saltos dobles en pausas // Normalizar
     .trim();
 }
 
@@ -859,7 +863,7 @@ function getSuggestions(order) {
       return ["Sí, quiero ordenar", "Empecemos", "Iniciar orden"];
       
     case "esperando_confirmacion":
-      return ["Sí, estoy listo", "Empecemos", "Claro"];
+      return ["Sí, estoy listo", "Empecemos", "Claro","dale","vamos","ok","okay","estoy listo"];
       
     case "sucursal":
       return SUCURSALES.map((s) => s.nombre);
@@ -938,6 +942,7 @@ app.post("/chat", async (req, res) => {
       SUCURSALES,
       userName
     );
+    console.log(`\n📝 System Prompt:\n${systemPrompt}\n ${proximoPaso}`);
 
     // 5️⃣ LLAMAR AL LLM
     const messages = [
@@ -1018,7 +1023,7 @@ function generarSugerenciasUI(paso, order, menu) {
       return SUCURSALES.map(s => s.nombre);
     
     case 'bebida':
-      return menuUtils.getRecommendations(menu, getTimeContext().momento, 'general')
+      return menuUtils.getRecommendations(menu, promptGen.getTimeContext().momento, 'general')
         .slice(0, 3)
         .map(p => p.nombre);
     
