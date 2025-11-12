@@ -912,9 +912,9 @@ function getSuggestions(order) {
 app.post("/chat", async (req, res) => {
   const userName = req.body.userName || "Usuario";
   const { userInput, history = [], sessionId = "default" } = req.body;
-  const isFirstMessage = history.length === 0;
 
   try {
+    // 1️⃣ GESTIÓN DE SESIÓN
     if (!sessionContext.has(sessionId)) {
       sessionContext.set(sessionId, {
         currentOrder: {},
@@ -925,41 +925,13 @@ app.post("/chat", async (req, res) => {
 
     const session = sessionContext.get(sessionId);
 
-    const cacheKey = `${userInput.toLowerCase()}-${history.length}-${sessionId}`;
-    if (responseCache.has(cacheKey)) {
-      const cached = responseCache.get(cacheKey);
-      console.log(`⚡ Respuesta desde caché`);
-      return res.json({
-        reply: cached,
-        cached: true,
-        context: session.currentOrder,
-      });
-    }
+    // 2️⃣ ACTUALIZAR ORDEN CON INPUT DEL USUARIO
+    updateOrderFromInput(session, userInput, MENU);
 
-   /* if (isFirstMessage && (!userInput || userInput.trim() === "")) {
-      const greeting = `Hola ${userName}. ¿En qué sucursal recogerás tu pedido? Tenemos: ${SUCURSALES.map(s => s.nombre).join(", ")}`;
-      return res.json({
-        reply: greeting,
-        context: session.currentOrder,
-        suggestions: SUCURSALES.map((s) => s.nombre),
-      });
-    }*/
-    if (isFirstMessage && (!userInput || userInput.trim() === "")) {
-      const greeting = `¡Hola ${userName}! Soy Caffi, tu asistente virtual de Starbucks.
+    // 3️⃣ DETERMINAR PRÓXIMO PASO
+    const proximoPaso = orderValidation.suggestNextStep(session.currentOrder, MENU);
 
-Estoy aquí para ayudarte a hacer tu pedido de forma rápida y sencilla.
-
-¿Estás listo para iniciar tu orden?`;
-      
-      session.currentOrder.bienvenidaDada = true;
-      
-      return res.json({
-        reply: greeting,
-        context: session.currentOrder,
-        suggestions: ["Sí, quiero ordenar", "Empecemos", "Claro"],
-      });
-    }
-
+    // 4️⃣ GENERAR PROMPT DINÁMICO
     const systemPrompt = promptGen.generateSystemPrompt(
       MENU,
       session.currentOrder,
@@ -967,28 +939,21 @@ Estoy aquí para ayudarte a hacer tu pedido de forma rápida y sencilla.
       userName
     );
 
-    // ✅ Actualizar orden ANTES del LLM
-    console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    console.log(`REQUEST #${Date.now()}`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-    updateOrderFromInput(session, userInput);
-
-    let messages = [
+    // 5️⃣ LLAMAR AL LLM
+    const messages = [
       { role: "system", content: systemPrompt },
       ...history,
       { role: "user", content: userInput },
     ];
 
-    const startTime = Date.now();
     const { data } = await axios.post(
       "https://integrate.api.nvidia.com/v1/chat/completions",
       {
         model: MODEL,
         messages,
         temperature: 0.5,
-        max_tokens: 200,
+        max_tokens: 150, // Reducido para voz
         top_p: 0.7,
-        frequency_penalty: 0.3,
       },
       {
         headers: {
@@ -1000,619 +965,38 @@ Estoy aquí para ayudarte a hacer tu pedido de forma rápida y sencilla.
     );
 
     let reply = data?.choices?.[0]?.message?.content?.trim() ?? "(sin respuesta)";
-    reply = cleanTextForTTS(reply);
+    reply = cleanTextForTTS(reply); // CONSERVA esto para voz
 
-    const responseTime = Date.now() - startTime;
-    console.log(`🤖 LLM: ${responseTime}ms`);
+    // 6️⃣ VERIFICAR SI LA ORDEN ESTÁ COMPLETA
+    let orderComplete = false;
+    let orderData = null;
 
-    const proximoPaso = getCurrentStep(session.currentOrder);
-    const sugerencias = getSuggestions(session.currentOrder);
-    
-    let replyConDetalles = reply;
-    if (proximoPaso === "bienvenida") {
-      replyConDetalles = `¡Hola ${userName}! Soy Caffi, tu asistente virtual de Starbucks.
-
-Estoy aquí para ayudarte a hacer tu pedido de forma rápida y sencilla.
-
-¿Estás listo para iniciar tu orden?`;
-    }
-    
-    if (proximoPaso === "esperando_confirmacion") {
-      if (session.currentOrder.listoParaOrdenar === false) {
-        replyConDetalles = `Entendido, tómate tu tiempo. Cuando estés listo, avísame y comenzamos con tu pedido.`;
-      } else {
-        replyConDetalles = `Perfecto. Toma un momento para decidir y cuando estés listo, me dices.`;
+    if (proximoPaso === 'confirmacion' && 
+        session.currentOrder.confirmado &&
+        session.currentOrder.metodoPago &&
+        !session.currentOrder.orderNumber) {
+      
+      const finalOrder = finalizeOrder(session);
+      if (finalOrder) {
+        orderComplete = true;
+        orderData = finalOrder;
+        session.currentOrder.orderNumber = finalOrder.orderNumber;
       }
     }
-    // ✅ PASO: BEBIDA - MEJORADO con validación y recomendaciones
-// ✅ PASO: BEBIDA - Con detección de preferencias en recomendaciones
 
-// ✅ VERSIÓN SIMPLIFICADA Y GARANTIZADA - Paso Bebida con Preferencias
+    // 7️⃣ GENERAR SUGERENCIAS VISUALES (para botones en UI)
+    const sugerencias = generarSugerenciasUI(proximoPaso, session.currentOrder, MENU);
 
-if (proximoPaso === "bebida") {
-  const timeContext = promptGen.getTimeContext();
-  
-  // 1️⃣ Obtener TODAS las bebidas del menú (fuente completa)
-  const todasLasBebidas = [];
-  const categorias = ['bebidas_calientes', 'bebidas_frias', 'frappuccino', 'te','productos_temporada'];
-  
-  for (const cat of categorias) {
-    if (MENU[cat] && Array.isArray(MENU[cat])) {
-      todasLasBebidas.push(...MENU[cat].filter(b => b.disponible !== false));
-    }
-  }
-  
-  console.log(`📋 Total bebidas en menú: ${todasLasBebidas.length}`);
-  
-  // 2️⃣ Obtener recomendaciones por momento (fallback)
-  let recomendaciones = recommendationEngine
-    .getRecommendations(MENU, timeContext.momento)
-    .slice(0, 5);
-  
-  let mensajeMomento = "";
-  if (timeContext.momento === 'mañana') {
-    mensajeMomento = "Para comenzar bien el día";
-  } else if (timeContext.momento === 'tarde') {
-    mensajeMomento = "Perfecto para la tarde";
-  } else {
-    mensajeMomento = "Ideal para relajarte";
-  }
-  
-  // ✅ CASO 1: Usuario pidió recomendación explícita
-  if (session.currentOrder.solicitoRecomendacion) {
-    console.log('💡 Usuario pidió recomendación');
-    
-    const preferencia = session.currentOrder.preferenciaRecomendacion || '';
-    let bebidasSeleccionadas = [];
-    let mensajePreferencia = mensajeMomento;
-    
-    // 🔥 FILTRADO POR PREFERENCIA
-    if (preferencia === 'frio') {
-      console.log('❄️ Buscando bebidas FRÍAS...');
-      
-      // Usar directamente las categorías de bebidas frías
-      if (MENU.bebidas_frias) {
-        bebidasSeleccionadas.push(...MENU.bebidas_frias.slice(0, 5));
-      }
-      if (MENU.frappuccino) {
-        bebidasSeleccionadas.push(...MENU.frappuccino.slice(0, 5));
-      }
-      
-      // Filtrar adicionales que tengan palabras clave
-      const adicionales = todasLasBebidas.filter(b => {
-        const nombre = b.nombre.toLowerCase();
-        return (nombre.includes('helado') || 
-                nombre.includes('iced') || 
-                nombre.includes('cold')) &&
-               !bebidasSeleccionadas.find(bs => bs.id === b.id);
-      }).slice(0, 3);
-      
-      bebidasSeleccionadas.push(...adicionales);
-      mensajePreferencia = "Para refrescarte";
-      
-      console.log(`❄️ Bebidas frías: ${bebidasSeleccionadas.length}`);
-    }
-    else if (preferencia === 'caliente') {
-      console.log('🔥 Buscando bebidas CALIENTES...');
-      
-      if (MENU.bebidas_calientes) {
-        bebidasSeleccionadas.push(...MENU.bebidas_calientes.slice(0, 8));
-      }
-      
-      mensajePreferencia = "Para entrar en calor";
-      console.log(`🔥 Bebidas calientes: ${bebidasSeleccionadas.length}`);
-    }
-    else if (preferencia === 'dulce') {
-      console.log('🍫 Buscando bebidas DULCES...');
-      
-      bebidasSeleccionadas = todasLasBebidas.filter(b => {
-        const nombre = b.nombre.toLowerCase();
-        return nombre.includes('mocha') || 
-               nombre.includes('chocolate') || 
-               nombre.includes('caramel') || 
-               nombre.includes('frappuccino');
-      }).slice(0, 8);
-      
-      mensajePreferencia = "Para tu antojo dulce";
-      console.log(`🍫 Bebidas dulces: ${bebidasSeleccionadas.length}`);
-    }
-    else if (preferencia === 'cafe') {
-      console.log('☕ Buscando bebidas CON CAFÉ...');
-      
-      bebidasSeleccionadas = todasLasBebidas.filter(b => {
-        const nombre = b.nombre.toLowerCase();
-        return nombre.includes('espresso') || 
-               nombre.includes('americano') || 
-               nombre.includes('cappuccino') ||
-               nombre.includes('latte') && !nombre.includes('matcha');
-      }).slice(0, 8);
-      
-      mensajePreferencia = "Para llenarte de energía";
-      console.log(`☕ Bebidas con café: ${bebidasSeleccionadas.length}`);
-    }
-    else if (preferencia === 'sin cafe') {
-      console.log('🌿 Buscando bebidas SIN CAFÉ...');
-      
-      if (MENU.bebidas_te) {
-        bebidasSeleccionadas.push(...MENU.bebidas_te.slice(0, 5));
-      }
-      
-      const adicionales = todasLasBebidas.filter(b => {
-        const nombre = b.nombre.toLowerCase();
-        return (nombre.includes('chocolate') || 
-                nombre.includes('refresher') ||
-                nombre.includes('matcha')) &&
-               !bebidasSeleccionadas.find(bs => bs.id === b.id);
-      }).slice(0, 3);
-      
-      bebidasSeleccionadas.push(...adicionales);
-      mensajePreferencia = "Sin cafeína para ti";
-      console.log(`🌿 Bebidas sin café: ${bebidasSeleccionadas.length}`);
-    }
-    else if (preferencia === 'temporada') {
-      console.log('🔥 Buscando bebidas TEMPORADA...');
-      
-      if (MENU.productos_temporada) {
-        bebidasSeleccionadas.push(...MENU.productos_temporada.slice(0, 8));
-      }
-      
-      mensajePreferencia = "Estos productos son de temporada";
-      console.log(`🔥 Bebidas temporada: ${bebidasSeleccionadas.length}`);
-    }
-    else {
-      // Sin preferencia específica, usar recomendaciones del momento
-      bebidasSeleccionadas = recomendaciones;
-    }
-    
-    // 🛡️ FALLBACK: Si no hay suficientes bebidas
-    if (bebidasSeleccionadas.length < 2) {
-      console.log(`⚠️ FALLBACK: Solo ${bebidasSeleccionadas.length}, usando recomendaciones generales`);
-      bebidasSeleccionadas = recomendaciones;
-      mensajePreferencia = mensajeMomento;
-    }
-    
-    // 3️⃣ Tomar las primeras 3 y formatear
-    const nombresFinales = bebidasSeleccionadas
-      .slice(0, 3)
-      .map(b => b.nombre)
-      .join(", ");
-    
-    console.log(`✅ Sugerencias: ${nombresFinales}`);
-    
-    replyConDetalles = `Con gusto te doy algunas recomendaciones.
-
-${mensajePreferencia}, te sugiero: ${nombresFinales}
-
-¿Cuál te gustaría probar?`;
-    
-    delete session.currentOrder.solicitoRecomendacion;
-    delete session.currentOrder.preferenciaRecomendacion;
-  }
-  // ✅ CASO 2: Producto NO encontrado
-  else if (session.currentOrder.productoNoEncontrado) {
-    const nombresRecomendados = recomendaciones.slice(0, 3).map(b => b.nombre).join(", ");
-    
-    replyConDetalles = `Lo que pides no está en el menú.
-
-¿Qué te gustaría tomar hoy? ${mensajeMomento}, te recomiendo: ${nombresRecomendados}`;
-    
-    delete session.currentOrder.productoNoEncontrado;
-    delete session.currentOrder.sugerencias;
-  }
-  // ✅ CASO 3: Pregunta normal
-  else {
-    const nombresRecomendados = recomendaciones.slice(0, 3).map(b => b.nombre).join(", ");
-    
-    replyConDetalles = `¿Qué te gustaría tomar?
-
-${mensajeMomento}, te recomiendo: ${nombresRecomendados}
-
-También puedes decirme tu bebida favorita.`;
-  }
-}
-    // ✅ PASO: TAMAÑO
-if (proximoPaso === "tamano") {
-      const producto = menuUtils.findProductByName(MENU, session.currentOrder.bebida);
-      if (producto && sizeDetection.requiresSize(producto)) {
-        const tamaños = sizeDetection.getSizeSuggestions(producto);
-        replyConDetalles = `¿Qué tamaño prefieres? Tenemos: ${tamaños.join(", ")}`;
-      }
-    }
-    
-    // ✅ PASO: MODIFICADORES (con nombre específico)
-if (proximoPaso.startsWith("modifier_")) {
-      const producto = menuUtils.findProductByName(MENU, session.currentOrder.bebida);
-      if (producto) {
-        const requiredMods = menuUtils.getRequiredModifiers(producto);
-        for (const mod of requiredMods) {
-          if (!session.currentOrder.modificadores?.some(m => m.grupoId === mod.id)) {
-            // ✅ Generar pregunta específica según el tipo
-            let pregunta = "";
-            const modId = mod.id.toLowerCase();
-            
-            if (modId.includes('leche') || modId.includes('milk')) {
-              pregunta = "¿Con qué tipo de leche";
-            } else if (modId.includes('cafe') || modId.includes('coffee') || modId.includes('grano')) {
-              pregunta = "¿Con qué tipo de café";
-            } else if (modId.includes('crema') || modId.includes('cream')) {
-              pregunta = "¿Deseas crema batida";
-            } else if (modId.includes('splash')) {
-              pregunta = "¿Quieres un toque de leche";
-            } else if (modId.includes('molido')) {
-              pregunta = "¿Qué tipo de molido";
-            } else {
-              pregunta = `¿Qué ${mod.nombre.toLowerCase()}`;
-            }
-            
-            const opciones = mod.opciones.slice(0, 3).map(o => o.nombre).join(", ");
-            replyConDetalles = `${pregunta} prefieres? Opciones: ${opciones}`;
-            break;
-          }
-        }
-      }
-    }
-    
-    // ✅ PASO: ALIMENTO
-   // ✅ PASO: ALIMENTO - Con recomendaciones y categorías
-
-if (proximoPaso === "alimento") {
-  // 1️⃣ Obtener alimentos de todas las categorías
-  const todosLosAlimentos = [];
-  const categoriasAlimentos = ['alimentos_salados', 'alimentos_dulces', 'alimentos_saludables', 'panaderia'];
-  
-  for (const cat of categoriasAlimentos) {
-    if (MENU[cat] && Array.isArray(MENU[cat])) {
-      todosLosAlimentos.push(...MENU[cat].filter(a => a.disponible !== false));
-    }
-  }
-  
-  console.log(`🍞 Total alimentos disponibles: ${todosLosAlimentos.length}`);
-  
-  // 2️⃣ Seleccionar 5 alimentos variados (mix de categorías)
-  const alimentosRecomendados = [];
-  
-  // Tomar 2 salados
-  if (MENU.alimentos_salados && MENU.alimentos_salados.length > 0) {
-    alimentosRecomendados.push(...MENU.alimentos_salados.slice(0, 2));
-  }
-  
-  // Tomar 2 dulces
-  if (MENU.alimentos_dulces && MENU.alimentos_dulces.length > 0) {
-    alimentosRecomendados.push(...MENU.alimentos_dulces.slice(0, 2));
-  }
-  
-  // Tomar 1 saludable o panadería
-  if (MENU.alimentos_saludables && MENU.alimentos_saludables.length > 0) {
-    alimentosRecomendados.push(MENU.alimentos_saludables[0]);
-  } else if (MENU.panaderia && MENU.panaderia.length > 0) {
-    alimentosRecomendados.push(MENU.panaderia[0]);
-  }
-  
-  console.log(`🍞 Alimentos recomendados: ${alimentosRecomendados.length}`);
-  
-  // ✅ CASO 1: Usuario pidió recomendación de alimentos
-  if (session.currentOrder.solicitoRecomendacionAlimento) {
-    console.log('💡 Usuario pidió recomendación de alimento');
-    
-    const preferencia = session.currentOrder.preferenciaAlimento || '';
-    let alimentosSeleccionados = [];
-    let mensajePreferencia = "Para acompañar tu bebida";
-    
-    // 🔥 FILTRADO POR PREFERENCIA
-    if (preferencia === 'salado') {
-      console.log('🧂 Buscando alimentos SALADOS...');
-      
-      if (MENU.alimentos_salados) {
-        alimentosSeleccionados = MENU.alimentos_salados.slice(0, 5);
-      }
-      
-      mensajePreferencia = "Algo salado para ti";
-      console.log(`🧂 Alimentos salados: ${alimentosSeleccionados.length}`);
-    }
-    else if (preferencia === 'dulce') {
-      console.log('🍰 Buscando alimentos DULCES...');
-      
-      if (MENU.alimentos_dulces) {
-        alimentosSeleccionados = MENU.alimentos_dulces.slice(0, 5);
-      }
-      
-      mensajePreferencia = "Algo dulce para ti";
-      console.log(`🍰 Alimentos dulces: ${alimentosSeleccionados.length}`);
-    }
-    else if (preferencia === 'saludable') {
-      console.log('🥗 Buscando alimentos SALUDABLES...');
-      
-      if (MENU.alimentos_saludables) {
-        alimentosSeleccionados = MENU.alimentos_saludables.slice(0, 5);
-      }
-      
-      // Si hay pocos saludables, agregar panadería
-      if (alimentosSeleccionados.length < 3 && MENU.panaderia) {
-        alimentosSeleccionados.push(...MENU.panaderia.slice(0, 3));
-      }
-      
-      mensajePreferencia = "Opciones saludables para ti";
-      console.log(`🥗 Alimentos saludables: ${alimentosSeleccionados.length}`);
-    }
-    else if (preferencia === 'desayuno') {
-      console.log('🍳 Buscando opciones de DESAYUNO...');
-      
-      // Filtrar alimentos con palabras clave de desayuno
-      alimentosSeleccionados = todosLosAlimentos.filter(a => {
-        const nombre = a.nombre.toLowerCase();
-        const desc = (a.descripcion || '').toLowerCase();
-        return nombre.includes('breakfast') || 
-               nombre.includes('muffin') || 
-               nombre.includes('croissant') ||
-               nombre.includes('bagel') ||
-               nombre.includes('sandwich') ||
-               desc.includes('desayuno');
-      }).slice(0, 5);
-      
-      mensajePreferencia = "Para tu desayuno";
-      console.log(`🍳 Opciones desayuno: ${alimentosSeleccionados.length}`);
-    }
-    else {
-      // Sin preferencia específica, usar recomendaciones mixtas
-      alimentosSeleccionados = alimentosRecomendados;
-    }
-    
-    // 🛡️ FALLBACK: Si no hay suficientes alimentos
-    if (alimentosSeleccionados.length < 3) {
-      console.log(`⚠️ FALLBACK: Solo ${alimentosSeleccionados.length}, usando mix general`);
-      alimentosSeleccionados = alimentosRecomendados;
-      mensajePreferencia = "Para acompañar tu bebida";
-    }
-    
-    // Eliminar duplicados
-    alimentosSeleccionados = alimentosSeleccionados.filter((a, index, self) =>
-      index === self.findIndex(item => item.id === a.id)
-    );
-    
-    // 3️⃣ Tomar las primeras 5 y formatear
-    const nombresFinales = alimentosSeleccionados
-      .slice(0, 5)
-      .map(a => a.nombre)
-      .join(", ");
-    
-    console.log(`✅ Sugerencias de alimentos: ${nombresFinales}`);
-    
-    replyConDetalles = `Con gusto te doy algunas opciones.
-
-${mensajePreferencia}, te sugiero: ${nombresFinales}
-
-¿Te gustaría alguno, o prefieres continuar sin alimento?`;
-    
-    delete session.currentOrder.solicitoRecomendacionAlimento;
-    delete session.currentOrder.preferenciaAlimento;
-  }
-  // ✅ CASO 2: Alimento NO encontrado
-  else if (session.currentOrder.alimentoNoEncontrado) {
-    const alimentoSolicitado = session.currentOrder.alimentoNoEncontrado;
-    const nombresRecomendados = alimentosRecomendados.slice(0, 5).map(a => a.nombre).join(", ");
-    
-    console.log(`⚠️ Alimento no encontrado: "${alimentoSolicitado}"`);
-    
-    replyConDetalles = `Lo que pides no está disponible en este momento.
-
-¿Te gustaría alguno de estos alimentos? ${nombresRecomendados}
-
-O puedes continuar sin alimento.`;
-    
-    delete session.currentOrder.alimentoNoEncontrado;
-    delete session.currentOrder.sugerenciasAlimento;
-  }
-  // ✅ CASO 3: Pregunta normal (primera vez)
-  else {
-    const nombresRecomendados = alimentosRecomendados.slice(0, 5).map(a => a.nombre).join(", ");
-    
-    replyConDetalles = `¿Te gustaría algo para acompañar?
-
-Te recomiendo: ${nombresRecomendados}
-
-También puedes decir "no, gracias" si prefieres continuar sin alimento.`;
-  }
-}
-    // ✅ NUEVO PASO: REVISIÓN
-if (proximoPaso === "revision") {
-  const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
-  const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
-  
-  const alimentoText = session.currentOrder.alimento && 
-                       session.currentOrder.alimento !== 'ninguno' 
-    ? ` y ${session.currentOrder.alimento}` 
-    : '';
-  
-  replyConDetalles = `Perfecto. Tu pedido hasta ahora:
-
-• ${session.currentOrder.bebida}${alimentoText}
-• Sucursal: ${session.currentOrder.sucursal}
-
- Subtotal: ${totalText} pesos mexicanos
-
-¿Deseas agregar o modificar algo, o continuamos?`;
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PASO 2: CONFIRMACIÓN (Desglose con precios individuales)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-if (proximoPaso === "confirmacion") {
-  const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
-  
-  // Construir desglose de precios
-  let desglose = '';
-  
-  if (precioInfo.detalles && precioInfo.detalles.length > 0) {
-    for (const detalle of precioInfo.detalles) {
-      if (detalle.tipo === 'bebida') {
-        const tamano = detalle.tamano && detalle.tamano !== 'N/A' 
-          ? ` - ${detalle.tamano}` 
-          : '';
-        desglose += `• ${detalle.nombre}${tamano}: $${detalle.precio}\n`;
-      } else if (detalle.tipo === 'alimento') {
-        desglose += `• ${detalle.nombre}: $${detalle.precio}\n`;
-      }
-    }
-  } else {
-    // Fallback si no hay detalles
-    const bebida = menuUtils.findProductByName(MENU, session.currentOrder.bebida);
-    if (bebida) {
-      desglose += `• ${bebida.nombre}: $${bebida.precio_base}\n`;
-    }
-    
-    if (session.currentOrder.alimento && session.currentOrder.alimento !== 'ninguno') {
-      const alimento = menuUtils.findProductByName(MENU, session.currentOrder.alimento, 'alimento');
-      if (alimento) {
-        desglose += `• ${alimento.nombre}: $${alimento.precio_base}\n`;
-      }
-    }
-  }
-  
-  desglose += `• Sucursal: ${session.currentOrder.sucursal}`;
-  
-  const totalText = precioInfo?.total ? `$${precioInfo.total}` : "$0";
-  
-  replyConDetalles = `Excelente. Este es el resumen detallado de tu pedido:
-
-${desglose}
-
-━━━━━━━━━━━━━━━━━━━━
-💰 Total a pagar: ${totalText} pesos mexicanos
-
-¿Confirmas tu pedido?`;
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PASO 3: MÉTODO DE PAGO (Opciones + estrellas por CADA método)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-if (proximoPaso === "metodoPago") {
-  const precioInfo = priceCalc.calculateOrderPrice(session.currentOrder, MENU);
-  const totalText = precioInfo?.total || 0;
-  
-  // Calcular estrellas para CADA método
-  const estrellasEfectivo = Math.floor(totalText / 20);
-  const estrellasTarjeta = Math.floor(totalText / 20);
-  const estrellasCard = Math.floor(totalText / 10);
-  
-  replyConDetalles = `Perfecto. 
-
-¿Cómo deseas pagar?
-
- Efectivo
-   → Acumulas 1 estrella por cada $20 pesos de compra
-
- Tarjeta bancaria
-   → Acumulas 1 estrella por cada $20 pesos de compra
-
- Starbucks Card (Recomendado)
-   → Acumulas 1 estrella por cada $10 pesos de compra (¡el doble!)
-
-¿Cuál prefieres?`;
-}
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// LÓGICA DE FINALIZACIÓN
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-let orderComplete = false;
-let orderData = null;
-
-// Verificar si ya hay un pedido completado
-if (session.currentOrder.orderNumber) {
-  const intent = detectOrderIntent(userInput);
-  
-  if (intent.tipo === 'nuevo' || intent.tipo === 'posible_nuevo') {
-    console.log(`🆕 Usuario quiere nuevo pedido`);
-    
-    if (!session.orderHistory.some(o => o.orderNumber === session.currentOrder.orderNumber)) {
-      session.orderHistory.push({
-        ...session.currentOrder,
-        timestamp: Date.now()
-      });
-    }
-    
-    const previousOrderNumber = session.currentOrder.orderNumber;
-    session.currentOrder = {};
-    
-    replyConDetalles = `Perfecto, iniciemos un nuevo pedido. Tu pedido anterior es ${previousOrderNumber}. ¿En qué sucursal recogerás esta nueva orden?`;
-  }
-} 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// PASO 4: FINALIZACIÓN (Cuando YA tiene todo: confirmado + método de pago)
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-else if (
-  session.currentOrder.confirmado &&
-  session.currentOrder.metodoPago &&
-  session.currentOrder.bebida &&
-  session.currentOrder.sucursal &&
-  !session.currentOrder.orderNumber
-) {
-  console.log(`✅ Orden lista para finalizar`);
-  
-  const finalOrder = finalizeOrder(session);
-  
-  if (finalOrder) {
-    orderComplete = true;
-    orderData = finalOrder;
-    session.currentOrder.orderNumber = finalOrder.orderNumber;
-    
-    // Construir resumen final detallado
-    let resumenFinal = '';
-    
-    if (finalOrder.detalles && finalOrder.detalles.length > 0) {
-      for (const detalle of finalOrder.detalles) {
-        if (detalle.tipo === 'bebida') {
-          const tamano = detalle.tamano && detalle.tamano !== 'N/A' 
-            ? ` - ${detalle.tamano}` 
-            : '';
-          resumenFinal += `• ${detalle.nombre}${tamano}\n`;
-        } else if (detalle.tipo === 'alimento') {
-          resumenFinal += `• ${detalle.nombre}\n`;
-        }
-      }
-    }
-    
-    replyConDetalles = `¡Listo! Tu pedido ha sido confirmado exitosamente.
-
-━━━━━━━━━━━━━━━━━━━━
-📋 NÚMERO DE ORDEN: ${finalOrder.orderNumber}
-━━━━━━━━━━━━━━━━━━━━
-
-${resumenFinal}
-━━━━━━━━━━━━━━━━━━━━
-💰 Total pagado: $${finalOrder.total} pesos mexicanos
-⭐ Estrellas acumuladas: ${finalOrder.estrellas}
-💳 Método de pago: ${finalOrder.metodoPago}
-📍 Sucursal de retiro: ${finalOrder.sucursal}
-
-¡Gracias por tu compra! Recoge tu pedido en ${finalOrder.sucursal}.`;
-    
-    console.log(`🎉 Orden finalizada: ${finalOrder.orderNumber}`);
-  } else {
-    console.error(`❌ Error al finalizar orden`);
-    replyConDetalles = `Hubo un problema al procesar tu pedido. Por favor, intenta de nuevo.`;
-  }
-}
-
-    if (responseCache.size >= MAX_CACHE_SIZE) {
-      const firstKey = responseCache.keys().next().value;
-      responseCache.delete(firstKey);
-    }
-    responseCache.set(cacheKey, replyConDetalles);
-
-    console.log(`\n📤 RESPONSE:`);
-    console.log(`   Paso siguiente: ${proximoPaso}`);
-    console.log(`   Reply: ${replyConDetalles.substring(0, 60)}...`);
-    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
-
+    // 8️⃣ RESPONDER
     return res.json({
-      reply: replyConDetalles,
-      responseTime,
+      reply,
       context: session.currentOrder,
       suggestions: sugerencias,
       orderComplete,
       orderData,
+      currentStep: proximoPaso, // Útil para el frontend
     });
+
   } catch (e) {
     console.error("❌ Error LLM:", e.response?.data || e.message);
     return res.status(500).json({
@@ -1621,6 +1005,51 @@ ${resumenFinal}
     });
   }
 });
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FUNCIÓN AUXILIAR: Generar sugerencias para UI
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function generarSugerenciasUI(paso, order, menu) {
+  switch (paso) {
+    case 'bienvenida':
+      return ["Sí, ordenar", "Empecemos"];
+    
+    case 'sucursal':
+      return SUCURSALES.map(s => s.nombre);
+    
+    case 'bebida':
+      return menuUtils.getRecommendations(menu, getTimeContext().momento, 'general')
+        .slice(0, 3)
+        .map(p => p.nombre);
+    
+    case 'tamano':
+      const producto = menuUtils.findProductByName(menu, order.bebida);
+      if (producto) {
+        return sizeDetection.getSizeSuggestions(producto);
+      }
+      return [];
+    
+    case 'alimento':
+      return ["Croissant", "Muffin", "No, gracias"];
+    
+    case 'metodoPago':
+      return ["Efectivo", "Tarjeta", "Starbucks Card"];
+    
+    case 'confirmacion':
+      return ["Sí, confirmar", "Modificar pedido"];
+    
+    default:
+      if (paso.startsWith('modifier_')) {
+        const modId = paso.replace('modifier_', '');
+        const prod = menuUtils.findProductByName(menu, order.bebida);
+        const modificador = menuUtils.getModifierById(prod, modId);
+        if (modificador) {
+          return modificador.opciones.slice(0, 4).map(o => o.nombre);
+        }
+      }
+      return [];
+  }
+}
 
 // =========================
 // ENDPOINT: TTS (Text-to-Speech)

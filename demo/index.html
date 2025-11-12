@@ -885,6 +885,10 @@ async function processUserInput(text) {
       setTimeout(() => {
         showOrderConfirmation(data.orderData);
       }, 500);
+
+      stopListening(); // Detener STT
+      stopSpeaking();
+      
       
     } else {
       // Flujo normal
