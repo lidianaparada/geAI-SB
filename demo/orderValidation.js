@@ -239,6 +239,18 @@
   * @returns {string} Siguiente paso
   */
  export function suggestNextStep(order, menu) {
+  if (!order || Object.keys(order).length === 0) {
+    return 'bienvenida';
+  }
+  
+  const keysWithoutUserName = Object.keys(order).filter(k => k !== 'userName');
+  if (keysWithoutUserName.length === 0) {
+    return 'bienvenida';
+  }
+  // Si ya dio bienvenida pero no confirmó que está listo
+  if (order.listoParaOrdenar === false) {
+    return 'bienvenida'; // Sigue en bienvenida hasta que confirme
+  }
    if (!order.sucursal) return 'sucursal';
    if (!order.bebida) return 'bebida';
  

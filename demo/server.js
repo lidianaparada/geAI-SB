@@ -440,7 +440,7 @@ function detectOrderIntent(userInput) {
 function updateOrderFromInput(session, userInput) {
   const order = session.currentOrder;
   const lower = userInput.toLowerCase();
-  const proximoPaso = getCurrentStep(order);
+  const proximoPaso = orderValidation.suggestNextStep(session.currentOrder, MENU);
 
   console.log(`\n✏️  updateOrderFromInput()`);
   console.log(`   Paso actual: ${proximoPaso}`);
@@ -449,19 +449,17 @@ function updateOrderFromInput(session, userInput) {
   switch (proximoPaso) {
     
     case "bienvenida":
-      order.bienvenidaDada = true;
-      console.log(`   ✅ Bienvenida registrada`);
-      break;
-      
-    case "esperando_confirmacion":
-      if (/(sí|si|claro|dale|vamos|ok|okay|confirmo|listo|empecemos|empezar|ordenar|pedir)/i.test(lower)) {
+      if (/(sí|si|claro|dale|vamos|ok|okay|listo|empecemos|empezar|ordenar|pedir)/i.test(lower)) {
         order.listoParaOrdenar = true;
+        order.bienvenidaDada=true;
         console.log(`   ✅ Usuario listo para ordenar`);
       } else if (/(no|todavía no|todavia no|espera|aún no|aun no)/i.test(lower)) {
         order.listoParaOrdenar = false;
+        order.bienvenidaDada=true;
         console.log(`   ⏸️ Usuario NO listo aún`);
       }
       break;
+    
     case "sucursal":
       const sucursal = SUCURSALES.find(s =>
         lower.includes(s.nombre.toLowerCase()) ||
@@ -930,7 +928,9 @@ app.post("/chat", async (req, res) => {
     const session = sessionContext.get(sessionId);
 
     // 2️⃣ ACTUALIZAR ORDEN CON INPUT DEL USUARIO
-    updateOrderFromInput(session, userInput, MENU);
+    if (userInput && userInput.trim() !== "") {
+      updateOrderFromInput(session, userInput, MENU);
+    }
 
     // 3️⃣ DETERMINAR PRÓXIMO PASO
     const proximoPaso = orderValidation.suggestNextStep(session.currentOrder, MENU);
@@ -956,9 +956,10 @@ app.post("/chat", async (req, res) => {
       {
         model: MODEL,
         messages,
-        temperature: 0.5,
+        temperature: 0.4,
         max_tokens: 150, // Reducido para voz
-        top_p: 0.7,
+        top_p: 0.85,
+        frequency_penalty: 0.3,
       },
       {
         headers: {
