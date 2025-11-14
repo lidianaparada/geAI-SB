@@ -274,7 +274,9 @@
    if (order.alimento === undefined) return 'alimento';
    if (!order.metodoPago) return 'metodoPago';
  
-   return 'confirmacion';
+   if (!order.confirmado) return 'confirmacion'; // ← ¿Tienes esto?
+  
+  return 'completado';
  }
  
  /**

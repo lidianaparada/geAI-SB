@@ -876,7 +876,9 @@ async function processUserInput(text) {
     
     // Verificar si el pedido está completo - NUEVO BACKEND RETORNA orderComplete
     if (data.orderComplete && data.orderData) {
-      log("🎉 Pedido completado detectado");
+      log("🎉 Pedido completado detectado",data.orderData);
+
+      log("🎉 Pedido completado detectado",data.orderComplete);
       
       // Hablar primero
       await speakText(reply);

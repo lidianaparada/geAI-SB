@@ -268,6 +268,7 @@ ${generarEstadoOrden(order)}
 5️⃣ REVISIÓN
    - Pregunta si desea agregar algo más o terminar
    - Resume lo que lleva hasta ahora
+   - Debes mencionar el resumen del pedido, los productos agregados, precios, total 
 
 6️⃣ MÉTODO DE PAGO
    - Explica beneficios de estrellas:
@@ -406,38 +407,41 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
   Si el usuario pide algo NO disponible:
   "Ese producto no está disponible. ¿Te gustaría ${recomendaciones}?"`;
       case 'tamano':
-      const producto = menuUtils.findProductByName(menu, order.bebida);
-      if (producto) {
-        const tamanos = sizeDetection.getAvailableSizes(producto);
-        return `📏 SELECCIÓN DE TAMAÑO
-Bebida: ${producto.nombre}
-Tamaños disponibles: ${tamanos.map(t => `${sizeDetection.extractSizeLabel(t.nombre)} (${t.precio} pesos)`).join(', ')}
+        const producto = menuUtils.findProductByName(menu, order.bebida);
+        if (producto) {
+          const tamanos = sizeDetection.getAvailableSizes(producto);
+          return `📏 SELECCIÓN DE TAMAÑO
+  Bebida: ${producto.nombre}
+  Tamaños disponibles: ${tamanos.map(t => `${sizeDetection.extractSizeLabel(t.nombre)} (${t.precio} pesos)`).join(', ')}
 
-Pregunta: "¿Qué tamaño prefieres?"
-IMPORTANTE: Sé breve, no expliques cada tamaño.`;
-      }
-      return '';
+  Pregunta: "¿Qué tamaño prefieres?  Tenemos ${tamanos.map(t => `${sizeDetection.extractSizeLabel(t.nombre)} `).join(', ')}"
+  IMPORTANTE: Sé breve, no expliques cada tamaño.
+  ⚠️ INSTRUCCIÓN OBLIGATORIA (CRÍTICO):
+  -NUNCA menciones tamaños como CHICO o MEDIANO , solo menciona los tamaños disponibles del producto
+  `;
+        }
+        return '';
 
-    case 'alimento':
-      return `🍽️ ALIMENTO (OPCIONAL)
-${order.solicitoRecomendacionAlimento ? '🎯 EL USUARIO PIDIÓ RECOMENDACIÓN DE ALIMENTO' : ''}
+      case 'alimento':
+            return `🍽️ ALIMENTO (OPCIONAL)
+          ${order.solicitoRecomendacionAlimento ? '🎯 EL USUARIO PIDIÓ RECOMENDACIÓN DE ALIMENTO' : ''}
 
-${generarRecomendacionesAlimento(order, menu)}
+          ${generarRecomendacionesAlimento(order, menu)}
 
-Alimentos disponibles:
-${generarListaProductosDisponibles(menu, 'alimentos')}
+          Alimentos disponibles:
+          ${generarListaProductosDisponibles(menu, 'alimentos')}
 
-Pregunta: "¿Te gustaría algo para acompañar?"
-Acepta fácilmente si dice "no" o "sin alimento".`;
+          Pregunta: "¿Te gustaría algo para acompañar? Podría ser ${generarListaProductosDisponibles(menu, 'alimentos')}"
+          Acepta fácilmente si dice "no" o "sin alimento".`;
 
-    case 'revision':
+      case 'revision':
       const precioInfo = priceCalc.calculateOrderPrice(order, menu);
-      return `✅ REVISIÓN DE PEDIDO
-Muestra resumen breve:
-${generarResumenBrevePedido(order, menu)}
-Total hasta ahora: ${precioInfo.total} pesos
+        return `✅ REVISIÓN DE PEDIDO
+        Muestra resumen breve:
+        ${generarResumenBrevePedido(order, menu)}
+        Total hasta ahora: ${precioInfo.total} pesos
 
-Pregunta: "¿Deseas agregar algo más o continuamos?"`;
+        Pregunta: "¿Deseas agregar algo más o continuamos?"`;
 
     case 'metodoPago':
       const precio = priceCalc.calculateOrderPrice(order, menu);
@@ -445,34 +449,94 @@ Pregunta: "¿Deseas agregar algo más o continuamos?"`;
       const estrellasCard = Math.floor(precio.total / 10);
       
       return `💳 MÉTODO DE PAGO
-Total del pedido: ${precio.total} pesos
+        Total del pedido: ${precio.total} pesos
 
-Pregunta así:
-"¿Cómo pagarás? Con efectivo o tarjeta acumulas ${estrellasEfectivo} estrellas. Con Starbucks Card, ${estrellasCard} estrellas, ¡el doble!"
+        Pregunta así:
+        ¿Cómo deseas pagar?
+        Efectivo o Tarjeta bancaria
+          → Acumulas 1 estrella por cada $20 pesos 
+        Starbucks Card (Recomendado)
+          → Acumulas 1 estrella por cada $10 pesos (¡el doble!)
+       ¿Cuál prefieres?
+       
+       IMPORTANTE: Menciona SIEMPRE los beneficios de estrellas.`;
+       case 'confirmacion':
+        const precioConfirmacion = priceCalc.calculateOrderPrice(order, menu);
+        const resumenCompleto = generarResumenCompletoPedido(order, menu);
+        
+        return `📋 CONFIRMACIÓN FINAL (PASO CRÍTICO)
+      
+      🚨 REGLA ABSOLUTA:
+      NO digas "Tu pedido está listo" todavía.
+      NO digas "¡Hasta pronto!" todavía.
+      El pedido AÚN NO está finalizado.
+      
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      TU RESPUESTA OBLIGATORIA (USA ESTE FORMATO EXACTO):
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      
+      "Este es el resumen de tu pedido:
+      
+      ${resumenCompleto}
+      
+      ¿Confirmas tu pedido?"
+      
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      PROHIBIDO ABSOLUTO:
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      ✗ "Tu pedido está listo"
+      ✗ "¡Hasta pronto!"
+      ✗ "¡Listo!"
+      ✗ Cualquier mensaje de despedida
+      ✗ Mencionar número de orden
+      
+      IMPORTANTE:
+      - Debes ESPERAR a que el usuario confirme
+      - Solo DESPUÉS de que diga "sí", pasarás a despedida
+      - AHORA estás en confirmación, NO en despedida`;
 
-IMPORTANTE: Menciona SIEMPRE los beneficios de estrellas.`;
-
-    case 'confirmacion':
-      return `📋 CONFIRMACIÓN FINAL
-Muestra resumen COMPLETO:
-${generarResumenCompletoPedido(order, menu)}
-
-Pregunta: "¿Confirmas tu pedido?"
-
-Si dice SÍ, pasa al paso de despedida.`;
+      case 'completado':
+        const orderNumber = order.orderNumber || 'SB' + Date.now();
+        const precioFinal = priceCalc.calculateOrderPrice(order, menu);
+        
+        return `🎉 DESPEDIDA Y CIERRE (PASO FINAL)
+      
+      ✅ El usuario YA confirmó su pedido.
+      ✅ AHORA SÍ puedes despedirte.
+      
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      TU RESPUESTA OBLIGATORIA (USA ESTE FORMATO EXACTO):
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      
+      "¡Listo! Tu pedido está confirmado.
+      
+      📋 Número de orden: ${orderNumber}
+      💰 Total: ${precioFinal.total} pesos
+      ⭐ Estrellas acumuladas: ${precioFinal.estrellas}
+      📍 Recógelo en: ${order.sucursal}
+      
+      ¡Gracias! Hasta pronto."
+      
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      IMPORTANTE:
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      - Después de este mensaje, la conversación TERMINA
+      - No hagas más preguntas
+      - No ofrezcas nada más`;
+      
 
     default:
-      if (paso.startsWith('modifier_')) {
-        const modId = paso.replace('modifier_', '');
-        const prod = menuUtils.findProductByName(menu, order.bebida);
-        const modificador = menuUtils.getModifierById(prod, modId);
-        
-        if (modificador) {
-          const opciones = modificador.opciones.slice(0, 4).map(o => o.nombre).join(', ');
-          const nombreAmigable = obtenerNombreModificadorAmigable(modId);
-          
-          return `🔧 MODIFICADOR: ${modificador.nombre.toUpperCase()}
-Este modificador es OBLIGATORIO.
+              if (paso.startsWith('modifier_')) {
+                const modId = paso.replace('modifier_', '');
+                const prod = menuUtils.findProductByName(menu, order.bebida);
+                const modificador = menuUtils.getModifierById(prod, modId);
+                
+                if (modificador) {
+                  const opciones = modificador.opciones.slice(0, 4).map(o => o.nombre).join(', ');
+                  const nombreAmigable = obtenerNombreModificadorAmigable(modId);
+                  
+                  return `🔧 MODIFICADOR: ${modificador.nombre.toUpperCase()}
+        Este modificador es OBLIGATORIO.
 
 Pregunta: "${nombreAmigable} prefieres?"
 Opciones: ${opciones}
@@ -516,7 +580,7 @@ function generarListaProductosDisponibles(menu, tipo) {
   }
   
   // Tomar los primeros 15 para no saturar el prompt
-  return productos.slice(0, 15).map(p => `- ${p.nombre}`).join('\n');
+  return productos.slice(0, 5).map(p => `- ${p.nombre}`).join('\n');
 }
 
 function generarRecomendacionesPorPreferencia(order, menu, timeContext) {

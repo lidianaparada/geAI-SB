@@ -682,7 +682,20 @@ case "revision":
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // CASO: CONFIRMACION
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+case "metodoPago":
+  if (lower.includes("efectivo")) {
+    order.metodoPago = "Efectivo";
+    console.log(`   ✅ Guardado: metodoPago = Efectivo`);
+  } 
+  else if (lower.includes("tarjeta")) {
+    order.metodoPago = "Tarjeta bancaria";
+    console.log(`   ✅ Guardado: metodoPago = Tarjeta bancaria`);
+  } 
+  else if (lower.includes("starbucks") || lower.includes("card")) {
+    order.metodoPago = "Starbucks Card";
+    console.log(`   ✅ Guardado: metodoPago = Starbucks Card`);
+  }
+  break;
 case "confirmacion":
   // Usuario confirma que todo está bien
   if (/(sí|si|correcto|está bien|así está bien|todo bien|perfecto|dale|confirmo|ok|okay|yes|confirmar)/i.test(lower)) {
@@ -701,20 +714,7 @@ case "confirmacion":
 // CASO: METODO DE PAGO
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-case "metodoPago":
-  if (lower.includes("efectivo")) {
-    order.metodoPago = "Efectivo";
-    console.log(`   ✅ Guardado: metodoPago = Efectivo`);
-  } 
-  else if (lower.includes("tarjeta")) {
-    order.metodoPago = "Tarjeta bancaria";
-    console.log(`   ✅ Guardado: metodoPago = Tarjeta bancaria`);
-  } 
-  else if (lower.includes("starbucks") || lower.includes("card")) {
-    order.metodoPago = "Starbucks Card";
-    console.log(`   ✅ Guardado: metodoPago = Starbucks Card`);
-  }
-  break;
+
    
 default:
       // ✅ Manejo de modificadores con fuzzy matching
@@ -821,7 +821,7 @@ function finalizeOrder(session) {
   session.orderHistory.push(finalOrder);
   session.currentOrder = {};
 
-  console.log(`🎉 Orden completada: ${orderNumber} - $${precioInfo.total}`);
+  console.log(`🎉 Orden completada: ${finalOrder}`);
   return finalOrder;
 }
 
@@ -977,7 +977,7 @@ app.post("/chat", async (req, res) => {
     let orderComplete = false;
     let orderData = null;
 
-    if (proximoPaso === 'confirmacion' && 
+    if (proximoPaso === 'completado' && 
         session.currentOrder.confirmado &&
         session.currentOrder.metodoPago &&
         !session.currentOrder.orderNumber) {
