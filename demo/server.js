@@ -38,7 +38,7 @@ const MAX_CACHE_SIZE = 50;
 
 let MENU = {};
 /**
- * ✅ VERSIÓN MEJORADA: Buscar producto con fuzzy matching
+ *  VERSIÓN MEJORADA: Buscar producto con fuzzy matching
  * Encuentra productos incluso con variaciones de escritura
  */
  function buscarProductoEnMenu(userInput, tipo = null) {
@@ -62,7 +62,7 @@ let MENU = {};
   let producto = menuUtils.findProductByName(MENU, userInput, tipo);
   
   if (producto) {
-    console.log(`   ✅ Encontrado (búsqueda exacta): ${producto.nombre}`);
+    console.log(`    Encontrado (búsqueda exacta): ${producto.nombre}`);
     return { encontrado: true, producto };
   }
   
@@ -100,19 +100,19 @@ let MENU = {};
       
       const nombreSinEspacios = nombreNormalizado.replace(/\s+/g, "");
       
-      // ⭐ ESTRATEGIA 1: Coincidencia sin espacios (para "dragon fruit" vs "dragonfruit")
+      //  ESTRATEGIA 1: Coincidencia sin espacios (para "dragon fruit" vs "dragonfruit")
       if (nombreSinEspacios.includes(inputSinEspacios)) {
-        console.log(`   ✅ MATCH (sin espacios): "${item.nombre}"`);
+        console.log(`    MATCH (sin espacios): "${item.nombre}"`);
         return { encontrado: true, producto: item };
       }
       
       // Si el input es corto, revisar si está contenido
       if (inputSinEspacios.length >= 5 && nombreSinEspacios.includes(inputSinEspacios)) {
-        console.log(`   ✅ MATCH (contenido): "${item.nombre}"`);
+        console.log(`    MATCH (contenido): "${item.nombre}"`);
         return { encontrado: true, producto: item };
       }
       
-      // ⭐ ESTRATEGIA 2: Coincidencia por palabras clave
+      //  ESTRATEGIA 2: Coincidencia por palabras clave
       if (palabrasInput.length > 0) {
         let palabrasCoinciden = 0;
         const palabrasProducto = nombreNormalizado.split(/\s+/);
@@ -140,12 +140,12 @@ let MENU = {};
   
   // Si encontramos una buena coincidencia (>= 60%)
   if (mejorCoincidencia && mejorPuntaje >= 0.6) {
-    console.log(`   ✅ Encontrado (fuzzy): ${mejorCoincidencia.nombre} (score: ${(mejorPuntaje * 100).toFixed(0)}%)`);
+    console.log(`    Encontrado (fuzzy): ${mejorCoincidencia.nombre} (score: ${(mejorPuntaje * 100).toFixed(0)}%)`);
     return { encontrado: true, producto: mejorCoincidencia };
   }
   
   // 4️⃣ No encontró nada, generar sugerencias
-  console.log(`   ❌ No encontrado en menú, generando sugerencias...`);
+  console.log(`   No encontrado en menú, generando sugerencias...`);
   
   const timeContext = promptGen.getTimeContext();
   let sugerencias = [];
@@ -156,7 +156,7 @@ let MENU = {};
       .slice(0, 3);
     
     sugerencias = recomendaciones.map(r => r.nombre);
-    console.log(`   💡 Sugerencias de bebidas: ${sugerencias.join(", ")}`);
+    console.log(`    Sugerencias de bebidas: ${sugerencias.join(", ")}`);
   } 
   else if (tipo === 'alimento') {
     for (const cat of categorias) {
@@ -170,7 +170,7 @@ let MENU = {};
       }
     }
     sugerencias = sugerencias.slice(0, 3);
-    console.log(`   💡 Sugerencias de alimentos: ${sugerencias.join(", ")}`);
+    console.log(`    Sugerencias de alimentos: ${sugerencias.join(", ")}`);
   }
   
   return {
@@ -184,16 +184,16 @@ function loadMenu() {
     const menuPath = path.join(__dirname, "menu_simplificado_CORRECTO.json");
     const menuData = fs.readFileSync(menuPath, "utf-8");
     MENU = JSON.parse(menuData);
-    console.log("✅ Menú cargado correctamente");
+    console.log(" Menú cargado correctamente");
   } catch (error) {
-    console.error("❌ Error cargando menú:", error.message);
+    console.error("Error cargando menú:", error.message);
     process.exit(1);
   }
 }
 
 loadMenu();
 
-// ✅ FUNCIÓN CRÍTICA: getCurrentStep con validación de bebida completa y paso de revisión
+//  FUNCIÓN CRÍTICA: getCurrentStep con validación de bebida completa y paso de revisión
 function getCurrentStep(order) {
   console.log(`\n📋 getCurrentStep() - Estado actual:`);
   console.log(`   bienvenidaDada: ${order.bienvenidaDada || 'falta'}`);
@@ -254,7 +254,7 @@ function getCurrentStep(order) {
   
 
   
-  // ✅ NUEVO: Paso de revisión después de pago
+  //  NUEVO: Paso de revisión después de pago
   if (!order.revisado) {
     console.log(`   → Retorna: revision`);
     return "revision";
@@ -264,11 +264,11 @@ function getCurrentStep(order) {
     console.log(`   → Retorna: confirmacion`);
     return "confirmacion";
   }
-    // ✅ NUEVO: Verificar que bebida esté completa antes de pedir pago
+    //  NUEVO: Verificar que bebida esté completa antes de pedir pago
     if (!order.metodoPago) {
       const bebidaCompleta = isBebidaCompleta(order, MENU);
       if (!bebidaCompleta) {
-        console.log(`   ⚠️ Bebida no completa, no preguntar pago aún`);
+        console.log(`    Bebida no completa, no preguntar pago aún`);
         // Retornar al paso que falta
         if (producto && sizeDetection.requiresSize(producto) && !order.tamano) {
           return "tamano";
@@ -288,7 +288,7 @@ function getCurrentStep(order) {
   return "finalizar";
 }
 
-// ✅ FUNCIÓN NUEVA: Fuzzy matching para modificadores
+//  FUNCIÓN NUEVA: Fuzzy matching para modificadores
 function findBestMatchingOption(userInput, opciones) {
   const inputLower = userInput.toLowerCase();
   const inputNormalizado = inputLower
@@ -376,7 +376,7 @@ function findBestMatchingOption(userInput, opciones) {
 }
 
 /**
- * ✅ Detectar si el usuario quiere hacer un nuevo pedido o modificar
+ *  Detectar si el usuario quiere hacer un nuevo pedido o modificar
  */
 function detectOrderIntent(userInput) {
   const lower = userInput.toLowerCase();
@@ -436,7 +436,7 @@ function detectOrderIntent(userInput) {
   return { tipo: 'ninguno', confidence: 'none' };
 }
 
-// ✅ FUNCIÓN: updateOrderFromInput
+//  FUNCIÓN: updateOrderFromInput
 function updateOrderFromInput(session, userInput) {
   const order = session.currentOrder;
   const lower = userInput.toLowerCase();
@@ -452,7 +452,7 @@ function updateOrderFromInput(session, userInput) {
       if (/(sí|si|claro|dale|vamos|ok|okay|listo|empecemos|empezar|ordenar|pedir)/i.test(lower)) {
         order.listoParaOrdenar = true;
         order.bienvenidaDada=true;
-        console.log(`   ✅ Usuario listo para ordenar`);
+        console.log(`    Usuario listo para ordenar`);
       } else if (/(no|todavía no|todavia no|espera|aún no|aun no)/i.test(lower)) {
         order.listoParaOrdenar = false;
         order.bienvenidaDada=true;
@@ -469,14 +469,14 @@ function updateOrderFromInput(session, userInput) {
       );
       if (sucursal) {
         order.sucursal = sucursal.nombre;
-        console.log(`   ✅ Guardado: sucursal = ${sucursal.nombre}`);
+        console.log(`    Guardado: sucursal = ${sucursal.nombre}`);
       }
       break;
 
-    // ✅ DETECCIÓN MEJORADA en updateOrderFromInput() - caso "bebida"
+    //  DETECCIÓN MEJORADA en updateOrderFromInput() - caso "bebida"
 
 case "bebida":
-  // ✅ Detectar si está pidiendo recomendación
+  //  Detectar si está pidiendo recomendación
   const pidieRecomendacion = /(recomienda|recomiéndame|recomendame|sugiere|sugiéreme|sugiereme|que me|qué me|sorpréndeme|sorprendeme|lo mejor|lo más|lo mas|popular|no sé|no se|cual|cuál|cualquier|quiero|quiero algo|dame recomendaciones|temporada)/i.test(lower);
   
   if (pidieRecomendacion) {
@@ -488,38 +488,38 @@ case "bebida":
     // Temperatura
     if (/(frio|fria|helado|helada|iced|cold|fresco|fresca|frescos|refrescante)/i.test(inputNormalizado)) {
       order.preferenciaRecomendacion = "frio";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: FRÍA`);
+      console.log(`    Usuario pidió recomendación + preferencia: FRÍA`);
     } 
     else if (/(caliente|calientito|hot|tibio|tibia|calientitos)/i.test(inputNormalizado)) {
       order.preferenciaRecomendacion = "caliente";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: CALIENTE`);
+      console.log(`    Usuario pidió recomendación + preferencia: CALIENTE`);
     }
     // Tipo - Dulce
     else if (/(dulce|chocolate|caramelo|sweet|postres?)/i.test(inputNormalizado)) {
       order.preferenciaRecomendacion = "dulce";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: DULCE`);
+      console.log(`    Usuario pidió recomendación + preferencia: DULCE`);
     }
     // Tipo - Con café
     else if (/(cafe|café|coffee|espresso|cafeinado)/i.test(inputNormalizado)) {
       order.preferenciaRecomendacion = "cafe";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: CON CAFÉ`);
+      console.log(`    Usuario pidió recomendación + preferencia: CON CAFÉ`);
     }
     // Tipo - Sin café
     else if (/(sin cafe|sin cafeina|sin cafeína|decaf|descafeinado)/i.test(inputNormalizado)) {
       order.preferenciaRecomendacion = "sin cafe";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: SIN CAFÉ`);
+      console.log(`    Usuario pidió recomendación + preferencia: SIN CAFÉ`);
     }
     // Tipo - Té
     else if (/(te|té|tea|infusion|infusión)/i.test(inputNormalizado)) {
       order.preferenciaRecomendacion = "te";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: TÉ`);
+      console.log(`    Usuario pidió recomendación + preferencia: TÉ`);
     }
     else if (/(temporada)/i.test(inputNormalizado)) {
       order.preferenciaRecomendacion = "temporada";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: Temporada`);
+      console.log(`    Usuario pidió recomendación + preferencia: Temporada`);
     }
     else {
-      console.log(`   💡 Usuario pidió recomendación (sin preferencia específica)`);
+      console.log(`    Usuario pidió recomendación (sin preferencia específica)`);
     }
   } else {
     const resultadoBusqueda = buscarProductoEnMenu(userInput, 'bebida');
@@ -527,11 +527,11 @@ case "bebida":
     if (resultadoBusqueda.encontrado) {
       order.bebida = resultadoBusqueda.producto.nombre;
       order.bebida_id = resultadoBusqueda.producto.id;
-      console.log(`   ✅ Guardado: bebida = ${resultadoBusqueda.producto.nombre}`);
+      console.log(`    Guardado: bebida = ${resultadoBusqueda.producto.nombre}`);
     } else {
       order.productoNoEncontrado = userInput;
       order.sugerencias = resultadoBusqueda.sugerencias;
-      console.log(`   ⚠️ Producto NO encontrado: "${userInput}"`);
+      console.log(`    Producto NO encontrado: "${userInput}"`);
     }
   }
   break;
@@ -542,22 +542,22 @@ case "tamano":
         if (detectedSizeId) {
           order.tamano = detectedSizeId;
           const sizeName = sizeDetection.getSizeName(productoActual, detectedSizeId);
-          console.log(`   ✅ Guardado: tamano = ${sizeName}`);
+          console.log(`    Guardado: tamano = ${sizeName}`);
         }
       }
       break;
 
-      // ✅ DETECCIÓN MEJORADA en updateOrderFromInput() - caso "alimento"
+      //  DETECCIÓN MEJORADA en updateOrderFromInput() - caso "alimento"
 
 case "alimento":
-  // ✅ Detectar si dijo "no" o "ninguno"
+  //  Detectar si dijo "no" o "ninguno"
   if (/(no|sin|ninguno|nada|no quiero|no gracias|paso|skip|continua|continuar|siguiente)/i.test(lower)) {
     order.alimento = "ninguno";
-    console.log(`   ✅ Guardado: alimento = ninguno`);
+    console.log(`    Guardado: alimento = ninguno`);
     break;
   }
   
-  // ✅ Detectar si está pidiendo recomendación de alimento
+  //  Detectar si está pidiendo recomendación de alimento
   const pidieRecomendacionAlimento = /(recomienda|recomiéndame|recomendame|sugiere|sugiéreme|sugiereme|que me|qué me|opciones|que hay|qué hay|que tienen|qué tienen|no sé|no se|cual|cuál|cualquier)/i.test(lower);
   
   if (pidieRecomendacionAlimento) {
@@ -569,25 +569,25 @@ case "alimento":
     // Tipo - Salado
     if (/(salado|salada|sandwich|panini|bagel|baguette|pavo|jamon|queso|sal)/i.test(inputNormalizado)) {
       order.preferenciaAlimento = "salado";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: SALADO`);
+      console.log(`    Usuario pidió recomendación + preferencia: SALADO`);
     }
     // Tipo - Dulce
     else if (/(dulce|postre|chocolate|brownie|cookie|galleta|dona|pastel|muffin|sweet|azucar)/i.test(inputNormalizado)) {
       order.preferenciaAlimento = "dulce";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: DULCE`);
+      console.log(`    Usuario pidió recomendación + preferencia: DULCE`);
     }
     // Tipo - Saludable
     else if (/(saludable|sano|ligero|light|ensalada|fruta|yogurt|avena|chia|fit|natural)/i.test(inputNormalizado)) {
       order.preferenciaAlimento = "saludable";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: SALUDABLE`);
+      console.log(`    Usuario pidió recomendación + preferencia: SALUDABLE`);
     }
     // Tipo - Desayuno
     else if (/(desayuno|breakfast|mañana|morning)/i.test(inputNormalizado)) {
       order.preferenciaAlimento = "desayuno";
-      console.log(`   💡 Usuario pidió recomendación + preferencia: DESAYUNO`);
+      console.log(`    Usuario pidió recomendación + preferencia: DESAYUNO`);
     }
     else {
-      console.log(`   💡 Usuario pidió recomendación de alimento (sin preferencia específica)`);
+      console.log(`    Usuario pidió recomendación de alimento (sin preferencia específica)`);
     }
   } else {
     // Buscar el alimento en el menú
@@ -596,7 +596,7 @@ case "alimento":
     if (resultadoAlimento.encontrado) {
       order.alimento = resultadoAlimento.producto.nombre;
       order.alimento_id = resultadoAlimento.producto.id;
-      console.log(`   ✅ Guardado: alimento = ${resultadoAlimento.producto.nombre}`);
+      console.log(`    Guardado: alimento = ${resultadoAlimento.producto.nombre}`);
     } else {
       // Intentar detectar alimentos comunes con variaciones
       const alimentosComunes = {
@@ -631,17 +631,17 @@ case "alimento":
         if (alimento) {
           order.alimento = alimento.nombre;
           order.alimento_id = alimento.id;
-          console.log(`   ✅ Guardado: alimento = ${alimento.nombre}`);
+          console.log(`    Guardado: alimento = ${alimento.nombre}`);
         } else {
           // Guardar como genérico
           order.alimento = alimentoDetectado.charAt(0).toUpperCase() + alimentoDetectado.slice(1);
-          console.log(`   ✅ Guardado: alimento = ${alimentoDetectado} (genérico)`);
+          console.log(`    Guardado: alimento = ${alimentoDetectado} (genérico)`);
         }
       } else {
         order.alimentoNoEncontrado = userInput;
         order.sugerenciasAlimento = resultadoAlimento.sugerencias;
-        console.log(`   ⚠️ Alimento NO encontrado: "${userInput}"`);
-        console.log(`   💡 Sugerencias: ${resultadoAlimento.sugerencias.join(", ")}`);
+        console.log(`    Alimento NO encontrado: "${userInput}"`);
+        console.log(`    Sugerencias: ${resultadoAlimento.sugerencias.join(", ")}`);
       }
     }
   }
@@ -674,8 +674,8 @@ case "revision":
   } 
   // Usuario está listo para continuar
   else if (/(no|nada|está bien|esta bien|asi esta|así está|todo bien|perfecto|listo|continua|continúa|continuar|cerrar|confirmar|ok|si|sí|correcto|dale|vamos|continuar)/i.test(lower)) {
-    console.log(`   ✅ Usuario listo para continuar al pago`);
-    order.revisado = true;  // ⭐ MARCAR COMO REVISADO
+    console.log(`    Usuario listo para continuar al pago`);
+    order.revisado = true;  //  MARCAR COMO REVISADO
   }
   break;
 
@@ -685,22 +685,22 @@ case "revision":
 case "metodoPago":
   if (lower.includes("efectivo")) {
     order.metodoPago = "Efectivo";
-    console.log(`   ✅ Guardado: metodoPago = Efectivo`);
+    console.log(`    Guardado: metodoPago = Efectivo`);
   } 
   else if (lower.includes("tarjeta")) {
     order.metodoPago = "Tarjeta bancaria";
-    console.log(`   ✅ Guardado: metodoPago = Tarjeta bancaria`);
+    console.log(`    Guardado: metodoPago = Tarjeta bancaria`);
   } 
   else if (lower.includes("starbucks") || lower.includes("card")) {
     order.metodoPago = "Starbucks Card";
-    console.log(`   ✅ Guardado: metodoPago = Starbucks Card`);
+    console.log(`    Guardado: metodoPago = Starbucks Card`);
   }
   break;
 case "confirmacion":
   // Usuario confirma que todo está bien
   if (/(sí|si|correcto|está bien|así está bien|todo bien|perfecto|dale|confirmo|ok|okay|yes|confirmar)/i.test(lower)) {
-    order.confirmado = true;  // ⭐ MARCAR COMO CONFIRMADO
-    console.log(`   ✅ Guardado: confirmado = true`);
+    order.confirmado = true;  //  MARCAR COMO CONFIRMADO
+    console.log(`    Guardado: confirmado = true`);
   } 
   // Usuario quiere cambiar algo
   else if (/(no|cambiar|modificar|espera|quiero cambiar|mal|incorrecto)/i.test(lower)) {
@@ -717,9 +717,9 @@ case "confirmacion":
 
    
 default:
-      // ✅ Manejo de modificadores con fuzzy matching
+      //  Manejo de modificadores con fuzzy matching
       if (proximoPaso.startsWith("modifier_")) {
-        console.log(`   🔧 Procesando modificador...`);
+        console.log(`    Procesando modificador...`);
         const producto = menuUtils.findProductByName(MENU, order.bebida);
         
         if (producto) {
@@ -750,8 +750,8 @@ default:
                 opcionId: matchedOption.id,
               });
               
-              console.log(`   ✅ Guardado: ${mod.id} = ${matchedOption.nombre}`);
-              console.log(`   📦 Array: ${JSON.stringify(order.modificadores)}`);
+              console.log(`    Guardado: ${mod.id} = ${matchedOption.nombre}`);
+              console.log(`    Array: ${JSON.stringify(order.modificadores)}`);
               
               break;
             } else {
@@ -759,16 +759,16 @@ default:
             }
           }
         } else {
-          console.log(`   ❌ Producto no encontrado: ${order.bebida}`);
+          console.log(`   Producto no encontrado: ${order.bebida}`);
         }
       }
       break;
   }
   
-  console.log(`   📦 Estado final:`, JSON.stringify(order));
+  console.log(`    Estado final:`, JSON.stringify(order));
 }
 
-// ✅ FUNCIÓN NUEVA: Validar bebida completa
+//  FUNCIÓN NUEVA: Validar bebida completa
 function isBebidaCompleta(order, menu) {
   if (!order.bebida) return false;
   
@@ -797,13 +797,13 @@ function finalizeOrder(session) {
   const validation = orderValidation.validateCompleteOrder(order, MENU, SUCURSALES);
 
   if (!validation.valido) {
-    console.error("❌ Orden inválida:", validation.errores);
+    console.error("Orden inválida:", validation.errores);
     return null;
   }
 
   const precioInfo = priceCalc.calculateOrderPrice(order, MENU);
   if (!precioInfo || !precioInfo.total) {
-    console.error("❌ Error calculando precio:", precioInfo);
+    console.error("Error calculando precio:", precioInfo);
     return null;
   }
 
@@ -831,7 +831,7 @@ function generateOrderNumber() {
   return `SBX${day}${random}`;
 }
 
-// ✅ FUNCIÓN MEJORADA: Limpieza de texto para TTS
+//  FUNCIÓN MEJORADA: Limpieza de texto para TTS
 function cleanTextForTTS(text) {
   return text
     .replace(/\$/g, "")  // Quitar símbolo de pesos
@@ -842,7 +842,7 @@ function cleanTextForTTS(text) {
     .replace(/\*/g, "")
     .replace(/•/g, "")  // Quitar bullets
     .replace(/[""]/g, "")
-    .replace(/💰|⭐|📋|📦|☕|🍞|🎉/g, "")  // Quitar emojis
+    .replace(/💰||📋||☕|🍞|🎉/g, "")  // Quitar emojis
     .replace(/\s+/g, " ")  // Normalizar espacios
     .replace(/(\d+)\s*estrellas?/gi, "$1 estrella") 
     .replace(/[•●◦▪]/g, '') // Eliminar bullets
@@ -851,7 +851,7 @@ function cleanTextForTTS(text) {
     .trim();
 }
 
-// ✅ Actualizar getSuggestions() - Agregar caso de alimentos
+//  Actualizar getSuggestions() - Agregar caso de alimentos
 
 function getSuggestions(order) {
   const proximoPaso = getCurrentStep(order);
@@ -880,7 +880,7 @@ function getSuggestions(order) {
       }
       return [];
       
-    // ✅ NUEVO: Sugerencias para alimentos
+    //  NUEVO: Sugerencias para alimentos
     case "alimento":
       const sugerenciasAlimentos = [];
       
@@ -1004,7 +1004,7 @@ app.post("/chat", async (req, res) => {
     });
 
   } catch (e) {
-    console.error("❌ Error LLM:", e.response?.data || e.message);
+    console.error("Error LLM:", e.response?.data || e.message);
     return res.status(500).json({
       error: "LLM error",
       details: e.response?.data || e.message,
@@ -1079,7 +1079,7 @@ app.post("/speak", async (req, res) => {
     text = cleanTextForTTS(text);
 
     if (!OPENAI_API_KEY) {
-      console.warn("⚠️ OpenAI API key no configurada, usando fallback");
+      console.warn(" OpenAI API key no configurada, usando fallback");
       const silence = generateSilenceAudio();
       res.set({
         "Content-Type": "audio/mpeg",
@@ -1095,7 +1095,7 @@ app.post("/speak", async (req, res) => {
     let retryCount = 0;
     const MAX_RETRIES = 2;
 
-    // ✅ REINTENTOS CON BACKOFF EXPONENCIAL
+    //  REINTENTOS CON BACKOFF EXPONENCIAL
     while (retryCount <= MAX_RETRIES && !audioData) {
       try {
         if (retryCount > 0) {
@@ -1124,31 +1124,31 @@ app.post("/speak", async (req, res) => {
 
         audioData = Buffer.from(response.data);
         const responseTime = Date.now() - startTime;
-        console.log(`✅ OpenAI TTS exitoso: ${responseTime}ms`);
+        console.log(` OpenAI TTS exitoso: ${responseTime}ms`);
         break;
       } catch (ttsError) {
         retryCount++;
         const statusCode = ttsError.response?.status;
         const errorMsg = ttsError.response?.data?.error?.message || ttsError.message;
 
-        console.warn(`⚠️ TTS Intento ${retryCount} falló (${statusCode}): ${errorMsg}`);
+        console.warn(` TTS Intento ${retryCount} falló (${statusCode}): ${errorMsg}`);
 
-        // ✅ REINTENTAR si es error temporal
+        //  REINTENTAR si es error temporal
         if ((statusCode === 500 || statusCode === 503 || ttsError.code === 'ECONNABORTED') && retryCount <= MAX_RETRIES) {
           console.warn(`   → Error temporal, reintentando...`);
           continue;
         }
 
-        // ✅ FALLBACK para otros errores
+        //  FALLBACK para otros errores
         audioData = generateSilenceAudio();
         usingFallback = true;
         break;
       }
     }
 
-    // ✅ Si se agotaron reintentos
+    //  Si se agotaron reintentos
     if (!audioData) {
-      console.warn(`⚠️ Se agotaron reintentos, usando fallback`);
+      console.warn(` Se agotaron reintentos, usando fallback`);
       audioData = generateSilenceAudio();
       usingFallback = true;
     }
@@ -1162,7 +1162,7 @@ app.post("/speak", async (req, res) => {
 
     res.send(audioData);
   } catch (error) {
-    console.error("❌ Fatal TTS error:", error.message);
+    console.error("Fatal TTS error:", error.message);
 
     try {
       const silence = generateSilenceAudio();
@@ -1173,7 +1173,7 @@ app.post("/speak", async (req, res) => {
       });
       return res.send(silence);
     } catch (fallbackError) {
-      console.error("❌ Fallback también falló");
+      console.error("Fallback también falló");
       return res.status(500).json({
         error: "TTS unavailable",
         message: "No se pudo generar audio.",

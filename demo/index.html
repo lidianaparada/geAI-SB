@@ -734,7 +734,7 @@ function initRecognition() {
   
   rec.onresult = (event) => {
     if (isSpeaking || isProcessing) {
-      log("⚠️ Ignorando entrada (IA hablando o procesando)");
+      log(" Ignorando entrada (IA hablando o procesando)");
       return;
     }
     
@@ -767,12 +767,12 @@ function initRecognition() {
   };
   
   rec.onerror = (event) => {
-    log(`⚠️ Error de reconocimiento: ${event.error}`, "error");
+    log(` Error de reconocimiento: ${event.error}`, "error");
     
     if (event.error === "not-allowed") {
       hasPermission = false;
-      updateStatus("❌ Permiso de micrófono denegado", "Sin permiso");
-      addMessage("⚠️ Necesito permiso de micrófono. Recarga la página y concede permiso.", "bot");
+      updateStatus(" Permiso de micrófono denegado", "Sin permiso");
+      addMessage(" Necesito permiso de micrófono. Recarga la página y concede permiso.", "bot");
       return;
     }
     
@@ -804,12 +804,12 @@ function initRecognition() {
 
 function startListening() {
   if (!hasPermission) {
-    log("⚠️ Sin permiso de micrófono", "warn");
+    log(" Sin permiso de micrófono", "warn");
     return;
   }
   
   if (isListening || isSpeaking) {
-    log("⚠️ Ya está escuchando o hablando", "warn");
+    log(" Ya está escuchando o hablando", "warn");
     return;
   }
   
@@ -822,7 +822,7 @@ function startListening() {
       recognition.start();
     }
   } catch (err) {
-    log(`❌ Error al iniciar: ${err.message}`, "error");
+    log(` Error al iniciar: ${err.message}`, "error");
   }
 }
 
@@ -834,7 +834,7 @@ function stopListening() {
       updateStatus("Sistema pausado", "Pausado");
       log("⏸️ Micrófono pausado");
     } catch (err) {
-      log(`⚠️ Error al detener: ${err.message}`, "warn");
+      log(` Error al detener: ${err.message}`, "warn");
     }
   }
 }
@@ -876,10 +876,6 @@ async function processUserInput(text) {
     
     // Verificar si el pedido está completo - NUEVO BACKEND RETORNA orderComplete
     if (data.orderComplete && data.orderData) {
-      log("🎉 Pedido completado detectado",data.orderData);
-
-      log("🎉 Pedido completado detectado",data.orderComplete);
-      
       // Hablar primero
       await speakText(reply);
       
@@ -898,8 +894,8 @@ async function processUserInput(text) {
     }
     
   } catch (error) {
-    log(`❌ Error en API: ${error.message}`, "error");
-    addMessage(`⚠️ Error: ${error.message}. Verifica que el servidor esté corriendo en http://localhost:3000`, "bot");
+    log(` Error en API: ${error.message}`, "error");
+    addMessage(` Error: ${error.message}. Verifica que el servidor esté corriendo en http://localhost:3000`, "bot");
     
     isProcessing = false;
     setTimeout(() => startListening(), RESTART_DELAY);
@@ -926,7 +922,7 @@ async function speakText(text) {
       const isFallback = ttsResponse.headers.get("X-Fallback") === "true";
       
       if (isFallback) {
-        log(`⚠️ TTS fallback (${Math.round(fetchTime)}ms)`);
+        log(` TTS fallback (${Math.round(fetchTime)}ms)`);
       } else {
         log(`🎙️ OpenAI TTS (${Math.round(fetchTime)}ms)`);
       }
@@ -943,7 +939,7 @@ async function speakText(text) {
       
       if (playPromise !== undefined) {
         playPromise.catch(e => {
-          log(`⚠️ Error reproduciendo: ${e.message}`, "warn");
+          log(` Error reproduciendo: ${e.message}`, "warn");
           // Continuar de todos modos
           isSpeaking = false;
           isProcessing = false;
@@ -969,7 +965,7 @@ async function speakText(text) {
       
       audio.onerror = () => {
         URL.revokeObjectURL(audioUrl);
-        log(`⚠️ Error reproduciendo audio`, "warn");
+        log(` Error reproduciendo audio`, "warn");
         isSpeaking = false;
         isProcessing = false;
         setTimeout(() => startListening(), RESTART_DELAY);
@@ -979,13 +975,13 @@ async function speakText(text) {
     } else {
       // Respuesta con error
       const errorData = await ttsResponse.json();
-      log(`⚠️ TTS error ${ttsResponse.status}: ${errorData.error}`, "warn");
+      log(` TTS error ${ttsResponse.status}: ${errorData.error}`, "warn");
       
       // Si hay error, usar fallback del navegador
       throw new Error(`TTS HTTP ${ttsResponse.status}`);
     }
   } catch (err) {
-    log(`⚠️ OpenAI TTS falló: ${err.message}. Usando navegador...`, "warn");
+    log(` OpenAI TTS falló: ${err.message}. Usando navegador...`, "warn");
   }
   
   // FALLBACK: TTS del navegador
@@ -1040,7 +1036,7 @@ async function speakText(text) {
     };
     
     utterance.onerror = (err) => {
-      log(`❌ Error síntesis: ${err.error}`, "error");
+      log(` Error síntesis: ${err.error}`, "error");
       isSpeaking = false;
       isProcessing = false;
       setTimeout(() => startListening(), RESTART_DELAY);
@@ -1049,7 +1045,7 @@ async function speakText(text) {
     speechSynthesis.speak(utterance);
     
   } catch (fallbackError) {
-    log(`❌ Error fallback del navegador: ${fallbackError.message}`, "error");
+    log(` Error fallback del navegador: ${fallbackError.message}`, "error");
     isSpeaking = false;
     isProcessing = false;
     
@@ -1089,7 +1085,7 @@ async function requestMicrophonePermission() {
     return true;
     
   } catch (err) {
-    log(`❌ Permiso denegado: ${err.message}`, "error");
+    log(` Permiso denegado: ${err.message}`, "error");
     hasPermission = false;
     return false;
   }
@@ -1105,7 +1101,7 @@ document.getElementById("startBtn").onclick = async () => {
     initChat();
     
   } else {
-    addMessage("⚠️ No puedo funcionar sin permiso de micrófono. Por favor, recarga la página y concede permiso.", "bot");
+    addMessage(" No puedo funcionar sin permiso de micrófono. Por favor, recarga la página y concede permiso.", "bot");
     updateStatus("Sin permiso de micrófono", "Error");
   }
 };
@@ -1150,7 +1146,7 @@ async function initChat() {
     await speakText(welcomeMsg);
     
   } catch (error) {
-    log(`❌ Error al iniciar chat: ${error.message}`, "error");
+    log(` Error al iniciar chat: ${error.message}`, "error");
     const fallbackMsg = "¡Hola! Bienvenido a Starbucks. ¿Qué te gustaría ordenar hoy?";
     addMessage(fallbackMsg, "bot");
     await speakText(fallbackMsg);
