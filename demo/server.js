@@ -46,8 +46,44 @@ let MENU = {};
   console.log(`   Input original: "${userInput}"`);
   console.log(`   Tipo: ${tipo || 'cualquiera'}`);
   
+   // ✅ PASO 1: Limpiar palabras auxiliares y modificadores del input
+   const inputLimpio = limpiarInputParaBusqueda(userInput);
+   console.log(`   Input limpio: "${inputLimpio}"`);
+
+    // ✅ PASO 2: Correcciones ortográficas comunes
+  const correccionesOrtograficas = {
+    'capuchino': 'cappuccino',
+    'capucino': 'cappuccino',
+    'cappucino': 'cappuccino',
+    'late': 'latte',
+    'lattee': 'latte',
+    'frapuchino': 'frappuccino',
+    'frapucino': 'frappuccino',
+    'frappucino': 'frappuccino',
+    'moka': 'mocha',
+    'mocka': 'mocha',
+    'expreso': 'espresso',
+    'expresso': 'espresso',
+    'macchiatto': 'macchiato',
+    'machiato': 'macchiato',
+    'machiatto': 'macchiato',
+    'machíato': 'macchiato',
+    'caramelo': 'caramel',
+    'te chai': 'chai',
+    'té chai': 'chai',
+  };
+  
+  let inputCorregido = inputLimpio.toLowerCase();
+  for (const [incorrecto, correcto] of Object.entries(correccionesOrtograficas)) {
+    if (inputCorregido.includes(incorrecto)) {
+      const regex = new RegExp(`\\b${incorrecto}\\b`, 'gi');
+      inputCorregido = inputCorregido.replace(regex, correcto);
+      console.log(`   📝 Corrección: "${incorrecto}" → "${correcto}"`);
+    }
+  }
+   
   // 1️⃣ Normalizar input del usuario
-  const inputNormalizado = userInput
+  const inputNormalizado = inputCorregido
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // Quitar acentos
@@ -59,8 +95,17 @@ let MENU = {};
   console.log(`   Input normalizado: "${inputNormalizado}"`);
   
   // 2️⃣ Intentar búsqueda exacta primero (usando menuUtils)
-  let producto = menuUtils.findProductByName(MENU, userInput, tipo);
+  let producto = menuUtils.findProductByName(MENU, inputCorregido, tipo);
+  if (!producto) {
+    // Intentar con input normalizado
+    producto = menuUtils.findProductByName(MENU, inputNormalizado, tipo);
+  }
   
+  if (!producto) {
+    // Intentar con input limpio original
+    producto = menuUtils.findProductByName(MENU, inputLimpio, tipo);
+  }
+
   if (producto) {
     console.log(`    Encontrado (búsqueda exacta): ${producto.nombre}`);
     return { encontrado: true, producto };
@@ -528,6 +573,34 @@ case "bebida":
       order.bebida = resultadoBusqueda.producto.nombre;
       order.bebida_id = resultadoBusqueda.producto.id;
       console.log(`    Guardado: bebida = ${resultadoBusqueda.producto.nombre}`);
+
+      // ✅ DETECTAR TAMAÑO EN EL MISMO INPUT
+      const sizeDetected = sizeDetection.detectSizeFromInput(userInput, resultadoBusqueda.producto);
+      if (sizeDetected) {
+        order.tamano = sizeDetected;
+        const sizeName = sizeDetection.getSizeName(resultadoBusqueda.producto, sizeDetected);
+        console.log(`    ✅ Tamaño detectado: ${sizeName}`);
+      }
+
+      // ✅ DETECTAR TIPO DE LECHE EN EL MISMO INPUT
+      const producto = resultadoBusqueda.producto;
+      const modLeche = producto.modificadores?.find(m => 
+        m.nombre.toLowerCase().includes('leche') && m.requerido === true
+      );
+      
+      if (modLeche) {
+        const lecheDetectada = detectarLecheEnInput(userInput, modLeche.opciones);
+        if (lecheDetectada) {
+          if (!order.modificadores) order.modificadores = [];
+          order.modificadores.push({
+            grupoId: modLeche.id,
+            opcionId: lecheDetectada.id,
+          });
+          console.log(`    ✅ Leche detectada: ${lecheDetectada.nombre}`);
+        }
+      }
+
+
     } else {
       order.productoNoEncontrado = userInput;
       order.sugerencias = resultadoBusqueda.sugerencias;
@@ -582,7 +655,7 @@ case "alimento":
       console.log(`    Usuario pidió recomendación + preferencia: SALUDABLE`);
     }
     // Tipo - Desayuno
-    else if (/(desayuno|breakfast|mañana|morning)/i.test(inputNormalizado)) {
+    else if (/(desayuno|breakfast|manana|morning)/i.test(inputNormalizado)) {
       order.preferenciaAlimento = "desayuno";
       console.log(`    Usuario pidió recomendación + preferencia: DESAYUNO`);
     }
@@ -1210,5 +1283,151 @@ app.listen(PORT, () => {
   console.log(`   ✓ Resumen completo`);
   console.log(`   ✓ Montos en pesos mexicanos\n`);
 });
+function detectarLecheEnInput(input,opcionesDisponibles) {
+  const lower = input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  
+  const tiposLeche = {
+    'entera': ['entera', 'normal', 'regular', 'whole', 'completa'],
+    'light': ['light', 'ligera', 'semidescremada', 'semi descremada'],
+    'descremada': ['descremada', 'sin grasa', 'skim', 'desgrasada'],
+    'deslactosada': ['deslactosada', 'sin lactosa', 'lactose free'],
+    'soya': ['soya', 'soy', 'soja'],
+    'almendra': ['almendra', 'almond'],
+    'coco': ['coco', 'coconut', 'b coco'],
+    'avena': ['avena', 'oat']
+  };
+  
+  for (const [tipo, variantes] of Object.entries(tiposLeche)) {
+    for (const variante of variantes) {
+      // Buscar la opción correspondiente en las opciones disponibles
+        const opcion = opcionesDisponibles.find(o => 
+          o.nombre.toLowerCase().includes(tipo) ||
+          variantes.some(v => o.nombre.toLowerCase().includes(v))
+        );
+        if (opcion) {
+          console.log(`    🥛 Leche detectada: ${opcion.nombre}`);
+          return opcion;
+        }
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * ✅ NUEVA FUNCIÓN: Limpiar input removiendo tamaños, leches y palabras auxiliares
+ */
+ function limpiarInputParaBusqueda(input) {
+  let limpio = input.toLowerCase();
+  
+  // Palabras auxiliares a remover
+  const palabrasAuxiliares = [
+    'un', 'una', 'uno', 'quiero', 'dame', 'ponme', 'me das', 'me pones',
+    'por favor', 'porfa', 'porfavor', 'please', 'quisiera', 'deseo',
+    'para mi', 'para mí', 'pedido', 'ordenar', 'orden'
+  ];
+  
+  // Tamaños a remover
+  const tamanos = [
+    'tall', 'alto', 'grande', 'venti', 'trenta',
+    'extra grande', 'tamaño'
+  ];
+  
+  // Tipos de leche a remover (pero guardar la info)
+  const tiposLeche = [
+    'con leche entera', 'leche entera', 'entera',
+    'con leche light', 'leche light', 'light',
+    'con leche descremada', 'leche descremada', 'descremada',
+    'con leche deslactosada', 'leche deslactosada', 'deslactosada',
+    'con leche de soya', 'leche de soya', 'leche soya', 'soya',
+    'con leche de almendra', 'leche de almendra', 'leche almendra', 'almendra',
+    'con leche de coco', 'leche de coco', 'leche coco', 'coco',
+    'con leche de avena', 'leche de avena', 'leche avena', 'avena',
+    'sin leche', 'con leche', 'leche'
+  ];
+  
+  // Otros modificadores a remover
+  const otrosModificadores = [
+    'caliente', 'frío', 'fría', 'frio', 'helado', 'helada',
+    'con crema', 'sin crema', 'crema batida',
+    'con azúcar', 'sin azúcar', 'azucar',
+    'extra shot', 'shot extra', 'doble shot',
+    'descafeinado', 'decaf'
+  ];
+  
+  // Remover en orden (de más específico a menos específico)
+  const todasLasPalabras = [
+    ...tiposLeche,
+    ...tamanos,
+    ...otrosModificadores,
+    ...palabrasAuxiliares
+  ];
+  
+  // Ordenar por longitud descendente para remover frases largas primero
+  todasLasPalabras.sort((a, b) => b.length - a.length);
+  
+  for (const palabra of todasLasPalabras) {
+    // Usar regex con límites de palabra opcionales
+    const regex = new RegExp(`\\b${palabra}\\b`, 'gi');
+    limpio = limpio.replace(regex, ' ');
+  }
+  
+  // Limpiar espacios múltiples y trim
+  limpio = limpio
+    .replace(/\s+/g, ' ')
+    .trim();
+  
+  return limpio;
+}
+
+// ========================================
+// 2. NUEVA FUNCIÓN: Limpiar respuesta del LLM
+// Añadir después de cleanTextForTTS() (~línea 852)
+// ========================================
+
+function limpiarRespuestaLLM(texto) {
+  if (!texto) return texto;
+  
+  let limpio = texto
+    // Quitar notas entre paréntesis que parecen internas
+    .replace(/\(Nota:.*?\)/gi, '')
+    .replace(/\(NOTA:.*?\)/gi, '')
+    .replace(/\(La respuesta.*?\)/gi, '')
+    .replace(/\(La conversación.*?\)/gi, '')
+    .replace(/\(Este es.*?\)/gi, '')
+    .replace(/\(Recuerda.*?\)/gi, '')
+    .replace(/\(IMPORTANTE:.*?\)/gi, '')
+    .replace(/\(CRÍTICO:.*?\)/gi, '')
+    .replace(/\(El formato.*?\)/gi, '')
+    .replace(/\(considerando.*?\)/gi, '')
+    
+    // Quitar instrucciones que el LLM repite
+    .replace(/Sin embargo,?\s*considerando.*$/gi, '')
+    .replace(/una posible respuesta.*$/gi, '')
+    .replace(/el formato debe ser.*$/gi, '')
+    .replace(/que se muestra a continuación.*$/gi, '')
+    .replace(/como se muestra a continuación.*$/gi, '')
+    
+    // Quitar referencias a reglas/instrucciones
+    .replace(/según las reglas.*$/gi, '')
+    .replace(/cumpliendo con.*$/gi, '')
+    .replace(/de acuerdo con.*$/gi, '')
+    
+    // Normalizar espacios
+    .replace(/\s+/g, ' ')
+    .replace(/\s+\./g, '.')
+    .replace(/\s+,/g, ',')
+    .replace(/\.\s*\./g, '.')
+    .trim();
+  
+  // Si la respuesta quedó muy corta o vacía, mantener algo
+  if (limpio.length < 10) {
+    console.log(`⚠️ Respuesta muy corta después de limpieza: "${limpio}"`);
+    // Intentar recuperar el texto original sin limpiar tanto
+    limpio = texto.replace(/\(Nota:.*?\)/gi, '').trim();
+  }
+  
+  return limpio;
+}
 
 export { app, MENU, SUCURSALES };

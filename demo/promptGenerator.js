@@ -20,7 +20,7 @@
  export function getTimeContext() {
    const hora = new Date().getHours();
    const momento = 
-     hora >= 6 && hora < 12 ? 'mañana' :
+     hora >= 6 && hora < 12 ? 'manana' :
      hora >= 12 && hora < 19 ? 'tarde' : 'noche';
  
    return {
@@ -166,7 +166,7 @@
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   1. SIEMPRE debes pedir y confirmar la sucursal ANTES de avanzar a bebidas, alimentos o configuraciones.  
   2. SIEMPRE recomienda productos basados en:  
-     - Momento del día (mañana, tarde, noche)  
+     - Momento del día (manana, tarde, noche)  
      - Temporada actual (verano, invierno o temporada navideña)  
   3. Si el usuario intenta avanzar sin sucursal, responde primero:  
      “Antes de continuar, ¿en qué sucursal recogerás tu pedido?”  
@@ -297,6 +297,41 @@ ${contextoDelPaso}
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
   console.log("prepararContextoPaso:",paso)
+
+  if (order.solicitoInformacion) {
+    const precioInfo = priceCalc.calculateOrderPrice(order, menu);
+    const resumen = generarResumenBrevePedido(order, menu);
+    
+          // Limpiar la bandera después de usarla
+          delete order.solicitoInformacion;
+          
+          return `ℹ️ EL USUARIO PIDIÓ INFORMACIÓN DEL PEDIDO
+
+      El usuario preguntó por su total o resumen. Responde con la información actual.
+
+      Resumen actual del pedido:
+      ${resumen}
+
+      Total parcial: ${precioInfo.total} pesos
+      Sucursal: ${order.sucursal || 'No seleccionada'}
+
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      FORMATO DE RESPUESTA:
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+      "Tu pedido hasta ahora: [resumen]. El total sería ${precioInfo.total} pesos. ¿Continuamos?"
+
+      O si falta algo:
+      "Llevas [resumen], ${precioInfo.total} pesos. Aún falta [lo que falta]. ¿Continuamos?"
+
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      ❌ PROHIBIDO:
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      ✗ "Tu pedido está listo" (NO está confirmado aún)
+      ✗ "¡Hasta pronto!" (NO hemos terminado)
+      ✗ Despedirse o cerrar la conversación`;
+        }
+
   switch (paso) {
       // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       case 'bienvenida':
@@ -406,22 +441,62 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
   
   Si el usuario pide algo NO disponible:
   "Ese producto no está disponible. ¿Te gustaría ${recomendaciones}?"`;
+     
       case 'tamano':
-        const producto = menuUtils.findProductByName(menu, order.bebida);
-        if (producto) {
-          const tamanos = sizeDetection.getAvailableSizes(producto);
-          return `📏 SELECCIÓN DE TAMAÑO
-  Bebida: ${producto.nombre}
-  Tamaños disponibles: ${tamanos.map(t => `${sizeDetection.extractSizeLabel(t.nombre)} (${t.precio} pesos)`).join(', ')}
+          const producto = menuUtils.findProductByName(menu, order.bebida);
+          if (producto) {
+            const tamanos = sizeDetection.getAvailableSizes(producto);
+            if (tamanos.length === 0) {
+              return `⚠️ Este producto no tiene opciones de tamaño.
+              
+                Continúa al siguiente paso sin preguntar tamaño.`;
+            }
 
-  Pregunta: "¿Qué tamaño prefieres?  Tenemos ${tamanos.map(t => `${sizeDetection.extractSizeLabel(t.nombre)} `).join(', ')}"
-  IMPORTANTE: Sé breve, no expliques cada tamaño.
-  ⚠️ INSTRUCCIÓN OBLIGATORIA (CRÍTICO):
-  -NUNCA menciones tamaños como CHICO o MEDIANO , solo menciona los tamaños disponibles del producto
-  `;
-        }
-        return '';
 
+            const opcionesTamano = tamanos.map(t => sizeDetection.extractSizeLabel(t.nombre)).join(', ');
+            
+            return `📏 TAMAÑO DE BEBIDA
+            ⚠️ INSTRUCCIÓN OBLIGATORIA (CRÍTICO):
+            Tu respuesta DEBE incluir las sucursales disponibles.
+            NO preguntes solo "¿En qué sucursal?" sin mencionar las opciones.
+            
+            Sucursales disponibles: ${opcionesTamano}
+            
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            FORMATO OBLIGATORIO (Elige UNA de estas opciones):
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            
+            Opción 1 (RECOMENDADA):
+            "¿Que tamaño prefieres tu bebida? tenemos ${opcionesTamano}
+            
+            Opción 2:
+            "¿Que tamaño te gustaría para tu ${producto.Nme}? Contamos con ${opcionesTamano}"
+            
+            Opción 3:
+            "¿Que tamaño prefieres? Disponibles: ${opcionesTamano}"
+
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            ❌ RESPUESTAS PROHIBIDAS (NO USAR):
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            ✗ "¿Que tamaño prefieres tu bebida?" (sin mencionar los tamaños disponibles)
+            ✗ "¿Que tamaño te gustaría?" (sin mencionar opciones)
+            ✗ Cualquier respuesta que no incluya: ${opcionesTamano}
+            
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            VALIDACIÓN:
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            Antes de responder, verifica:
+            ✓ ¿Mencioné todas los tamaños disponibles? (${opcionesTamano})
+            ✓ ¿Las mencioné en la MISMA oración/respuesta?
+            ✓ ¿Usé máximo 30 palabras?
+              `;
+                  }
+          return `⚠️ ERROR: No se encontró el producto "${order.bebida}" en el menú.
+    
+                  Responde: "Disculpa, no encontré ese producto. ¿Podrías repetir qué bebida deseas?"
+                  
+                  NO menciones tamaños. Primero necesitamos confirmar la bebida.`;
+      
       case 'alimento':
             return `🍽️ ALIMENTO (OPCIONAL)
           ${order.solicitoRecomendacionAlimento ? '🎯 EL USUARIO PIDIÓ RECOMENDACIÓN DE ALIMENTO' : ''}
@@ -435,65 +510,114 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
           Acepta fácilmente si dice "no" o "sin alimento".`;
 
       case 'revision':
-      const precioInfo = priceCalc.calculateOrderPrice(order, menu);
+        const precioRevision = priceCalc.calculateOrderPrice(order, menu);
+        const resumenRevision = generarResumenBrevePedido(order, menu);
+        
         return `✅ REVISIÓN DE PEDIDO
-        Muestra resumen breve:
-        ${generarResumenBrevePedido(order, menu)}
-        Total hasta ahora: ${precioInfo.total} pesos
 
-        Pregunta: "¿Deseas agregar algo más o continuamos?"`;
+          Muestra el resumen al usuario y pregunta si quiere agregar algo más.
 
-    case 'metodoPago':
+          Resumen del pedido:
+          ${resumenRevision}
+
+          Total: ${precioRevision.total} pesos
+          Sucursal: ${order.sucursal}
+
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          FORMATO OBLIGATORIO:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+          "Tu pedido: ${resumenRevision}. Total ${precioRevision.total} pesos. ¿Deseas agregar algo más o continuamos al pago?"
+
+          O más breve:
+          "Llevas ${resumenRevision} por ${precioRevision.total} pesos. ¿Algo más o pasamos al pago?"
+
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          IMPORTANTE:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          • SIEMPRE menciona el resumen Y el total
+          • Pregunta si quiere agregar algo O continuar
+          • Máximo 30 palabras`;
+
+      case 'metodoPago':
       const precio = priceCalc.calculateOrderPrice(order, menu);
       const estrellasEfectivo = Math.floor(precio.total / 20);
       const estrellasCard = Math.floor(precio.total / 10);
       
       return `💳 MÉTODO DE PAGO
-        Total del pedido: ${precio.total} pesos
+          ⚠️ INSTRUCCIÓN OBLIGATORIA (CRÍTICO):
+          DEBES mencionar las formas de pago Y los beneficios de estrellas.
+          NO preguntes solo "¿Cómo deseas pagar?" sin explicar beneficios.
+          
+          Total del pedido: ${precio.total} pesos
+          
+          Formas de pago disponibles:
+          • Efectivo - Ganas ${estrellasEfectivo} estrellas
+          • Tarjeta bancaria - Ganas ${estrellasEfectivo} estrellas  
+          • Starbucks Card - Ganas ${estrellasCard} estrellas (¡el doble!)
+          
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          FORMATO OBLIGATORIO (USA UNO DE ESTOS):
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          
+          Opción 1 (RECOMENDADA):
+          "¿Cómo deseas pagar? Con Efectivo o Tarjeta ganas ${estrellasEfectivo} estrellas. Con Starbucks Card ganas ${estrellasCard}, ¡el doble!"
+          
+          Opción 2:
+          "Tu total es ${precio.total} pesos. ¿Pagas con Efectivo, Tarjeta o Starbucks Card? Con la Card ganas el doble de estrellas."
+          
+          Opción 3:
+          "Son ${precio.total} pesos. ¿Forma de pago? Efectivo, Tarjeta o Starbucks Card. La Card te da ${estrellasCard} estrellas."
+          
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          ❌ RESPUESTAS PROHIBIDAS:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          ✗ "¿Cómo deseas pagar?" (sin mencionar opciones)
+          ✗ "¿Efectivo o tarjeta?" (sin mencionar estrellas)
+          ✗ "¿Cuál es tu forma de pago?" (sin beneficios)
+          ✗ Cualquier respuesta que no mencione las estrellas
+          
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          IMPORTANTE: SIEMPRE menciona:
+          ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          1. Las 3 opciones de pago
+          2. Que Starbucks Card da el DOBLE de estrellas
+          3. Máximo 30 palabras`;
 
-        Pregunta así:
-        ¿Cómo deseas pagar?
-        Efectivo o Tarjeta bancaria
-          → Acumulas 1 estrella por cada $20 pesos 
-        Starbucks Card (Recomendado)
-          → Acumulas 1 estrella por cada $10 pesos (¡el doble!)
-       ¿Cuál prefieres?
-       
-       IMPORTANTE: Menciona SIEMPRE los beneficios de estrellas.`;
-       case 'confirmacion':
-        const precioConfirmacion = priceCalc.calculateOrderPrice(order, menu);
-        const resumenCompleto = generarResumenCompletoPedido(order, menu);
-        
-        return `📋 CONFIRMACIÓN FINAL (PASO CRÍTICO)
-      
-      🚨 REGLA ABSOLUTA:
-      NO digas "Tu pedido está listo" todavía.
-      NO digas "¡Hasta pronto!" todavía.
-      El pedido AÚN NO está finalizado.
-      
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      TU RESPUESTA OBLIGATORIA (USA ESTE FORMATO EXACTO):
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      
-      "Este es el resumen de tu pedido:
-      
-      ${resumenCompleto}
-      
-      ¿Confirmas tu pedido?"
-      
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      PROHIBIDO ABSOLUTO:
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      ✗ "Tu pedido está listo"
-      ✗ "¡Hasta pronto!"
-      ✗ "¡Listo!"
-      ✗ Cualquier mensaje de despedida
-      ✗ Mencionar número de orden
-      
-      IMPORTANTE:
-      - Debes ESPERAR a que el usuario confirme
-      - Solo DESPUÉS de que diga "sí", pasarás a despedida
-      - AHORA estás en confirmación, NO en despedida`;
+      case 'confirmacion':
+              const precioConfirmacion = priceCalc.calculateOrderPrice(order, menu);
+              const resumenCompleto = generarResumenCompletoPedido(order, menu);
+              
+              return `📋 CONFIRMACIÓN FINAL (PASO CRÍTICO)
+            
+            🚨 REGLA ABSOLUTA:
+            NO digas "Tu pedido está listo" todavía.
+            NO digas "¡Hasta pronto!" todavía.
+            El pedido AÚN NO está finalizado.
+            
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            TU RESPUESTA OBLIGATORIA (USA ESTE FORMATO EXACTO):
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            
+            "Este es el resumen de tu pedido:
+            
+            ${resumenCompleto}
+            
+            ¿Confirmas tu pedido?"
+            
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            PROHIBIDO ABSOLUTO:
+            ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+            ✗ "Tu pedido está listo"
+            ✗ "¡Hasta pronto!"
+            ✗ "¡Listo!"
+            ✗ Cualquier mensaje de despedida
+            ✗ Mencionar número de orden
+            
+            IMPORTANTE:
+            - Debes ESPERAR a que el usuario confirme
+            - Solo DESPUÉS de que diga "sí", pasarás a despedida
+            - AHORA estás en confirmación, NO en despedida`;
 
       case 'completado':
         const orderNumber = order.orderNumber || 'SB' + Date.now();
@@ -525,25 +649,70 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
       - No ofrezcas nada más`;
       
 
-    default:
-              if (paso.startsWith('modifier_')) {
-                const modId = paso.replace('modifier_', '');
-                const prod = menuUtils.findProductByName(menu, order.bebida);
-                const modificador = menuUtils.getModifierById(prod, modId);
+      default:
+        if (paso.startsWith('modifier_')) {
+          const modId = paso.replace('modifier_', '');
+          const prod = menuUtils.findProductByName(menu, order.bebida);
+          const modificador = menuUtils.getModifierById(prod, modId);
+          
+          if (modificador) {
+            // Obtener las primeras 5 opciones para no saturar
+            const opciones = modificador.opciones.slice(0, 5).map(o => o.nombre).join(', ');
+            const todasOpciones = modificador.opciones.map(o => o.nombre).join(', ');
+            const nombreAmigable = obtenerNombreModificadorAmigable(modId);
+            
+            // Determinar el tipo de modificador para dar contexto
+            let tipoMod = 'opción';
+            let ejemploPregunta = `¿${nombreAmigable} prefieres?`;
+            
+            if (modId.toLowerCase().includes('leche')) {
+              tipoMod = 'tipo de leche';
+              ejemploPregunta = '¿Con qué tipo de leche lo prefieres?';
+            } else if (modId.toLowerCase().includes('cafe') || modId.toLowerCase().includes('grano')) {
+              tipoMod = 'tipo de café';
+              ejemploPregunta = '¿Qué tipo de café prefieres?';
+            }
+            
+            return `🔧 MODIFICADOR: ${modificador.nombre.toUpperCase()}
+      
+                ⚠️ INSTRUCCIÓN OBLIGATORIA (CRÍTICO):
+                Este modificador es OBLIGATORIO para continuar.
+                Tu respuesta DEBE incluir las opciones disponibles.
+                NO preguntes sin mencionar las opciones.
                 
-                if (modificador) {
-                  const opciones = modificador.opciones.slice(0, 4).map(o => o.nombre).join(', ');
-                  const nombreAmigable = obtenerNombreModificadorAmigable(modId);
-                  
-                  return `🔧 MODIFICADOR: ${modificador.nombre.toUpperCase()}
-        Este modificador es OBLIGATORIO.
-
-Pregunta: "${nombreAmigable} prefieres?"
-Opciones: ${opciones}
-
-CRÍTICO: Menciona específicamente QUÉ estás preguntando (tipo de leche, café, etc.)`;
-        }
-      }
+                Bebida: ${order.bebida}
+                Modificador: ${modificador.nombre}
+                Opciones disponibles: ${opciones}
+                
+                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                FORMATO OBLIGATORIO (Elige UNA):
+                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                
+                Opción 1 (RECOMENDADA):
+                "${ejemploPregunta} Tenemos ${opciones}"
+                
+                Opción 2:
+                "¿Con qué ${tipoMod}? Opciones: ${opciones}"
+                
+                Opción 3:
+                "Para tu ${order.bebida}, ¿${tipoMod}? Tenemos ${opciones}"
+                
+                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                ❌ RESPUESTAS PROHIBIDAS:
+                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                ✗ "¿Con qué tipo de leche?" (sin opciones)
+                ✗ "¿Qué ${tipoMod} deseas?" (sin opciones)
+                ✗ "¿Leche entera, semidescremada...?" (inventando opciones)
+                ✗ Cualquier respuesta que NO incluya: ${opciones}
+                
+                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                VALIDACIÓN ANTES DE RESPONDER:
+                ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                ✓ ¿Mencioné las opciones? (${opciones})
+                ✓ ¿Especifiqué QUÉ estoy preguntando (${tipoMod})?
+                ✓ ¿Máximo 30 palabras?`;
+                  }
+                }
       return '';
   }
 }

@@ -101045,26 +101045,24 @@
     "contextos": {
       "manana": {
         "sugerencias": [
-          "Latte de avena",
-          "Café Americano",
-          "Croissant de mantequilla",
-          "Sandwich de pavo"
+          "Latte",
+          "Cappuccino",
+          "Chocolate 100% Mexicano"
         ],
         "mensaje": "Ideal para comenzar el día con energía"
       },
       "tarde": {
         "sugerencias": [
-          "Frappuccino de vainilla",
-          "Iced Latte",
-          "Muffin de chocolate",
-          "Ensalada César"
+          "Chocolate Blanco Frappuccino",
+          "Strawberry Acai Refresher",
+          "Latte"
         ],
         "mensaje": "Perfecto para refrescarte en la tarde"
       },
       "noche": {
         "sugerencias": [
           "Té Chai Latte",
-          "Chocolate caliente",
+          "Chocolate 100% Mexicano",
           "Pan de plátano",
           "Brownie"
         ],
