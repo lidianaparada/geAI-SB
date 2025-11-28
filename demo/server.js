@@ -1263,7 +1263,7 @@ app.get("/health", (req, res) => {
     cache_size: responseCache.size,
     active_sessions: sessionContext.size,
     menu_loaded: Object.keys(MENU).length > 0,
-    version: "3.5",
+    version: "3.6",
   });
 });
 
