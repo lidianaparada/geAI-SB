@@ -14,6 +14,9 @@ import * as sizeDetection from "./sizeDetection.js";
 import * as recommendationEngine from "./recommendationEngine.js";
 import { Console } from "console";
 
+import multer from 'multer';
+import OpenAI from 'openai';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -25,6 +28,12 @@ app.use(express.json());
 const NVIDIA_API_KEY = process.env.NVIDIA_API_KEY;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const MODEL = "meta/llama-3.3-70b-instruct";
+
+  const upload = multer({ 
+    storage: multer.memoryStorage(),
+    limits: { fileSize: 25 * 1024 * 1024 } // 25MB máximo de Whisper
+  });
+const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
 
 const SUCURSALES = [
   { id: 1, nombre: "Starbucks Reforma 222", direccion: "Av. Reforma 222, CDMX" },
@@ -982,6 +991,61 @@ function getSuggestions(order) {
     default:
       return [];
   }
+}// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// FUNCIÓN AUXILIAR: Generar sugerencias para UI
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+function generarSugerenciasUI(paso, order, menu) {
+  switch (paso) {
+    case 'bienvenida':
+      return ["Sí, ordenar", "Empecemos"];
+    
+    case 'sucursal':
+      return SUCURSALES.map(s => s.nombre);
+    
+    case 'bebida':
+      return menuUtils.getRecommendations(menu, promptGen.getTimeContext().momento, 'general')
+        .slice(0, 3)
+        .map(p => p.nombre);
+    
+    case 'tamano':
+      const producto = menuUtils.findProductByName(menu, order.bebida);
+      if (producto) {
+        return sizeDetection.getSizeSuggestions(producto);
+      }
+      return [];
+    
+    case 'alimento':
+      return ["Croissant", "Muffin", "No, gracias"];
+    
+    case 'metodoPago':
+      return ["Efectivo", "Tarjeta", "Starbucks Card"];
+    
+    case 'confirmacion':
+      return ["Sí, confirmar", "Modificar pedido"];
+    
+    default:
+      if (paso.startsWith('modifier_')) {
+        const modId = paso.replace('modifier_', '');
+        const prod = menuUtils.findProductByName(menu, order.bebida);
+        const modificador = menuUtils.getModifierById(prod, modId);
+        if (modificador) {
+          return modificador.opciones.slice(0, 4).map(o => o.nombre);
+        }
+      }
+      return [];
+  }
+}
+
+// =========================
+// ENDPOINT: TTS (Text-to-Speech)
+// =========================
+
+function generateSilenceAudio() {
+  const silence = Buffer.from([
+    0xff, 0xfb, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+  ]);
+  return silence;
 }
 
 app.post("/chat", async (req, res) => {
@@ -1084,63 +1148,6 @@ app.post("/chat", async (req, res) => {
     });
   }
 });
-
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// FUNCIÓN AUXILIAR: Generar sugerencias para UI
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-function generarSugerenciasUI(paso, order, menu) {
-  switch (paso) {
-    case 'bienvenida':
-      return ["Sí, ordenar", "Empecemos"];
-    
-    case 'sucursal':
-      return SUCURSALES.map(s => s.nombre);
-    
-    case 'bebida':
-      return menuUtils.getRecommendations(menu, promptGen.getTimeContext().momento, 'general')
-        .slice(0, 3)
-        .map(p => p.nombre);
-    
-    case 'tamano':
-      const producto = menuUtils.findProductByName(menu, order.bebida);
-      if (producto) {
-        return sizeDetection.getSizeSuggestions(producto);
-      }
-      return [];
-    
-    case 'alimento':
-      return ["Croissant", "Muffin", "No, gracias"];
-    
-    case 'metodoPago':
-      return ["Efectivo", "Tarjeta", "Starbucks Card"];
-    
-    case 'confirmacion':
-      return ["Sí, confirmar", "Modificar pedido"];
-    
-    default:
-      if (paso.startsWith('modifier_')) {
-        const modId = paso.replace('modifier_', '');
-        const prod = menuUtils.findProductByName(menu, order.bebida);
-        const modificador = menuUtils.getModifierById(prod, modId);
-        if (modificador) {
-          return modificador.opciones.slice(0, 4).map(o => o.nombre);
-        }
-      }
-      return [];
-  }
-}
-
-// =========================
-// ENDPOINT: TTS (Text-to-Speech)
-// =========================
-
-function generateSilenceAudio() {
-  const silence = Buffer.from([
-    0xff, 0xfb, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  ]);
-  return silence;
-}
 
 app.post("/speak", async (req, res) => {
   let { text } = req.body;
@@ -1266,6 +1273,43 @@ app.get("/health", (req, res) => {
     version: "3.6",
   });
 });
+
+app.post('/transcribe', upload.single('audio'), async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No se recibió archivo de audio' });
+      }
+      
+      console.log(`🎤 Recibido: ${req.file.originalname} (${req.file.size} bytes)`);
+      
+      // Crear File desde el buffer
+      const file = new File(
+        [req.file.buffer], 
+        req.file.originalname || 'audio.webm',
+        { type: req.file.mimetype }
+      );
+      
+      const transcription = await openai.audio.transcriptions.create({
+        file: file,
+        model: 'whisper-1',
+        language: 'es',
+      });
+      
+      console.log('✅ Transcripción:', transcription.text);
+      
+      res.json({ 
+        success: true,
+        text: transcription.text 
+      });
+      
+    } catch (error) {
+      console.error('❌ Error Whisper:', error.message);
+      res.status(500).json({ 
+        error: 'Error al transcribir',
+        details: error.message 
+      });
+    }
+  });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
