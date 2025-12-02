@@ -156,6 +156,9 @@
   const timeContext = getTimeContext();
   const proximoPaso = orderValidation.suggestNextStep(order, menu);
   
+  if (order.bebida && !isProductValid(order.bebida, menu)) {
+    proximoPaso = 'producto_invalido';
+  }
   // Preparar contexto dinámico según el paso
   const contextoDelPaso = prepararContextoPaso(proximoPaso, order, menu, sucursales, timeContext);
   
@@ -175,7 +178,31 @@
   6. Solo una pregunta por mensaje.  
   7. No avances a confirmación sin tamaño y modificadores obligatorios definidos para cada bebida.  
   8. Usa solo nombres EXACTOS del menú proporcionado por el sistema.  
-  9. Si un producto no existe, sugiere tres alternativas similares.  
+  9. 🚨🚨🚨 REGLA CRÍTICA - PRODUCTOS INVÁLIDOS (LEE ESTO ANTES DE CADA RESPUESTA):
+   
+   ANTES de responder CUALQUIER cosa sobre tamaño, modificadores o configuración:
+   
+   ⚠️ PREGÚNTATE: ¿El producto que mencionó el usuario EXISTE en el menú?
+   
+   SI NO EXISTE:
+   - DETÉN TODO inmediatamente
+   - NO menciones tamaños
+   - NO menciones modificadores
+   - NO preguntes configuraciones
+   - Responde SOLO: "Ese producto no está disponible. ¿Te gustaría [3 recomendaciones]?"
+   
+   EJEMPLOS DE PRODUCTOS QUE NO EXISTEN:
+   - Coca-Cola, Pepsi, Sprite, Fanta (❌ NO están en menú)
+   - Red Bull, Monster (❌ NO están en menú)
+   - Cualquier cosa que NO veas en el menú proporcionado
+   
+   SOLO SI EL PRODUCTO EXISTE en el menú:
+   - Entonces SÍ puedes preguntar tamaño
+   - Entonces SÍ puedes preguntar modificadores
+   
+   Esta regla es ABSOLUTA. No tiene excepciones.
+
+
   10. Después del cierre final del pedido, TERMINA la conversación.
   
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -648,6 +675,49 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
       - No hagas más preguntas
       - No ofrezcas nada más`;
       
+      case 'producto_invalido':
+  // 🚨 NUEVO CASO: El usuario mencionó un producto que NO EXISTE
+  const recomendacionesInvalido = menuUtils.getRecommendations(menu, timeContext.momento, 'general')
+    .slice(0, 3)
+    .map(p => p.nombre)
+    .join(', ');
+  
+  return `🚨 PRODUCTO INVÁLIDO DETECTADO
+
+⚠️ SITUACIÓN CRÍTICA:
+El usuario mencionó "${order.bebida}" que NO EXISTE en el menú.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACCIÓN OBLIGATORIA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. DETÉN el flujo inmediatamente
+2. NO preguntes tamaño
+3. NO preguntes modificadores  
+4. NO permitas avanzar
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FORMATO OBLIGATORIO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Responde EXACTAMENTE así:
+"Ese producto no está disponible. ¿Te gustaría ${recomendacionesInvalido}?"
+
+ALTERNATIVAS:
+"No tengo ${order.bebida}. Te recomiendo ${recomendacionesInvalido}"
+"Ese producto no lo tenemos. ¿Prefieres ${recomendacionesInvalido}?"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❌ PROHIBIDO ABSOLUTO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✗ "¿Qué tamaño prefieres?" 
+✗ "¿Con qué tipo de leche?"
+✗ Cualquier pregunta sobre el producto inválido
+✗ Continuar como si el producto existiera
+
+IMPORTANTE: 
+- ESPERA a que el usuario elija un producto VÁLIDO
+- Solo entonces podrás continuar con tamaño y modificadores
+- Máximo 30 palabras`;
 
       default:
         if (paso.startsWith('modifier_')) {
@@ -716,7 +786,14 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
       return '';
   }
 }
-
+/**
+ * ✅ NUEVO: Validar si el producto existe en el menú
+ */
+function isProductValid(productName, menu) {
+  if (!productName) return false;
+  const producto = menuUtils.findProductByName(menu, productName);
+  return producto !== null && producto !== undefined;
+}
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // FUNCIONES AUXILIARES
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
