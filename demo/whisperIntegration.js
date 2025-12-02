@@ -2,13 +2,16 @@ import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import dotenv from "dotenv";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Inicializar cliente de OpenAI
+dotenv.config();
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: OPENAI_API_KEY
 });
 
 /**
@@ -27,11 +30,11 @@ async function transcribirArchivo(rutaArchivo) {
       response_format: 'json',  // Opciones: json, text, srt, verbose_json, vtt
     });
     
-    console.log('✅ Transcripción:', transcription.text);
+    console.log(' *_* Transcripción *_*', transcription.text);
     return transcription.text;
     
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('  Error:', error.message);
     throw error;
   }
 }
@@ -56,11 +59,11 @@ async function transcribirBuffer(audioBuffer, nombreArchivo = 'audio.webm') {
       language: 'es',
     });
     
-    console.log('✅ Transcripción:', transcription.text);
+    console.log('  Transcripción:', transcription.text);
     return transcription.text;
     
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('  Error:', error.message);
     throw error;
   }
 }
@@ -78,6 +81,7 @@ async function transcribirConTimestamps(rutaArchivo) {
       language: 'es',
       response_format: 'verbose_json',  // Incluye timestamps
       timestamp_granularities: ['word', 'segment'],
+      prompt: 'Starbucks, Latte, Cappuccino, Venti, Grande, Caffi', 
     });
     
     console.log('📝 Texto completo:', transcription.text);
@@ -87,22 +91,22 @@ async function transcribirConTimestamps(rutaArchivo) {
     return transcription;
     
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('  Error:', error.message);
     throw error;
   }
 }
 
 async function prueba() {
-  console.log('🚀 Prueba de Whisper\n');
+  console.log(' Prueba de Whisper\n');
   
   // Verificar API key
   if (!process.env.OPENAI_API_KEY) {
-    console.error('❌ Falta OPENAI_API_KEY en las variables de entorno');
+    console.error(' Falta OPENAI_API_KEY en las variables de entorno');
     return;
   }
   
   // Si tienes un archivo de audio de prueba:
-  const archivoTest = './test_audio.mp3';
+  const archivoTest = './demo/test_audio.mp3';
   
   if (fs.existsSync(archivoTest)) {
     await transcribirArchivo(archivoTest);
@@ -118,6 +122,5 @@ prueba();
 export { 
   transcribirArchivo, 
   transcribirBuffer, 
-  transcribirConTimestamps,
-  crearEndpointWhisper 
+  transcribirConTimestamps
 };
