@@ -792,7 +792,7 @@ IMPORTANTE:
 function isProductValid(productName, menu) {
   if (!productName) return false;
   const producto = menuUtils.findProductByName(menu, productName);
-  return producto !== null && producto !== undefined;
+  return producto !== null && producto !== undefined && producto.disponible !== false;
 }
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // FUNCIONES AUXILIARES
