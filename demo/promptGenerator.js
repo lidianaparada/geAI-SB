@@ -156,6 +156,9 @@
   const timeContext = getTimeContext();
   const proximoPaso = orderValidation.suggestNextStep(order, menu);
   
+  if (order.bebida && !isProductValid(order.bebida, menu)) {
+    proximoPaso = 'producto_invalido';
+  }
   // Preparar contexto dinámico según el paso
   const contextoDelPaso = prepararContextoPaso(proximoPaso, order, menu, sucursales, timeContext);
   
@@ -164,19 +167,69 @@
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   🔒 REGLAS PERSISTENTES (OBLIGATORIAS)
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🚨🚨🚨 REGLA #0 - PRIORIDAD ABSOLUTA (SOBRESCRIBE TODO) 🚨🚨🚨
+
+      SI en CUALQUIER momento el usuario dice:
+      "cancela", "cancelar", "olvida", "olvídalo", "ya no quiero","quiero cancelar"
+
+      ENTONCES:
+      - IGNORA las instrucciones del paso actual
+      - NO preguntes nada más
+      - Responde SOLO: "¿Estás seguro que quieres cancelar tu pedido?"
+
+      Esta regla SOBRESCRIBE las reglas 1-10 y cualquier instrucción del paso.
   1. SIEMPRE debes pedir y confirmar la sucursal ANTES de avanzar a bebidas, alimentos o configuraciones.  
   2. SIEMPRE recomienda productos basados en:  
      - Momento del día (manana, tarde, noche)  
      - Temporada actual (verano, invierno o temporada navideña)  
   3. Si el usuario intenta avanzar sin sucursal, responde primero:  
-     “Antes de continuar, ¿en qué sucursal recogerás tu pedido?”  
+     “Antes de continuar, ¿en qué sucursal recogerás tu pedido? (menciona las sucursales disponibles)”  
   4. Si el usuario pide recomendaciones, ofrece máximo 3 opciones basadas en hora y temporada.  
   5. Cada mensaje debe tener máximo 30 palabras.  
   6. Solo una pregunta por mensaje.  
   7. No avances a confirmación sin tamaño y modificadores obligatorios definidos para cada bebida.  
   8. Usa solo nombres EXACTOS del menú proporcionado por el sistema.  
-  9. Si un producto no existe, sugiere tres alternativas similares.  
-  10. Después del cierre final del pedido, TERMINA la conversación.
+  9. 🚨🚨🚨 REGLA CRÍTICA - PRODUCTOS INVÁLIDOS (LEE ESTO ANTES DE CADA RESPUESTA):
+   
+   ANTES de responder CUALQUIER cosa sobre tamaño, modificadores o configuración:
+   
+   ⚠️ PREGÚNTATE: ¿El producto que mencionó el usuario EXISTE en el menú?
+   
+   SI NO EXISTE:
+   - DETÉN TODO inmediatamente
+   - NO menciones tamaños
+   - NO menciones modificadores
+   - NO preguntes configuraciones
+   - Responde SOLO: "Ese producto no está disponible. ¿Te gustaría [3 recomendaciones]?"
+   
+   EJEMPLOS DE PRODUCTOS QUE NO EXISTEN:
+   - Coca-Cola, Pepsi, Sprite, Fanta (❌ NO están en menú)
+   - Red Bull, Monster (❌ NO están en menú)
+   - Cualquier cosa que NO veas en el menú proporcionado
+   
+   SOLO SI EL PRODUCTO EXISTE en el menú:
+   - Entonces SÍ puedes preguntar tamaño
+   - Entonces SÍ puedes preguntar modificadores
+   
+   Esta regla es ABSOLUTA. No tiene excepciones.
+
+  10. 🔍 CRÍTICO - NOMBRES AMBIGUOS:
+      
+        Si dice SOLO: "frappé", "café", "té", "latte" (sin especificar)
+        → DETÉN y pregunta: "¿Qué tipo? Te recomiendo [3 opciones]"
+        
+        Acepta solo nombres específicos: "Mocha Frappuccino", "Americano", etc.
+
+  11. Después del cierre final del pedido, TERMINA la conversación.
+  12. 🚫 CANCELACIÓN DE PEDIDO:
+    Si el usuario dice: "cancela", "olvídalo", "ya no quiero", "déjalo"
+    
+    Entonces:
+    - Confirma: "¿Seguro que quieres cancelar?"
+    - Si dice sí: Cancela y ofrece ayuda
+    - Si dice no: Retoma el flujo normal
+    
+    NUNCA canceles sin confirmar primero.
   
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   🎤 ESTILO PARA VOZ
@@ -297,7 +350,33 @@ ${contextoDelPaso}
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
   console.log("prepararContextoPaso:",paso)
-
+  if (order.solicitoCancelacion) {
+    delete order.solicitoCancelacion;
+    
+    return `🚫 SOLICITUD DE CANCELACIÓN
+  
+  El usuario quiere CANCELAR el pedido.
+  
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ACCIÓN OBLIGATORIA:
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  
+  1. CONFIRMA primero:
+     "¿Estás seguro que quieres cancelar tu pedido?"
+  
+  2. Si confirma:
+     "Entendido, pedido cancelado. ¿Hay algo más en que pueda ayudarte?"
+     [El servidor debe limpiar: order = {}]
+  
+  3. Si no confirma:
+     "Perfecto, continuemos entonces. [retomar flujo]"
+  
+  IMPORTANTE:
+  - No elimines la orden hasta confirmar
+  - Sé empático y amable
+  - Ofrece ayuda después de cancelar
+  `;
+  }
   if (order.solicitoInformacion) {
     const precioInfo = priceCalc.calculateOrderPrice(order, menu);
     const resumen = generarResumenBrevePedido(order, menu);
@@ -457,10 +536,10 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
             
             return `📏 TAMAÑO DE BEBIDA
             ⚠️ INSTRUCCIÓN OBLIGATORIA (CRÍTICO):
-            Tu respuesta DEBE incluir las sucursales disponibles.
-            NO preguntes solo "¿En qué sucursal?" sin mencionar las opciones.
+            Tu respuesta DEBE incluir los tamaños disponibles.
+            NO preguntes solo "¿Qué tamaño te gustaría?" sin mencionar las opciones.
             
-            Sucursales disponibles: ${opcionesTamano}
+            Tamaños disponibles: ${opcionesTamano}
             
             ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
             FORMATO OBLIGATORIO (Elige UNA de estas opciones):
@@ -628,26 +707,90 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
       ✅ El usuario YA confirmó su pedido.
       ✅ AHORA SÍ puedes despedirte.
       
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      TU RESPUESTA OBLIGATORIA (USA ESTE FORMATO EXACTO):
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      🚨🚨🚨 FORMATO OBLIGATORIO ULTRA-ESTRICTO 🚨🚨🚨
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       
-      "¡Listo! Tu pedido está confirmado.
+      COPIA EXACTAMENTE ESTE TEXTO (sin modificar NADA):
       
-      📋 Número de orden: ${orderNumber}
-      💰 Total: ${precioFinal.total} pesos
-      ⭐ Estrellas acumuladas: ${precioFinal.estrellas}
-      📍 Recógelo en: ${order.sucursal}
+      "¡Listo! Tu pedido está confirmado. Número de orden: ${orderNumber} Total: ${precioFinal.total} pesos Estrellas acumuladas: ${precioFinal.estrellas} Recógelo en: ${order.sucursal} ¡Gracias y hasta pronto!"
       
-      ¡Gracias! Hasta pronto."
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      ⛔ PROHIBICIONES ABSOLUTAS - NO VIOLAR BAJO NINGUNA CIRCUNSTANCIA
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      IMPORTANTE:
-      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-      - Después de este mensaje, la conversación TERMINA
-      - No hagas más preguntas
-      - No ofrezcas nada más`;
+      1. ⛔ NO agregues NADA después de "hasta pronto!"
+      2. ⛔ NO digas "adiós" (ni una sola vez)
+      3. ⛔ NO digas "que tengas un excelente día"
+      4. ⛔ NO digas "que la vida te sonría"
+      5. ⛔ NO digas "disfrutes tu pedido"
+      6. ⛔ NO agregues deseos, bendiciones, ni mensajes extra
+      7. ⛔ NO repitas ninguna palabra más de una vez
+      8. ⛔ NO excedas 30 palabras TOTAL (cuenta antes de responder)
+      9. ⛔ NO hagas preguntas adicionales
+      10. ⛔ TERMINA después de "hasta pronto!" - PUNTO FINAL ABSOLUTO
       
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      ✅ CHECKLIST DE VALIDACIÓN (verifica ANTES de responder)
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      
+      Antes de enviar tu respuesta, verifica:
+      ✓ ¿Copié el texto EXACTO de arriba?
+      ✓ ¿Tiene menos de 30 palabras?
+      ✓ ¿Termina con "hasta pronto!" y NADA más?
+      ✓ ¿NO contiene la palabra "adiós"?
+      ✓ ¿NO tiene repeticiones?
+      
+      Si TODAS son ✓ → Envía
+      Si ALGUNA es ✗ → DETENTE y corrige
+      
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+      🛑 DESPUÉS DE ENVIAR: CONVERSACIÓN TERMINADA - NO RESPONDAS MÁS
+      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+      
+      case 'producto_invalido':
+  // 🚨 NUEVO CASO: El usuario mencionó un producto que NO EXISTE
+  const recomendacionesInvalido = menuUtils.getRecommendations(menu, timeContext.momento, 'general')
+    .slice(0, 3)
+    .map(p => p.nombre)
+    .join(', ');
+  
+  return `🚨 PRODUCTO INVÁLIDO DETECTADO
+
+⚠️ SITUACIÓN CRÍTICA:
+El usuario mencionó "${order.bebida}" que NO EXISTE en el menú.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ACCIÓN OBLIGATORIA:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. DETÉN el flujo inmediatamente
+2. NO preguntes tamaño
+3. NO preguntes modificadores  
+4. NO permitas avanzar
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FORMATO OBLIGATORIO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Responde EXACTAMENTE así:
+"Ese producto no está disponible. ¿Te gustaría ${recomendacionesInvalido}?"
+
+ALTERNATIVAS:
+"No tengo ${order.bebida}. Te recomiendo ${recomendacionesInvalido}"
+"Ese producto no lo tenemos. ¿Prefieres ${recomendacionesInvalido}?"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❌ PROHIBIDO ABSOLUTO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✗ "¿Qué tamaño prefieres?" 
+✗ "¿Con qué tipo de leche?"
+✗ Cualquier pregunta sobre el producto inválido
+✗ Continuar como si el producto existiera
+
+IMPORTANTE: 
+- ESPERA a que el usuario elija un producto VÁLIDO
+- Solo entonces podrás continuar con tamaño y modificadores
+- Máximo 30 palabras`;
 
       default:
         if (paso.startsWith('modifier_')) {
@@ -716,7 +859,14 @@ function prepararContextoPaso(paso, order, menu, sucursales, timeContext) {
       return '';
   }
 }
-
+/**
+ * ✅ NUEVO: Validar si el producto existe en el menú
+ */
+function isProductValid(productName, menu) {
+  if (!productName) return false;
+  const producto = menuUtils.findProductByName(menu, productName);
+  return producto !== null && producto !== undefined && producto.disponible !== false;
+}
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // FUNCIONES AUXILIARES
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

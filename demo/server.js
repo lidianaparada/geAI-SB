@@ -983,7 +983,16 @@ function getSuggestions(order) {
       return [];
   }
 }
-
+function detectarCancelacion(userMessage) {
+  const palabrasCancelacion = [
+    'cancela', 'cancelar', 'olvida', 'olvídalo', 
+    'ya no quiero', 'dejalo', 'déjalo', 
+    'mejor no', 'no quiero'
+  ];
+  
+  const msgLower = userMessage.toLowerCase();
+  return palabrasCancelacion.some(palabra => msgLower.includes(palabra));
+}
 app.post("/chat", async (req, res) => {
   const userName = req.body.userName || "Usuario";
   const { userInput, history = [], sessionId = "default" } = req.body;
