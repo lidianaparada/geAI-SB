@@ -1272,14 +1272,14 @@ app.get("/health", (req, res) => {
     cache_size: responseCache.size,
     active_sessions: sessionContext.size,
     menu_loaded: Object.keys(MENU).length > 0,
-    version: "3.6",
+    version: "3.7",
   });
 });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("\n╔════════════════════════════════════════╗");
-  console.log("║  STARBUCKS v3.5 - VERSIÓN MEJORADA    ║");
+  console.log("║  STARBUCKS v3.7 - VERSIÓN MEJORADA    ║");
   console.log("║  Con correcciones completas            ║");
   console.log("╚════════════════════════════════════════╝\n");
   console.log(`🌐 Servidor: http://localhost:${PORT}`);
