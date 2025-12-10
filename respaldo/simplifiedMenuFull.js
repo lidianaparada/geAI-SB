@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const INPUT_FILE = "menu Corporativo barranca response.json";
-const OUTPUT_FILE = "menu_simplificado_CORRECTO.json";
+const OUTPUT_FILE = "menu_simplificado_CORRECTO_2.json";
 
 /* =========================
    FUNCIONES AUXILIARES
